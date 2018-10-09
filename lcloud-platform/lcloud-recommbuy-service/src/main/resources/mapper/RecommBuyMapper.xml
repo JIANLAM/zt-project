@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.recommbuy.repository.RecommBuyRespository" >
+
+ <select id="queryPage" parameterType="com.szcti.lcloud.recommbuy.entity.vo.RecommBuyVO"
+  resultType="com.szcti.lcloud.recommbuy.entity.vo.RecommBuyVO">
+    select pre.* , count(pre.id) as recount,re.library_id as libraryId from t_recomm_buy rb
+    LEFT JOIN t_prebook pre on rb.prebook_id=pre.id
+    left join t_reader re on re.id=rb.reader_id
+    where 1=1
+     <if test="preId!=null">
+         <foreach collection="preId" item="item" open="and pre.id in(" separator="," close=")">
+             #{item}
+         </foreach>
+     </if>
+    <if test="id != null">
+      AND rb.id = #{id}
+    </if>
+     <if test="libraryId != null">
+         AND re.library_id = #{libraryId}
+     </if>
+     <if test="readerCardNumber != null and readerCardNumber !=''">
+         AND re.reader_card_number LIKE CONCAT('%',#{readerCardNumber},'%')
+     </if>
+     <if test="status != null and status !=''">
+         AND pre.status = #{status}
+     </if>
+       <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+      AND pre.title LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+      AND pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+      AND pre.author LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+      AND pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+     <if test="timeKey=='pubdate'">
+         <if test="startTime != null and startTime != ''">
+             AND pre.pubdate >= #{startTime}
+         </if>
+         <if test="endTime != null and endTime != ''">
+             AND pre.pubdate <![CDATA[<]]> #{endTime}
+         </if>
+     </if>
+     <if test="timeKey=='createTime'">
+        <if test="startTime != null and startTime != ''">
+          AND rb.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+          AND rb.create_time <![CDATA[<]]> #{endTime}
+        </if>
+     </if>
+    GROUP BY re.library_id,pre.id
+  </select>
+  <select id="findList" resultType="com.szcti.lcloud.recommbuy.entity.vo.RecommBuyVO">
+    SELECT
+    g.id,
+    g.create_time,
+    g.recomm_from,
+    g.reader_id,
+    b.id  preBookId,
+    b.title,
+    b.author,
+    b.publisher,
+    b.ISBN,
+    b.book_type,
+    b.status,
+    p.username
+    FROM t_recomm_buy g
+    LEFT JOIN t_prebook b ON g.prebook_id = b.id
+    LEFT JOIN t_reader r ON r.id = g.reader_id
+    LEFT JOIN t_people p ON p.id = r.people_id
+    WHERE 1=1
+    <if test="readerId != null and readerId != ''">
+      AND g.reader_id = #{readerId}
+    </if>
+    <if test="title != null and title != ''">
+      AND b.title LIKE CONCAT('%',#{title},'%')
+    </if>
+    <if test="author != null and author != ''">
+      AND b.author LIKE CONCAT('%',#{author},'%')
+    </if>
+    <if test="status != null">
+      AND b.status=#{status}
+    </if>
+    <if test="startTime != null and startTime != ''">
+      AND g.create_time >= #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+      AND g.create_time <![CDATA[<]]> #{endTime}
+    </if>
+  </select>
+  <insert id="insert">
+        INSERT INTO t_recomm_buy(
+            id,
+            prebook_id,
+            reader_id,
+            create_time,
+            recomm_from
+        ) VALUES (
+            #{id},
+            #{preBookId},
+            #{readerId},
+            #{createTime},
+            #{recommFrom}
+        )
+    </insert>
+  <select id="get" resultType="com.szcti.lcloud.recommbuy.entity.vo.RecommBuyVO">
+    SELECT
+    c.id,
+    c.prebook_id,
+    c.create_time,
+    c.recomm_from,
+    c.reader_id
+    FROM t_recomm_buy c
+    WHERE c.prebook_id = #{preBookId}
+    <if test="readerId != null and readerId != ''">
+      AND c.reader_id = #{readerId}
+    </if>
+  </select>
+  <select id="exportExcel" parameterType="com.szcti.lcloud.recommbuy.entity.vo.RecommBuyVO"
+          resultType="com.szcti.lcloud.recommbuy.entity.vo.RecommBuyVO">
+    select pre.* , count(pre.id) as recount,re.library_id as libraryId from t_recomm_buy rb
+    LEFT JOIN t_prebook pre on rb.prebook_id=pre.id
+    left join t_reader re on re.id=rb.reader_id
+    where 1=1
+    <if test="preId!=null">
+    <foreach collection="preId" item="item" open="and pre.id in(" separator="," close=")">
+      #{item}
+    </foreach>
+    </if>
+    <if test="id != null and id != ''">
+      AND rb.id = #{id}
+    </if>
+    GROUP BY re.library_id,pre.id
+  </select>
+
+
+    <!--微信端 荐购-->
+    <select id="weChatFindList" resultType="com.szcti.lcloud.recommbuy.entity.vo.RecommBuyVO">
+        SELECT
+        g.id,
+        g.create_time,
+        g.recomm_from,
+        g.reader_id,
+        b.id  preBookId,
+        b.title,
+        b.author,
+        b.publisher,
+        b.ISBN,
+        b.book_type,
+        b.`status`,
+        b.price,
+        IFNULL(b.pic,'') pic,
+        p.username,
+        l.`name` AS libraryName
+        FROM t_recomm_buy g
+        LEFT JOIN t_prebook b ON g.prebook_id = b.id
+        LEFT JOIN t_reader r ON r.id = g.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_organization l ON l.id = r.library_id
+        WHERE 1=1
+        <if test="readerId != null and readerId != ''">
+            AND g.reader_id = #{readerId}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND (b.title LIKE CONCAT('%',#{qualification},'%')  OR b.author LIKE CONCAT('%',#{qualification},'%'))
+        </if>
+        <if test="status != null">
+            AND b.status=#{status}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,48 @@
+emq:
+  broker: tcp://192.168.1.252:1883
+  clientId: cti-idc-emq-server
+  username: cti-idc-emq-server
+  password: cies20180615
+ 
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8  
+  
+spring:
+  jackson:
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    url: jdbc:mysql://192.168.1.249:3306/lcidc?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: MYSQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+# JWT
+jwt:
+  header: token
+  secret: CTI20180615JWT
+  expiration: 7200
+  #tokenHead: "Bearer "
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"
+
+# Logging configuration
+logging:
+  level:
+    org.springframework:
+      data: DEBUG
+      security: DEBUG

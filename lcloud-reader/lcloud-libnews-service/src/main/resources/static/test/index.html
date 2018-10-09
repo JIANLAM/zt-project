@@ -1,0 +1,360 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>libnewsTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-libnews-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>查询馆内资讯 最新资讯</td>
+            <td>
+                <button type="submit" id="newsList">点击我测试</button>
+            </td>
+            <td>#newsList</td>
+            <td><span>GET</span></td>
+            <td>null</td>
+        </tr>
+        <tr>
+            <td>根据ID 查询最新资讯 的指定的一条记录</td>
+            <td>
+                <button type="submit" id="newsInfoObj">点击我测试</button>
+            </td>
+            <td>#newsInfoObj</td>
+            <td><span>GET</span></td>
+            <td>{newsId} = 1</td>
+        </tr>
+        <tr>
+            <td>新增或者修改一条最新资讯</td>
+            <td>
+                <button type="submit" id="saveLibnews">点击我测试</button>
+            </td>
+            <td>#saveLibnews</td>
+            <td><span>POST</span></td>
+            <td>json = {id: "231370253205",title: "1111",content: "22222",libNewsImg: "ccccccccc"};<br />id为空则新增 有值则修改</td>
+        </tr>
+        <tr>
+            <td>根据主键删除最新资讯</td>
+            <td>
+                <button type="submit" id="delLibNewsIds">点击我测试</button>
+            </td>
+            <td>#delLibNewsIds</td>
+            <td><span>POST</span></td>
+            <td>{libNewsIds} = 1,2，3</td>
+        </tr>
+        <tr>
+            <td>新增一条阅读记录</td>
+            <td>
+                <button type="submit" id="saveLibNewsLook">点击我测试</button>
+            </td>
+            <td>#saveLibNewsLook</td>
+            <td><span>POST</span></td>
+            <td>null</td>
+        </tr>
+        <tr>
+            <td colspan="5" >
+                    ————————————————————————————————————————————————————
+            </td>
+        </tr>
+        <tr>
+            <td>查询馆内资讯 馆内活动</td>
+            <td>
+                <button type="submit" id="activeList">点击我测试</button>
+            </td>
+            <td>#activeList</td>
+            <td><span>GET</span></td>
+            <td>null</td>
+        </tr>
+        <tr>
+            <td>根据ID 查询馆内活动 的指定的一条记录</td>
+            <td>
+                <button type="submit" id="activeInfoObj">点击我测试</button>
+            </td>
+            <td>#activeInfoObj</td>
+            <td><span>GET</span></td>
+            <td>{activeId} = 1</td>
+        </tr>
+        <tr>
+            <td>新增    或修改一条馆内活动</td>
+            <td>
+                <button type="submit" id="saveActive">点击我测试</button>
+            </td>
+            <td>#saveActive</td>
+            <td><span>POST</span></td>
+            <td>{activeId} = 1</td>
+        </tr>
+        <tr>
+            <td>根据主键删除馆内活动</td>
+            <td>
+                <button type="submit" id="delLibActiveIds">点击我测试</button>
+            </td>
+            <td>#delLibActiveIds</td>
+            <td><span>POST</span></td>
+            <td>{activeId} = 1</td>
+        </tr>
+        <tr>
+            <td>新增一条报名记录</td>
+            <td>
+                <button type="submit" id="saveLibActiveEnroll">点击我测试</button>
+            </td>
+            <td>#saveLibActiveEnroll</td>
+            <td><span>POST</span></td>
+            <td>{libActiveId: "1",readerId: "11"};</td>
+        </tr>
+        <tr>
+            <td colspan="5" id="data">
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    //新增一条报名记录
+    $("#saveLibActiveEnroll").click(function () {
+        var json = {libActiveId: "1",readerId: "15"};
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8281/libnews/v1/active/saveLibActiveEnroll',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据主键删除馆内活动
+    $("#delLibActiveIds").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8281/libnews/v1/active/delete/134968134686',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //新增    或修改一条馆内活动
+    $("#saveActive").click(function () {
+        var json = {id: null,
+            title: "3333",
+            content: "22222",
+            startTime: "2018-07-20 11:10:47",
+            closureTime: "2018-07-23 11:10:52",
+            address: "AAAAAAAAAAAAAAAAA",
+            saveImgList:""
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8281/libnews/v1/active/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据ID 查询馆内活动 的指定的一条记录
+    $("#activeInfoObj").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8281/libnews/v1/active/activeInfo/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询馆内资讯 馆内活动
+    $("#activeList").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8281/libnews/v1/active/list',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    /****************************************     最新资讯      *********************************************/
+    //新增一条阅读记录
+    $("#saveLibNewsLook").click(function () {
+        var json = {libNewsId: "1",readerId: "11"};
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8281/libnews/v1/news/saveLibNewsLook',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据主键删除最新资讯
+    $("#delLibNewsIds").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8281/libnews/v1/news/delete/4',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //新增    或修改一条最新资讯
+    $("#saveLibnews").click(function () {
+        var json = {id: null,title: "3333",content: "22222",libNewsImg: "ccccccccc"};
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8281/libnews/v1/news/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据ID 查询最新资讯 的指定的一条记录
+    $("#newsInfoObj").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8281/libnews/v1/news/newsInfo/4',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询馆内资讯 最新资讯
+    $("#newsList").click(function () {
+        var jsonStr = JSON.stringify({startTime: null,closureTime: null});/*startTime: '2018-06-04',closureTime: '2018-06-06'*/
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8281/libnews/v1/news/list',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

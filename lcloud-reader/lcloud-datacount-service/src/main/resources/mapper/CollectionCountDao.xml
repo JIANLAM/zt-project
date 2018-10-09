@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.datacount.repository.CollectionCountDao">
+
+    <!--    查询图书  一条    馆藏地点   或    文献流通类型    -->
+    <select id="cirORcollRowType" resultType="java.util.Map">
+        SELECT id,value,label FROM sys_basicparam WHERE id = #{id}
+    </select>
+
+    <!--    所有条件    -->
+    <sql id="conditionColumn">
+        <if test="collIdArray != null">
+            AND h.collAddress_id in
+            <foreach item="item" index="index" collection="collIdArray" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="circIdArray != null">
+            AND h.act_type in
+            <foreach item="item" index="index" collection="circIdArray" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="libraryId != null">
+            AND h.ownlib = #{libraryId}
+        </if>
+        <if test="idArray != null">
+            AND h.`status` in
+            <foreach item="item" index="index" collection="idArray" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="callNoStart != null and callNoStart != ''">
+            AND h.call_no >= #{callNoStart}
+        </if>
+        <if test="callNoEnd != null and callNoEnd != ''">
+            AND h.call_no <![CDATA[<]]> #{callNoEnd}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND h.indate >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND h.indate <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="bookType != null">
+            AND UPPER(LEFT(b.book_type, 1)) >= #{bookType}
+        </if>
+        <if test="bookTypeEnd != null">
+            AND UPPER(LEFT(b.book_type, 1)) <![CDATA[<]]> #{bookTypeEnd}
+        </if>
+        <if test="barcodeStart != null and barcodeStart != ''">
+            AND h.barcode >= #{barcodeStart}
+        </if>
+        <if test="barcodeEnd != null and barcodeEnd != ''">
+            AND h.barcode <![CDATA[<]]> #{barcodeEnd}
+        </if>
+        <if test="barcodeArray != null">
+            AND h.barcode in
+            <foreach item="item" index="index" collection="barcodeArray" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <!--    查询馆藏分类统计  分布    现存   统计  -->
+    <select id="collectionTypeCount" resultType="java.lang.Float">
+        SELECT
+            <choose>
+                <when test="column == 1">
+                    IFNULL(
+                        (
+                            SELECT
+                                COUNT(1)
+                            FROM
+                                (
+                                    SELECT
+                                        b.id
+                                    FROM
+                                        t_holding h
+                                    LEFT JOIN t_book b ON h.book_id = b.id
+                                    WHERE 1 = 1
+                                    <include refid="conditionColumn"/>
+                                    GROUP BY b.id
+                                ) typeCount
+                        ),
+                      0
+                    ) bookTypeCount
+                </when>
+                <when test="column == 2">
+                    IFNULL(COUNT(1), 0) totalCount
+                </when>
+                <when test="column == 3">
+                    IFNULL(SUM(b.price), 0) totalPrice
+                </when>
+            </choose>
+        <if test="column != 1">
+            FROM
+            t_holding h
+            LEFT JOIN t_book b ON h.book_id = b.id
+            LEFT JOIN t_organization o ON h.curlib = o.id
+            WHERE 1 = 1
+            <include refid="conditionColumn"/>
+        </if>
+
+    </select>
+
+    <!--    查询馆藏日志  解析书的条码号    -->
+    <select id="opContentList" resultType="java.lang.String">
+        SELECT
+            op_content
+        FROM
+            t_operation_log
+        WHERE
+            operation_type = #{operationType}
+            <if test="libraryId != null">
+                AND library_id = #{libraryId}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND create_time <![CDATA[<]]> #{endTime}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+    </select>
+
+    <!--    查询馆藏处理统计    操作人员     -->
+    <select id="operationStaff" resultType="java.util.Map">
+        SELECT
+            id,
+            login_name
+        FROM
+            t_user
+        WHERE
+        type = 1
+        AND org_id = #{libraryId}
+    </select>
+
+</mapper>

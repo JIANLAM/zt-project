@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.grade.repository.ClassesDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM t_classes WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.szcti.lcloud.grade.entity.ClassesEntity">
+        UPDATE t_classes
+        <set>
+            <if test="code != null and code != ''" >
+                code = #{code},
+            </if>
+            <if test="name != null and name != ''" >
+                name = #{name},
+            </if>
+            <if test="remark != null and remark != ''" >
+                remark = #{remark},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="com.szcti.lcloud.grade.entity.ClassesEntity">
+        INSERT INTO t_classes(
+            id,
+            grade_id,
+            code,
+            name,
+            remark
+        ) VALUES (
+            #{id},
+            #{gradeId},
+            #{code},
+            #{name},
+            #{remark}
+        )
+    </insert>
+
+    <select id="findList" resultType="com.szcti.lcloud.grade.entity.ClassesEntity">
+        SELECT
+            *
+        FROM
+            t_classes
+        WHERE grade_id = #{gradeId}
+        ORDER BY code
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.grade.entity.ClassesEntity">
+        SELECT
+            *
+        FROM
+            t_classes
+        WHERE id = #{id}
+    </select>
+
+    <select id="getCountByCode" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        t_classes
+        WHERE code = #{code}
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    
+</mapper>

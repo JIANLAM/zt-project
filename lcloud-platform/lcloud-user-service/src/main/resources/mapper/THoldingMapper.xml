@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.user.mapper.THoldingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.user.entity.THolding">
+        <id column="id" property="id" />
+        <result column="call_no" property="callNo" />
+        <result column="book_id" property="bookId" />
+        <result column="barcode" property="barcode" />
+        <result column="ownlib" property="ownlib" />
+        <result column="curlib" property="curlib" />
+        <result column="shelf" property="shelf" />
+        <result column="indate" property="indate" />
+        <result column="singleprice" property="singleprice" />
+        <result column="totalprice" property="totalprice" />
+        <result column="source" property="source" />
+        <result column="status" property="status" />
+        <result column="act_type" property="actType" />
+        <result column="RFID" property="rfid" />
+        <result column="recno" property="recno" />
+        <result column="bookrecno" property="bookrecno" />
+        <result column="rowid" property="rowid" />
+        <result column="collAddress_id" property="colladdressId" />
+        <result column="catalog_batch" property="catalogBatch" />
+        <result column="partition" property="partition" />
+        <result column="volume" property="volume" />
+    </resultMap>
+
+</mapper>

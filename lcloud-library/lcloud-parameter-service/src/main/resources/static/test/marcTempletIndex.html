@@ -1,0 +1,505 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>apiParameterTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-apiParameter-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="5">/*************************************************    MARC字段       ***************************************************/</td>
+
+            </tr>
+            <tr>
+                <td>新增   或修改 一条mrc字段 数据记录</td>
+                <td>
+                    <button type="submit" id="saveMarc">点击我测试</button>
+                </td>
+                <td>#saveMarc</td>
+                <td><span>POST</span></td>
+                <td>null</td>
+            </tr>
+            <tr>
+                <td>根据主键删除一条 或多条 mrc字段数据记录</td>
+                <td>
+                    <button type="submit" id="deleteMarc">点击我测试</button>
+                </td>
+                <td>#deleteMarc</td>
+                <td><span>POST</span></td>
+                <td>{marcIds} = 2,3</td>
+            </tr>
+            <tr>
+                <td>查询mrc字段List集合</td>
+                <td>
+                    <button type="submit" id="marcList">点击我测试</button>
+                </td>
+                <td>#marcList</td>
+                <td><span>GET</span></td>
+                <td>{pageNum:0 , pageSize:20}</td>
+            </tr>
+            <tr>
+                <td>根据ID 查询一条mrc字段 记录</td>
+                <td>
+                    <button type="submit" id="marcObj">点击我测试</button>
+                </td>
+                <td>#marcObj</td>
+                <td><span>GET</span></td>
+                <td>{marcId} = 2</td>
+            </tr>
+            <tr>
+                <td>导出mrc字段 记录</td>
+                <td>
+                    <button type="submit" id="exportMarc">点击我测试</button>
+                </td>
+                <td>#exportMarc</td>
+                <td><span>GET</span></td>
+                <td>null</td>
+            </tr>
+           <!-- <tr>
+                <td>导入mrc字段 记录</td>
+                <td>
+                    <button type="submit" id="importMarc">点击我测试</button>
+                </td>
+                <td>#importMarc</td>
+                <td><span>GET</span></td>
+                <td>null</td>
+            </tr>-->
+            <tr>
+                <td>下载 导出mrc字段模板 记录</td>
+                <td>
+                    <button type="submit" id="exportMould">点击我测试</button>
+                </td>
+                <td>#exportMould</td>
+                <td><span>GET</span></td>
+                <td>null</td>
+            </tr>
+
+            <tr>
+             <form id="importForm"  enctype="multipart/form-data"  >
+                    <td colspan="2"><input type="file" id="fileName" name="fileName" value="fileName" /></td>
+              </form>
+                <td><button type="button" id="importMarc">点击我测试</button></td>
+
+            </tr>
+            <tr>
+                <td colspan="5">/*************************************************    MARC模版      ***************************************************/</td>
+
+            </tr>
+            <tr>
+                <td>新增   或修改 一条mrc模板 数据记录</td>
+                <td>
+                    <button type="submit" id="saveMould">点击我测试</button>
+                </td>
+                <td>#saveMould</td>
+                <td><span>POST</span></td>
+                <td>null</td>
+            </tr>
+            <tr>
+                <td>根据主键删除一条 或多条 mrc模板数据记录</td>
+                <td>
+                    <button type="submit" id="deleteMould">点击我测试</button>
+                </td>
+                <td>#deleteMould</td>
+                <td><span>POST</span></td>
+                <td>{marcIds} = 2,3</td>
+            </tr>
+            <tr>
+                <td>查询mrc模板List集合</td>
+                <td>
+                    <button type="submit" id="findMouldList">点击我测试</button>
+                </td>
+                <td>#findMouldList</td>
+                <td><span>GET</span></td>
+                <td>{pageNum:0 , pageSize:20}</td>
+            </tr>
+            <tr>
+                <td>根据ID 查询一条mrc模板 记录</td>
+                <td>
+                    <button type="submit" id="infoMould">点击我测试</button>
+                </td>
+                <td>#infoMould</td>
+                <td><span>GET</span></td>
+                <td>{marcId} = 2</td>
+            </tr>
+            <tr>
+                <td>MARC模板     启用一个模版 设为默认</td>
+                <td>
+                    <button type="submit" id="open">点击我测试</button>
+                </td>
+                <td>#open</td>
+                <td><span>POST</span></td>
+                <td>{marcId} = 2</td>
+            </tr>
+            <tr>
+                <td>禁用一个模版 设为禁用</td>
+                <td>
+                    <button type="submit" id="colse">点击我测试</button>
+                </td>
+                <td>#colse</td>
+                <td><span>POST</span></td>
+                <td>{marcId} = 2</td>
+            </tr>
+            <tr>
+                <td colspan="5" id="data">
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+
+    /*************************************************    MARC模版       ***************************************************/
+
+    //MARC模板     启用一个模版 设为默认
+    $("#open").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/marc/open/2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //禁用一个模版 设为禁用
+    $("#colse").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/marc/colse/2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据ID 查询一条mrc模板 记录
+    $("#infoMould").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/marc/infoMould/2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询mrc模板List集合
+    $("#findMouldList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:20});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/marc/findMouldList',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据主键删除一条 或多条 mrc模板数据记录
+    $("#deleteMould").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/marc/deleteMould/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //新增   或修改 一条mrc模板 数据记录
+    $("#saveMould").click(function () {
+        var json = {
+            id: null,
+            value: "22222222222",
+            label: "2嗯嗯嗯222",
+            mainField: 1,
+            sonField: 0,
+            tailed: "3333",
+            remarks: "3333"
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/marc/saveMould',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+
+
+    /*************************************************    MARC字段       ***************************************************/
+
+    //下载 导出mrc字段模板 记录
+    /*$("#exportMould").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/marc/exportMould',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });*/
+
+    //导入mrc字段 记录
+    /*$("#importMarc").click(function () {
+
+        $.ajax({
+         type: 'post',
+         url: 'http://localhost:8197/apiParameter/v1/marc/importMarc',
+         dataType: "json",
+         contentType: "application/json",
+         success: function (result) {
+         alert(JSON.stringify(result));
+         $("#data").text(JSON.stringify(result));
+         console.log(result)
+         },
+         error: function erryFunction() {
+         alert("error");
+         }
+         });
+    });*/
+    //下载 导出mrc字段模板 记录
+    $("#exportMould").click(function () {
+         $.ajax({
+             type: 'get',
+             url: 'http://localhost:8197/apiParameter/v1/defend/exportMould',
+             dataType: "json",
+             contentType: "application/json",
+             success: function (result) {
+             alert(JSON.stringify(result));
+             $("#data").text(JSON.stringify(result));
+                 console.log(result)
+             },
+             error: function erryFunction() {
+             alert("error");
+             }
+         });
+     });
+
+   $("#importMarc").click(function () {
+       var data = new FormData($("#importForm")[0]);
+       //var data = "F:\\20180816194836808111.xls";
+       alert(JSON.stringify(data));
+       $.ajax({
+           type:"post",
+           url:"http://localhost:8197/apiParameter/v1/defend/import",
+           data:data,
+           dataType:"json",
+           processData: false,
+           contentType:false, //multipart/form-data
+           success: function (result) {
+               alert(result.msg)
+           },
+           error: function erryFunction() {
+               alert("error");
+           }
+       })
+    });
+
+    //导出mrc字段 记录
+    $("#exportMarc").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/defend/exportMould',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据ID 查询一条mrc字段 记录
+    $("#marcObj").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/marc/info/2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询mrc字段List集合
+    $("#marcList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:1});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/marc/list',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据主键删除一条 或多条 mrc字段数据记录
+    $("#deleteMarc").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/marc/delete/2,3',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //新增   或修改 一条mrc字段 数据记录
+    $("#saveMarc").click(function () {
+        var json = {
+            id: 189773310568,
+            description: "11",
+            name: "2嗯嗯嗯222",
+            designator: 1,
+            status: 0,
+            remarks: "3333"
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/marc/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

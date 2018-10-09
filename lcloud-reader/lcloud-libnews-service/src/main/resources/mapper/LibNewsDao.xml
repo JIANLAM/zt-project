@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.news.repository.LibNewsDao">
+    <sql id="LibNewsVoColumns">
+        n.id,
+        n.title,
+        n.content,
+        n.create_time as createTime,
+        o.`name` as orgName,
+        n.libnews_img as libNewsImg,
+        n.create_by as createBy,
+		(select count(1) from t_libnews_look k where k.libNews_id = n.id) as lookCount
+    </sql>
+    <select id="findList" resultType="com.szcti.lcloud.news.entity.vo.LibNewsVo">
+        SELECT
+            <include refid="LibNewsVoColumns"/>
+        FROM
+        t_libnews n
+        LEFT JOIN t_user u
+        ON u.id = n.create_by
+        LEFT JOIN t_organization o
+        ON o.id = u.org_id
+        WHERE 1 = 1
+        <if test="startTime != null and startTime != ''">
+            AND  n.create_time >= #{startTime}
+        </if>
+        <if test="closureTime != null and closureTime != ''">
+            AND  n.create_time <![CDATA[<]]> #{closureTime}
+        </if>
+        ORDER BY n.create_time DESC
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.news.entity.vo.LibNewsVo">
+        SELECT
+            <include refid="LibNewsVoColumns"/>
+        FROM
+        t_libnews n
+        LEFT JOIN t_user u
+        ON u.id = n.create_by
+        LEFT JOIN t_organization o
+        ON o.id = u.org_id
+        WHERE n.id = #{newsId}
+    </select>
+
+    <select id="isLook" resultType="java.lang.Integer">
+       SELECT
+            count(1)
+        FROM
+            t_libnews_look
+        WHERE
+            libNews_id = #{libNewsId}
+        AND reader_id = #{readerId}
+    </select>
+
+    <insert id="saveLibNewsLook">
+        INSERT INTO t_libnews_look (
+            libNews_id,
+            reader_id
+        )
+        VALUES(
+            #{libNewsId},
+            #{readerId}
+        )
+    </insert>
+
+    <insert id="insertLibNews">
+         INSERT INTO t_libnews(
+            id,
+            title,
+            content,
+            create_time,
+            create_by,
+            libnews_img
+            ) VALUES (
+            #{id},
+            #{title},
+            #{content},
+            #{createTime},
+            #{createBy},
+            #{libNewsImg}
+            )
+    </insert>
+
+    <update id="updateLibNews">
+        UPDATE t_libnews
+        SET
+            title = #{title},
+            content = #{content},
+            libnews_img = #{libNewsImg}
+        WHERE	id = #{id}
+    </update>
+
+    <delete id="delLibNewsById">
+        DELETE FROM t_libnews WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.catalog.repository.OperationLogRepository">
+
+  <insert id="insert" parameterType="com.szcti.lcloud.catalog.entity.OperationLog">
+    insert into t_operation_log (id, module_id, module_name, 
+      operation_type, library_id, library_name, 
+      user_id, login_name, user_name, 
+      ip, op_content, remark, 
+      create_time)
+    values (#{id}, #{moduleId}, #{moduleName}, 
+      #{operationType}, #{libraryId}, #{libraryName}, 
+      #{userId}, #{loginName}, #{userName}, 
+      #{ip}, #{opContent}, #{remark}, 
+      now())
+  </insert>
+ <select id="getUserInfo" resultType="com.szcti.lcloud.catalog.entity.OperationLog">
+        SELECT
+            u.login_name loginName,
+            p.username userName,
+            org.name libraryName
+        FROM t_user u
+        LEFT JOIN t_people p ON u.id = p.user_id
+        left join t_organization  org on org.id=u.org_id
+        WHERE u.id = #{userId}
+    </select>
+</mapper>

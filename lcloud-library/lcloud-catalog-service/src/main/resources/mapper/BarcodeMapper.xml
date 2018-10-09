@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.szcti.lcloud.catalog.repository.BarcodeRepository">
+	<!-- 根据前缀、分区当前使用者查询条形码参数信息 -->
+	<select id="queryCurrBarcode"
+		parameterType="com.szcti.lcloud.catalog.entity.vo.LableVO"
+		resultType="com.szcti.lcloud.catalog.entity.vo.LableVO">
+		select * from t_barcode h where 1=1
+		<if test="prefix !=null and prefix !=''">
+			and h.prefix=#{prefix}
+		</if>
+		<if test="currUser!=null and currUser!=''">
+			and h.curr_user=#{currUser}
+		</if>
+	</select>
+
+	<update id="updateCurrBarcode"
+		parameterType="com.szcti.lcloud.catalog.entity.Holding">
+		update t_barcode set curr_barcode = #{barcode},status=1 where 1=1 and prefix=#{prefix} and curr_user=#{currUser}
+	</update>
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.exchange.mapper.TBookMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.exchange.entity.TBook">
+        <id column="id" property="id" />
+        <result column="pic" property="pic" />
+        <result column="title" property="title" />
+        <result column="author" property="author" />
+        <result column="summary" property="summary" />
+        <result column="publisher" property="publisher" />
+        <result column="pubdate" property="pubdate" />
+        <result column="book_type" property="bookType" />
+        <result column="ISBN" property="isbn" />
+        <result column="price" property="price" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="pages" property="pages" />
+        <result column="bookrecno" property="bookrecno" />
+        <result column="rowid" property="rowid" />
+        <result column="series_title" property="seriesTitle" />
+        <result column="second_title" property="secondTitle" />
+        <result column="subject_word" property="subjectWord" />
+        <result column="first_duty" property="firstDuty" />
+        <result column="revision" property="revision" />
+        <result column="language" property="language" />
+        <result column="carrier_type" property="carrierType" />
+        <result column="binding" property="binding" />
+        <result column="book_size" property="bookSize" />
+        <result column="parallel_title" property="parallelTitle" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,13 @@
+server:
+   # tomcat:
+    undertow:
+    port: 8198
+    connection-timeout: 5000
+    context-path: /apiTop
+spring:
+  application:
+    name: service-top
+  sleuth:
+    sampler:
+      percentage: 1
+

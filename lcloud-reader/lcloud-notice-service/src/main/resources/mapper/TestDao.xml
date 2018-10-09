@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.notice.repository.TestDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+<select id="findAll" resultType="com.szcti.lcloud.notice.entity.Test">
+    SELECT * FROM test
+</select>
+
+</mapper>

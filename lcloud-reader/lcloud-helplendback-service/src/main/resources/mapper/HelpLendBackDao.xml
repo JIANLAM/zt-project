@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.helplendback.repository.HelpLendBackDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="get" resultType="com.szcti.lcloud.helplendback.entity.vo.HelpLendBackVO">
+        SELECT * FROM t_help_lendback WHERE id = #{helpLendBackId}
+    </select>
+
+    <select id="findList" resultType="com.szcti.lcloud.helplendback.entity.vo.HelpLendBackVO">
+        SELECT
+            h.barcode,
+            hl.id,
+            hl.due_time,
+            hl.status,
+            hl.type,
+            hl.box_id,
+            hl.lend_id,
+            hl.reader_id,
+            h.id  holdingId,
+            h.ownlib,
+            b.id bookId,
+            b.title,
+            b.author,
+            b.publisher,
+            b.ISBN,
+            b.book_type,
+            p.username
+        FROM t_help_lendback hl
+        LEFT JOIN t_holding h ON hl.holding_id = h.id
+        LEFT JOIN t_book b ON h.book_id = b.id
+        LEFT JOIN t_reader r ON r.id = hl.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1=1
+        <if test="readerId != null and readerId != ''">
+            AND hl.reader_id = #{readerId}
+        </if>
+        <if test="title != null and title != ''">
+            AND b.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="author != null and author != ''">
+            AND b.author LIKE CONCAT('%',#{author},'%')
+        </if>
+        <if test="status != null">
+            AND hl.status=#{status}
+        </if>
+        <if test="type != null">
+            AND hl.type=#{type}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND hl.due_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND hl.due_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="ISBN != null and ISBN != ''">
+            AND b.ISBN LIKE CONCAT('%',#{ISBN},'%')
+        </if>
+        <if test="barcode != null and barcode != ''">
+            AND h.barcode LIKE CONCAT('%',#{barcode},'%')
+        </if>
+    </select>
+
+    <update id="changeStatus">
+        UPDATE t_help_lendback SET status = #{status} WHERE id = #{helpLendBackId}
+    </update>
+
+    <!--微信端     我的代借-->
+    <select id="weChatfindList" resultType="com.szcti.lcloud.helplendback.entity.vo.HelpLendBackVO">
+        SELECT
+        hl.id,
+        hl.due_time,
+        hl.status,
+        hl.type,
+        hl.box_id,
+        hl.lend_id,
+        hl.reader_id,
+        h.id  holdingId,
+        h.ownlib,
+        b.id bookId,
+        b.title,
+        b.author,
+        b.publisher,
+        b.ISBN,
+        b.book_type,
+        b.pic,
+        p.username,
+        y.`name` as libraryName
+        FROM t_help_lendback hl
+        LEFT JOIN t_holding h ON hl.holding_id = h.id
+        LEFT JOIN t_book b ON h.book_id = b.id
+        LEFT JOIN t_reader r ON r.id = hl.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT join t_organization y on h.ownlib = y.id
+        WHERE 1=1
+        <if test="readerId != null and readerId != ''">
+            AND hl.reader_id = #{readerId}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND (b.title LIKE CONCAT('%',#{qualification},'%') OR b.author LIKE CONCAT('%',#{qualification},'%'))
+        </if>
+        <if test="type != null">
+            AND hl.type=#{type}
+        </if>
+    </select>
+
+</mapper>

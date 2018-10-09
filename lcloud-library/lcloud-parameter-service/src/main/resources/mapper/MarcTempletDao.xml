@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.parameter.repository.MarcTempletDao">
+
+    <!-- ************************************************    MARC字段       ************************************************** -->
+
+    <!--    MARC字段      字段  -->
+    <sql id="MarcFieldEntityColumns">
+        m.id,
+        m.description,
+        m.`name`,
+        m.designator,
+        m.create_date createDate,
+        m.create_by createBy,
+        m.remarks,
+        must_values mustValues,
+        select_values selectValues
+    </sql>
+
+    <!--    MARC字段      查询集合    -->
+    <select id="findList" resultType="com.szcti.lcloud.parameter.entity.MarcFieldEntity">
+        SELECT
+            <include refid="MarcFieldEntityColumns"/>
+        FROM
+            sys_marc_field m
+        WHERE 1 = 1 AND library_id = #{libraryId}
+        ORDER BY
+           m.create_date DESC
+    </select>
+
+    <!--    MARC字段      查询一行    -->
+    <select id="get" resultType="com.szcti.lcloud.parameter.entity.MarcFieldEntity">
+        SELECT
+            <include refid="MarcFieldEntityColumns"/>
+        FROM
+            sys_marc_field m
+        WHERE	id = #{id}
+    </select>
+
+    <!--    MARC字段      删除 一条或多条MARC字段    -->
+    <delete id="delMarc">
+        DELETE FROM sys_marc_field WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    MARC字段      新增一条MARC字段    -->
+    <insert id="insertMarc">
+        INSERT INTO sys_marc_field (
+            id,
+            description,
+            `name`,
+            designator,
+            create_date,
+            create_by,
+            library_id,
+            remarks,
+            must_values,
+            select_values
+        )
+        VALUES
+            (
+                #{id},
+                #{description},
+                #{name},
+                #{designator},
+                #{createDate},
+                #{createBy},
+                #{libraryId},
+                #{remarks},
+                #{mustValues},
+                #{selectValues}
+            )
+    </insert>
+
+    <!--    MARC字段      修改一条MARC字段    -->
+    <update id="updateMarc">
+        UPDATE sys_marc_field
+          SET
+                description = #{description},
+                `name` = #{name},
+                designator = #{designator},
+                remarks = #{remarks},
+                must_values = #{mustValues},
+                select_values = #{selectValues}
+        WHERE
+                id = #{id}
+    </update>
+
+    <!--    MARC字段      同一图书馆 代码不能有相同的    -->
+    <select id="existsMarcName" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sys_marc_field
+        WHERE
+            `name` = #{name}
+            AND library_id = #{libraryId}
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+
+    <!-- ************************************************    MARC模板       ************************************************** -->
+
+    <!--    MARC模板      字段  -->
+    <sql id="MarcMouldEntityColumns">
+        m.id,
+        m.value,
+        m.label,
+        m.main_field,
+        m.son_field,
+        m.tailed,
+        m.status,
+        m.marc_data,
+        m.remarks
+    </sql>
+
+    <!--    MARC模板      查询集合    -->
+    <select id="findMouldList" resultType="com.szcti.lcloud.parameter.entity.MarcMouldEntity">
+        SELECT
+        <include refid="MarcMouldEntityColumns"/>
+        FROM
+        sys_marc_mould m
+        WHERE 1 = 1 AND library_id = #{libraryId}
+        ORDER BY
+            m.create_date DESC
+    </select>
+
+    <!--    MARC模板      查询一行    -->
+    <select id="getMould" resultType="com.szcti.lcloud.parameter.entity.MarcMouldEntity">
+        SELECT
+        <include refid="MarcMouldEntityColumns"/>
+        FROM
+        sys_marc_mould m
+        WHERE	id = #{id}
+    </select>
+
+    <!--    MARC模板      删除 一条或多条MARC模板    -->
+    <delete id="delMarcMould">
+        DELETE FROM sys_marc_mould WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    MARC模板      新增一条MARC模板    -->
+    <insert id="insertMarcMould">
+        INSERT INTO sys_marc_mould (
+            id,
+            value,
+            label,
+            main_field,
+            son_field,
+            tailed,
+            status,
+            create_date,
+            create_by,
+            library_id,
+            marc_data,
+            remarks
+        )
+        VALUES
+        (
+            #{id},
+            #{value},
+            #{label},
+            #{mainField},
+            #{sonField},
+            #{tailed},
+            #{status},
+            #{createDate},
+            #{createBy},
+            #{libraryId},
+            #{marcData},
+            #{remarks}
+        )
+    </insert>
+
+    <!--    MARC模板      修改一条MARC模板    -->
+    <update id="updateMarcMould">
+        UPDATE sys_marc_mould
+        SET
+            value = #{value},
+            label = #{label},
+            main_field = #{mainField},
+            son_field = #{sonField},
+            tailed = #{tailed},
+            `status` = #{status},
+            marc_data = #{marcData},
+            remarks = #{remarks}
+        WHERE
+        id = #{id}
+    </update>
+
+    <!--    MARC模板      同一图书馆 代码不能有相同的    -->
+    <select id="existsMarcValue" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sys_marc_mould
+        WHERE
+            `value` = #{value}
+            AND library_id = #{libraryId}
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    <!--    MARC模板     启用一个模版 设为默认    -->
+    <update id="openMould">
+        UPDATE sys_marc_mould
+            SET
+            `status` = 1
+        WHERE
+            id = #{id}
+    </update>
+
+    <!--    MARC模板     启用时修改其他状态为禁用    -->
+    <update id="colseAll">
+        UPDATE sys_marc_mould
+            SET
+            `status` = 0
+        WHERE
+        library_id = #{libraryId}
+    </update>
+
+    <!--    MARC模板     禁用一个模版 设为禁用    -->
+    <update id="colseMould">
+        UPDATE sys_marc_mould
+            SET
+            `status` = 0
+        WHERE
+            id = #{id}
+    </update>
+
+</mapper>

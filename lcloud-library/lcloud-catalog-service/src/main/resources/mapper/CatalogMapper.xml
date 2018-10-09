@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.catalog.repository.CatalogRepository">
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.catalog.entity.Catalog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="book_id" jdbcType="BIGINT" property="bookId" />
+    <result column="library_id" jdbcType="BIGINT" property="libraryId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="BIGINT" property="creator" />
+    <result column="isbn" jdbcType="VARCHAR" property="isbn" />
+    <result column="call_no" jdbcType="VARCHAR" property="callNo" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, book_id, library_id, create_time, creator, isbn, call_no
+  </sql>
+  <select id="selectByExample" parameterType="com.szcti.lcloud.catalog.entity.CatalogCriteria" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_catalog
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_catalog
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_catalog
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.catalog.entity.Catalog">
+    insert into t_catalog (id, book_id, library_id, 
+      create_time, creator, isbn, 
+      call_no)
+    values (#{id,jdbcType=BIGINT}, #{bookId,jdbcType=BIGINT}, #{libraryId,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=BIGINT}, #{isbn,jdbcType=VARCHAR}, 
+      #{callNo,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.catalog.entity.Catalog">
+    update t_catalog
+    set book_id = #{bookId,jdbcType=BIGINT},
+      library_id = #{libraryId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=BIGINT},
+      isbn = #{isbn,jdbcType=VARCHAR},
+      call_no = #{callNo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--自定义扩展-->
+  <select id="queryPage" parameterType="com.szcti.lcloud.catalog.entity.vo.CatalogVO"
+  resultType="com.szcti.lcloud.catalog.entity.vo.CatalogVO">
+    select distinct ca.book_id,ca.library_id,ca.id,ca.isbn,ca.call_no,b.title,b.author,b.book_type,b.publisher,b.pubdate,p.username as creatorName,
+    (select count(ho.id) from t_holding ho where ho.ownlib=ca.library_id and ho.book_id=ca.book_id) as recount
+    from t_catalog ca left join t_book b on b.id=ca.book_id
+    left join t_holding h on h.book_id=b.id
+    left join t_people p on p.user_id=ca.creator
+    where 1=1 and  h.status !='5' and ca.library_id=#{libraryId}
+    <if test="id!=null">
+      and ca.id=#{id}
+    </if>
+    <if test="bookId!=null">
+      and ca.book_id=#{bookId}
+    </if>
+    <if test="isbn!=null and isbn!=''">
+      and ca.isbn=#{isbn}
+    </if>
+    <if test="title!=null and title!=''">
+      and b.title=#{title}
+    </if>
+    <if test="author!=null and author!=''">
+      and b.author=#{author}
+    </if>
+    <if test="barcode!=null and barcode!=''">
+      and h.barcode=#{barcode}
+    </if>
+    <if test="callNo!=null and callNo!=''">
+      and ca.call_no=#{callNo}
+    </if>
+    <if test="searchValue !=null and searchValue!=''">
+      <if test="searchKey !=null and searchKey=='callNo'">
+        and ca.call_no LIKE CONCAT('%',#{callNo},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='isbn'">
+        and ca.isbn LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='title'">
+        and b.title LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='author'">
+        and b.author LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='publisher'">
+        and b.publisher LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='barcode'">
+        and h.barcode LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+    </if>
+  </select>
+  <select id="queryLendBuyPage" parameterType="com.szcti.lcloud.catalog.entity.vo.LendBuyBookVO"
+          resultType="com.szcti.lcloud.catalog.entity.vo.LendBuyBookVO">
+    select re.library_id,
+    count(lb.id) as recount,lb.prebook_id,pre.ISBN,pre.title,pre.author,pre.book_type,pre.publisher,pre.pubdate
+    from t_lendbuy_order lo
+    left join t_lendbuy_book lb on lo.id=lb.lendbuy_order_id
+    left join t_reader re on re.id=lo.reader_id
+    left join t_prebook pre on pre.id=lb.prebook_id
+    left join t_people p on p.id=re.people_id
+    where 1=1 and re.library_id=#{libraryId}
+    and lo.order_no <![CDATA[<>]]>''
+    and lo.order_no is not null and lb.is_submit='1'
+/*    and lb.status='0'*/
+    and lo.status in('1','2','4')
+    <if test="id!=null">
+      and lb.id=#{id}
+    </if>
+    <if test="libraryId!=null">
+      and re.library_id=#{libraryId}
+    </if>
+    <if test="prebookId!=null">
+      and pre.prebook_id=#{prebookId}
+    </if>
+    <if test="isbn!=null and isbn!=''">
+      and pre.isbn=#{isbn}
+    </if>
+    <if test="title!=null and title!=''">
+      and pre.title=#{title}
+    </if>
+    <if test="author!=null and author!=''">
+      and pre.author=#{author}
+    </if>
+    <if test="readerCardNumber!=null and readerCardNumber!=''">
+      and re.reader_card_number=#{readerCardNumber}
+    </if>
+
+    <if test="searchValue !=null and searchValue!=''">
+      <if test="searchKey !=null and searchKey=='readerName'">
+        and p.username LIKE CONCAT('%',#{readerName},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='isbn'">
+        and pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='title'">
+        and pre.title LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='author'">
+        and pre.author LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='publisher'">
+        and pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='readerCardNumber'">
+        and re.reader_card_number LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+    </if>
+    group by re.library_id,lb.prebook_id
+  </select>
+ <select id="lendBuyBackBook" parameterType="com.szcti.lcloud.catalog.entity.vo.LendBuyBookVO"
+          resultType="com.szcti.lcloud.catalog.entity.vo.LendBuyBookVO">
+    select re.library_id,
+    lb.id,lb.prebook_id,pre.ISBN,pre.title,pre.author,pre.book_type,pre.publisher,pre.pubdate
+    from t_lendbuy_order lo
+    left join t_lendbuy_book lb on lo.id=lb.lendbuy_order_id
+    left join t_reader re on re.id=lo.reader_id
+    left join t_prebook pre on pre.id=lb.prebook_id
+    left join t_people p on p.id=re.people_id
+    where 1=1 and re.library_id=#{libraryId}
+    and lo.order_no <![CDATA[<>]]>''
+    and lo.order_no is not null and lb.is_submit='1'
+    and lo.status in('1','2','4')
+    and lb.status='1'
+    <if test="id!=null">
+      and lb.id=#{id}
+    </if>
+    <if test="prebookId!=null">
+      and pre.prebook_id=#{prebookId}
+    </if>
+    <if test="isbn!=null and isbn!=''">
+      and pre.isbn=#{isbn}
+    </if>
+    <if test="title!=null and title!=''">
+      and pre.title=#{title}
+    </if>
+    <if test="author!=null and author!=''">
+      and pre.author=#{author}
+    </if>
+    <if test="readerCardNumber!=null and readerCardNumber!=''">
+      and re.reader_card_number=#{readerCardNumber}
+    </if>
+    <if test="searchValue !=null and searchValue!=''">
+      <if test="searchKey !=null and searchKey=='readerName'">
+        and p.username LIKE CONCAT('%',#{readerName},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='isbn'">
+        and pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='title'">
+        and pre.title LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='author'">
+        and pre.author LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='publisher'">
+        and pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+      <if test="searchKey !=null and searchKey=='readerCardNumber'">
+        and re.reader_card_number LIKE CONCAT('%',#{searchValue},'%')
+      </if>
+    </if>
+   <if test="timeKey!=null and timeKey=='backTime'">
+     <if test="startTime != null and startTime != ''">
+       AND lb.back_time >= #{startTime}
+     </if>
+     <if test="endTime != null and endTime != ''">
+       AND lb.back_time <![CDATA[<]]> #{endTime}
+     </if>
+   </if>
+  </select>
+</mapper>

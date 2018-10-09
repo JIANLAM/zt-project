@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.dataquery.repository.AcceptanceDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="findList" resultType="com.szcti.lcloud.dataquery.entity.vo.AcceptanceVO">
+        SELECT
+            a.id,
+            ad.purchase_code,
+            a.accept_code,
+            p.username,
+            a.create_time,
+            COUNT(ad.id) bookCount,
+            SUM(ad.accept_quantity) bookSum,
+            a.total_price
+        FROM t_acceptance a
+        LEFT JOIN t_acceptance_detail ad ON ad.acceptance_id = a.id
+        LEFT JOIN t_people p ON p.user_id = a.creator
+        WHERE 1=1
+        <if test="libId != null">
+            AND a.library_id = #{libId}
+        </if>
+        <if test="purchaseCode != null and purchaseCode != ''">
+            AND ad.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+        </if>
+        <if test="userName != null and userName != ''">
+            AND p.username LIKE CONCAT('%',#{userName},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND a.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND a.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        GROUP BY a.id
+    </select>
+
+    <select id="findDetail" resultType="com.szcti.lcloud.dataquery.entity.vo.AcceptDetailVO">
+        SELECT
+            ad.id,
+            pb.title,
+            pb.isbn,
+            pb.author,
+            pb.book_type,
+            pb.publisher,
+            pb.price,
+            pb.book_qty purchaseNum,
+            ad.ship_quantity shipNum,
+            ad.accept_quantity acceptNum
+        FROM t_acceptance_detail ad
+        LEFT JOIN t_purchase_book pb ON pb.id = ad.purchase_book_id
+        WHERE 1=1
+        <if test="libId != null">
+            AND ad.library_id = #{libId}
+        </if>
+        <if test="acceptanceId != null">
+            AND ad.acceptance_id = #{acceptanceId}
+        </if>
+    </select>
+
+    <select id="findBackList" resultType="com.szcti.lcloud.dataquery.entity.vo.BackPurchaseVO">
+        SELECT
+            bp.id,
+            bp.back_code,
+            bp.purchase_code,
+            p.username operatorName,
+            bp.create_time,
+            COUNT(bpd.id) bookCount,
+            SUM(bpd.back_quantity) bookSum,
+            bp.total_price
+        FROM t_back_purchase bp
+        LEFT JOIN t_back_purchase_detail bpd ON bpd.back_purchase_id = bp.id
+        LEFT JOIN t_people p ON p.user_id = bp.operator_id
+        WHERE 1=1
+        <if test="libId != null">
+            AND bp.lib_id = #{libId}
+        </if>
+        <if test="purchaseCode != null and purchaseCode != ''">
+            AND bp.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            AND p.username LIKE CONCAT('%',#{operatorName},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND bp.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND bp.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        GROUP BY bp.id
+    </select>
+
+    <select id="findBackDetail" resultType="com.szcti.lcloud.dataquery.entity.vo.BackDetailVO">
+        SELECT
+            ad.id,
+            pb.title,
+            pb.isbn,
+            pb.author,
+            pb.book_type,
+            pb.publisher,
+            pb.price,
+            pb.book_qty purchaseNum,
+            ad.back_quantity backNum
+        FROM t_back_purchase_detail ad
+        LEFT JOIN t_purchase_book pb ON pb.id = ad.purchase_book_id
+        WHERE 1=1
+        <if test="libId != null">
+            AND ad.library_id = #{libId}
+        </if>
+        <if test="backPurchaseId != null">
+            AND ad.back_purchase_id = #{backPurchaseId}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.parameter.repository.CustomDao">
+
+    <!--    查询所有自定义字段设置    -->
+    <select id="findList" resultType="com.szcti.lcloud.parameter.entity.vo.CustomVO">
+        SELECT
+            f.id,
+            f.`value`,
+            f.label,
+            f.custom_type_id,
+            f.remarks,
+            t.type,
+            t.description
+        FROM
+            sys_custom_info f
+        LEFT JOIN sys_custom_type t ON f.custom_type_id = t.id
+        WHERE 1 =1
+        <if test=" libraryId != null ">
+            AND t.library_id = #{libraryId}
+        </if>
+        <if test=" type != null and  type!= ''">
+            AND t.type = #{type}
+        </if>
+        ORDER BY f.create_date DESC
+    </select>
+
+    <!--    查询指定自定义字段   类型  设置    -->
+    <select id="findTypeList" resultType="com.szcti.lcloud.parameter.entity.CustomTypeEntity">
+        SELECT
+            *
+        FROM
+            sys_custom_type
+        WHERE 1 =1
+        <if test=" libraryId != null ">
+            AND library_id = #{libraryId}
+        </if>
+        <if test=" type != null and type!= ''">
+            AND type = #{type}
+        </if>
+    </select>
+
+    <!--    删除 一条或多条 自定义字段设置    -->
+    <delete id="delCustom">
+        DELETE FROM sys_custom_info WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    新增 一条 自定义字段设置    -->
+    <insert id="insertCustom">
+        INSERT INTO sys_custom_info (
+                id,
+                `value`,
+                label,
+                custom_type_id,
+                create_date,
+                create_by,
+                remarks
+        )
+        VALUES
+            (
+                #{id},
+                #{value},
+                #{label},
+                #{customTypeId},
+                #{createDate},
+                #{createBy},
+                #{remarks}
+            )
+    </insert>
+
+    <!--    新增 一条 自定义字段 类型设置    -->
+    <insert id="insertCustomType" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_custom_type (
+        id,
+        type,
+        description,
+        library_id
+        )
+        VALUES
+        (
+        #{id},
+        #{type},
+        #{description},
+        #{libraryId}
+        )
+    </insert>
+
+    <!--    修改 一条 自定义字段设置    -->
+    <update id="updateCustom">
+     UPDATE sys_custom_info
+         SET
+            `value` = #{value},
+            label = #{label},
+            remarks = #{remarks}
+         WHERE	id = #{id}
+    </update>
+
+    <!--    修改 一条 自定义字段类型设置    -->
+    <update id="updateCustomType">
+        UPDATE sys_custom_type
+        SET
+            description = #{description}
+        WHERE	1 = 1
+        <if test=" libraryId != null ">
+            AND library_id = #{libraryId}
+        </if>
+        <if test=" type != null and type!= ''">
+            AND type = #{type}
+        </if>
+    </update>
+
+    <!--    新增同一类型 是否出现相同的键值    -->
+    <select id="existsValue" resultType="Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sys_custom_info f
+        LEFT JOIN sys_custom_type t ON f.custom_type_id = t.id
+        WHERE
+             f.value = #{value}
+        <if test=" libraryId != null ">
+            AND t.library_id = #{libraryId}
+        </if>
+        <if test=" type != null and type!= ''">
+            AND t.type = #{type}
+        </if>
+        <if test="id != null">
+            AND f.id != #{id}
+        </if>
+
+    </select>
+
+</mapper>

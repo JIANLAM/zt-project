@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.catalog.repository.MarcTemplateDetailRepository">
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.catalog.entity.MarcTemplateDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="marc_id" jdbcType="BIGINT" property="marcId" />
+    <result column="main_start" jdbcType="VARCHAR" property="mainStart" />
+    <result column="second_start" jdbcType="VARCHAR" property="secondStart" />
+    <result column="marc_end" jdbcType="VARCHAR" property="marcEnd" />
+    <result column="name_define" jdbcType="VARCHAR" property="nameDefine" />
+    <result column="designator_define" jdbcType="VARCHAR" property="designatorDefine" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="marc_template_id" jdbcType="BIGINT" property="marcTemplateId" />
+    <result column="must_value" jdbcType="VARCHAR" property="mustValue" />
+    <result column="select_value" jdbcType="VARCHAR" property="selectValue" />
+    <result column="discription_def" jdbcType="VARCHAR" property="discriptionDef" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, marc_id, main_start, second_start, marc_end, name_define, designator_define,
+    order_index, marc_template_id, must_value, select_value, discription_def
+  </sql>
+  <select id="selectByExample" parameterType="com.szcti.lcloud.catalog.entity.MarcTemplateDetailCriteria" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_marc_template_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_marc_template_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_marc_template_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.catalog.entity.MarcTemplateDetail">
+    insert into t_marc_template_detail (id, marc_id, main_start,
+      second_start, marc_end, name_define,
+      designator_define, order_index, marc_template_id,
+      must_value, select_value, discription_def
+      )
+    values (#{id,jdbcType=BIGINT}, #{marcId,jdbcType=BIGINT}, #{mainStart,jdbcType=VARCHAR},
+      #{secondStart,jdbcType=VARCHAR}, #{marcEnd,jdbcType=VARCHAR}, #{nameDefine,jdbcType=VARCHAR},
+      #{designatorDefine,jdbcType=VARCHAR}, #{orderIndex,jdbcType=INTEGER}, #{marcTemplateId,jdbcType=BIGINT},
+      #{mustValue,jdbcType=VARCHAR}, #{selectValue,jdbcType=VARCHAR}, #{discriptionDef,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.catalog.entity.MarcTemplateDetail">
+    update t_marc_template_detail
+    set marc_id = #{marcId,jdbcType=BIGINT},
+      main_start = #{mainStart,jdbcType=VARCHAR},
+      second_start = #{secondStart,jdbcType=VARCHAR},
+      marc_end = #{marcEnd,jdbcType=VARCHAR},
+      name_define = #{nameDefine,jdbcType=VARCHAR},
+      designator_define = #{designatorDefine,jdbcType=VARCHAR},
+      order_index = #{orderIndex,jdbcType=INTEGER},
+      marc_template_id = #{marcTemplateId,jdbcType=BIGINT},
+      must_value = #{mustValue,jdbcType=VARCHAR},
+      select_value = #{selectValue,jdbcType=VARCHAR},
+      discription_def = #{discriptionDef,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.user.mapper.TPermButtonMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.user.entity.TPermButton">
+        <id column="id" property="id" />
+        <result column="perm_id" property="permId" />
+        <result column="button_id" property="buttonId" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+</mapper>

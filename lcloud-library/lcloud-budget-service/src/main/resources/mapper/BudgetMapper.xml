@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.budget.repository.BudgetRepository" >
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.budget.entity.Budget" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="library_id" property="libraryId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="coding" property="coding" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="total" property="total" jdbcType="REAL" />
+    <result column="remain" property="remain" jdbcType="REAL" />
+    <result column="creator" property="creator" jdbcType="BIGINT" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, library_id, name, coding, type, total, remain, creator, creat_time, status, remark
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.szcti.lcloud.budget.entity.BudgetCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_budget
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_budget
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_budget
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.szcti.lcloud.budget.entity.BudgetCriteria" >
+    delete from t_budget
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.budget.entity.Budget" >
+    insert into t_budget (id, library_id, name,
+      coding, type, total, remain, 
+      creator, creat_time, status, 
+      remark)
+    values (#{id,jdbcType=BIGINT}, #{libraryId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{coding,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{total,jdbcType=REAL}, #{remain,jdbcType=REAL}, 
+      #{creator,jdbcType=BIGINT}, now(), #{status,jdbcType=TINYINT},
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szcti.lcloud.budget.entity.Budget" >
+    insert into t_budget
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="libraryId != null" >
+        library_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="coding != null" >
+        coding,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+      <if test="remain != null" >
+        remain,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="creatTime != null" >
+        creat_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="libraryId != null" >
+        #{libraryId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="coding != null" >
+        #{coding,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=REAL},
+      </if>
+      <if test="remain != null" >
+        #{remain,jdbcType=REAL},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=BIGINT},
+      </if>
+      <if test="creatTime != null" >
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.szcti.lcloud.budget.entity.BudgetCriteria" resultType="java.lang.Integer" >
+    select count(*) from t_budget
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_budget
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.libraryId != null" >
+        library_id = #{record.libraryId,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.coding != null" >
+        coding = #{record.coding,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.total != null" >
+        total = #{record.total,jdbcType=REAL},
+      </if>
+      <if test="record.remain != null" >
+        remain = #{record.remain,jdbcType=REAL},
+      </if>
+      <if test="record.creator != null" >
+        creator = #{record.creator,jdbcType=BIGINT},
+      </if>
+      <if test="record.creatTime != null" >
+        creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.remark != null" >
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_budget
+    set id = #{record.id,jdbcType=BIGINT},
+      library_id = #{record.libraryId,jdbcType=BIGINT},
+      name = #{record.name,jdbcType=VARCHAR},
+      coding = #{record.coding,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=INTEGER},
+      total = #{record.total,jdbcType=REAL},
+      remain = #{record.remain,jdbcType=REAL},
+      creator = #{record.creator,jdbcType=BIGINT},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=TINYINT},
+      remark = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szcti.lcloud.budget.entity.Budget" >
+    update t_budget
+    <set >
+      <if test="libraryId != null" >
+        library_id = #{libraryId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="coding != null" >
+        coding = #{coding,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=REAL},
+      </if>
+      <if test="remain != null" >
+        remain = #{remain,jdbcType=REAL},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=BIGINT},
+      </if>
+      <if test="creatTime != null" >
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.budget.entity.Budget" >
+    update t_budget
+    set library_id = #{libraryId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      coding = #{coding,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      total = #{total,jdbcType=REAL},
+      remain = #{remain,jdbcType=REAL},
+      creator = #{creator,jdbcType=BIGINT},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="queryPage" parameterType="com.szcti.lcloud.budget.entity.vo.BudgetVO"
+          resultType="com.szcti.lcloud.budget.entity.vo.BudgetVO">
+    select distinct l.name as libraryName,b.* ,p.username as creatorName,u.login_name as creatorLoginName from t_budget b
+    left JOIN t_organization l on b.library_id=l.id
+    LEFT JOIN t_people p on p.user_id =b.creator
+    LEFT JOIN t_user u on b.creator=u.id
+    LEFT JOIN t_purchase_order o on o.budget_id=b.id where 1=1
+    <if test="searchValue != null and searchValue != ''and searchKey!=null and searchKey=='purchaseCode'">
+      and o.purchase_code like CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="id != null and id != ''">
+     AND b.id = #{id}
+    </if>
+    <if test="creator != null">
+      AND b.creator = #{creator}
+    </if>
+    <if test="libraryId != null">
+      AND b.library_id = #{libraryId}
+    </if>
+    <if test="status != null and status != ''">
+      AND b.status =#{status}
+    </if>
+    <if test="type != null and type !=''">
+      AND b.type =#{type}
+    </if>
+    <if test="coding != null and coding != ''">
+      AND b.coding =#{coding}
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='libraryName'">
+      AND l.name LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='name'">
+      AND b.name LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='creatorName'">
+      AND p.username LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='creatorLoginName'">
+      AND u.login_name LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='coding'">
+      AND b.coding LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="timeKey!=null and timeKey=='createTime'">
+      <if test="startTime != null and startTime != ''">
+        AND b.creat_time >= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        AND b.creat_time <![CDATA[<]]> #{endTime}
+      </if>
+    </if>
+    <if test="ids != null">
+    AND b.id in
+    <foreach item="id" collection="ids" open="(" separator=", " close=")">
+      #{id}
+    </foreach>
+    </if>
+  </select>
+  <select id="getNextCode" parameterType="java.lang.String" resultType="java.lang.String">
+    select CONCAT(#{prefix},(max(id)+1)) as nextCoding from t_budget
+  </select>
+  <select id="getPurchaseCode"  resultType="java.lang.String">
+    select p.purchase_code from t_purchase_order p where 1=1
+     AND p.order_code<![CDATA[<>]]>'' AND p.order_code is not null
+     <if test="id != null ">
+       and p.budget_id=#{id}
+     </if>
+  </select>
+</mapper>

@@ -1,0 +1,11 @@
+server:
+    undertow:
+    port: 8196
+    connection-timeout: 5000
+    context-path: /apiBudget
+spring:
+  application:
+    name: service-budget
+  sleuth:
+    sampler:
+      percentage: 1

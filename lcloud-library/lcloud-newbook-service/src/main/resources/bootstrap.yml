@@ -1,0 +1,13 @@
+server:
+    #tomcat:
+    undertow:
+    port: 8193
+    connection-timeout: 5000
+    context-path: /apiNewBook
+spring:
+  application:
+    name: service-newbook
+  sleuth:
+    sampler:
+      percentage: 1
+

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.catalog.repository.LabelSetRepository">
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.catalog.entity.LabelSet">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="label_name" jdbcType="VARCHAR" property="labelName" />
+    <result column="creator" jdbcType="BIGINT" property="creator" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="library_id" jdbcType="BIGINT" property="libraryId" />
+    <result column="paper_size" jdbcType="VARCHAR" property="paperSize" />
+    <result column="paper_height" jdbcType="VARCHAR" property="paperHeight" />
+    <result column="paper_weight" jdbcType="VARCHAR" property="paperWeight" />
+    <result column="row_count" jdbcType="INTEGER" property="rowCount" />
+    <result column="column_count" jdbcType="INTEGER" property="columnCount" />
+    <result column="font_size" jdbcType="VARCHAR" property="fontSize" />
+    <result column="font_thick" jdbcType="VARCHAR" property="fontThick" />
+    <result column="lable_heght" jdbcType="VARCHAR" property="lableHeght" />
+    <result column="lable_weight" jdbcType="VARCHAR" property="lableWeight" />
+    <result column="left_space" jdbcType="VARCHAR" property="leftSpace" />
+    <result column="top_space" jdbcType="VARCHAR" property="topSpace" />
+    <result column="alignment" jdbcType="VARCHAR" property="alignment" />
+    <result column="repeat_num" jdbcType="VARCHAR" property="repeatNum" />
+    <result column="one_row" jdbcType="VARCHAR" property="oneRow" />
+    <result column="two_row" jdbcType="VARCHAR" property="twoRow" />
+    <result column="three_row" jdbcType="VARCHAR" property="threeRow" />
+    <result column="four_row" jdbcType="VARCHAR" property="fourRow" />
+    <result column="five_row" jdbcType="VARCHAR" property="fiveRow" />
+    <result column="six_row" jdbcType="VARCHAR" property="sixRow" />
+    <result column="seven_row" jdbcType="VARCHAR" property="sevenRow" />
+    <result column="space_row" jdbcType="VARCHAR" property="spaceRow" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, label_name, creator, create_time, library_id, paper_size, paper_height, paper_weight,
+    row_count, column_count, font_size, font_thick, lable_heght, lable_weight, left_space,
+    top_space, alignment, repeat_num, one_row, two_row, three_row, four_row, five_row,
+    six_row, seven_row, space_row
+  </sql>
+  <select id="selectByExample" parameterType="com.szcti.lcloud.catalog.entity.LabelSetCriteria" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_label_set
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_label_set
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_label_set
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.catalog.entity.LabelSet">
+    insert into t_label_set (id, label_name, creator,
+      create_time, library_id, paper_size,
+      paper_height, paper_weight, row_count,
+      column_count, font_size, font_thick,
+      lable_heght, lable_weight, left_space,
+      top_space, alignment, repeat_num,
+      one_row, two_row, three_row,
+      four_row, five_row, six_row,
+      seven_row, space_row)
+    values (#{id,jdbcType=BIGINT}, #{labelName,jdbcType=VARCHAR}, #{creator,jdbcType=BIGINT},
+      #{createTime,jdbcType=VARCHAR}, #{libraryId,jdbcType=BIGINT}, #{paperSize,jdbcType=VARCHAR},
+      #{paperHeight,jdbcType=VARCHAR}, #{paperWeight,jdbcType=VARCHAR}, #{rowCount,jdbcType=INTEGER},
+      #{columnCount,jdbcType=INTEGER}, #{fontSize,jdbcType=VARCHAR}, #{fontThick,jdbcType=VARCHAR},
+      #{lableHeght,jdbcType=VARCHAR}, #{lableWeight,jdbcType=VARCHAR}, #{leftSpace,jdbcType=VARCHAR},
+      #{topSpace,jdbcType=VARCHAR}, #{alignment,jdbcType=VARCHAR}, #{repeatNum,jdbcType=VARCHAR},
+      #{oneRow,jdbcType=VARCHAR}, #{twoRow,jdbcType=VARCHAR}, #{threeRow,jdbcType=VARCHAR},
+      #{fourRow,jdbcType=VARCHAR}, #{fiveRow,jdbcType=VARCHAR}, #{sixRow,jdbcType=VARCHAR},
+      #{sevenRow,jdbcType=VARCHAR}, #{spaceRow,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.catalog.entity.LabelSet">
+    update t_label_set
+    set label_name = #{labelName,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      library_id = #{libraryId,jdbcType=BIGINT},
+      paper_size = #{paperSize,jdbcType=VARCHAR},
+      paper_height = #{paperHeight,jdbcType=VARCHAR},
+      paper_weight = #{paperWeight,jdbcType=VARCHAR},
+      row_count = #{rowCount,jdbcType=INTEGER},
+      column_count = #{columnCount,jdbcType=INTEGER},
+      font_size = #{fontSize,jdbcType=VARCHAR},
+      font_thick = #{fontThick,jdbcType=VARCHAR},
+      lable_heght = #{lableHeght,jdbcType=VARCHAR},
+      lable_weight = #{lableWeight,jdbcType=VARCHAR},
+      left_space = #{leftSpace,jdbcType=VARCHAR},
+      top_space = #{topSpace,jdbcType=VARCHAR},
+      alignment = #{alignment,jdbcType=VARCHAR},
+      repeat_num = #{repeatNum,jdbcType=VARCHAR},
+      one_row = #{oneRow,jdbcType=VARCHAR},
+      two_row = #{twoRow,jdbcType=VARCHAR},
+      three_row = #{threeRow,jdbcType=VARCHAR},
+      four_row = #{fourRow,jdbcType=VARCHAR},
+      five_row = #{fiveRow,jdbcType=VARCHAR},
+      six_row = #{sixRow,jdbcType=VARCHAR},
+      seven_row = #{sevenRow,jdbcType=VARCHAR},
+      space_row = #{spaceRow,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+<!--自定义-->
+  <select id="queryPage" parameterType="com.szcti.lcloud.catalog.entity.vo.LabelSetVO"
+  resultType="com.szcti.lcloud.catalog.entity.vo.LabelSetVO">
+  select * from t_label_set la where 1=1
+    <if test="libraryId!=null">
+      and la.library_id=#{libraryId}
+    </if>
+  <if test="id!=null">
+    and la.id=#{id}
+  </if>
+  <if test="labelName!=null">
+    and la.label_name  like  LIKE CONCAT('%',#{labelName},'%')
+  </if>
+</select>
+</mapper>

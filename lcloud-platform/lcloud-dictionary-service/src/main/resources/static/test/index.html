@@ -1,0 +1,248 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>dictionaryTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-dictionary-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>查询数据字典    类型type List集合</td>
+                <td>
+                    <button type="submit" id="dictTypeList">点击我测试</button>
+                </td>
+                <td>#dictTypeList</td>
+                <td><span>GET</span></td>
+                <td>null</td>
+            </tr>
+            <tr>
+                <td>查询数据字典List集合</td>
+                <td>
+                    <button type="submit" id="dictList">点击我测试</button>
+                </td>
+                <td>#dictList</td>
+                <td><span>GET</span></td>
+                <td>{pageNum:0 , pageSize:20 , type:null ,description:null}</td>
+            </tr>
+            <tr>
+                <td>根据ID 查询一条数据字典 记录</td>
+                <td>
+                    <button type="submit" id="dictObj">点击我测试</button>
+                </td>
+                <td>#dictObj</td>
+                <td><span>GET</span></td>
+                <td>{dicId:2}</td>
+            </tr>
+            <tr>
+                <td>新增   或修改 一条数据字典 数据记录</td>
+                <td>
+                    <button type="submit" id="savedict">点击我测试</button>
+                </td>
+                <td>#savedict</td>
+                <td><span>POST</span></td>
+                <td>……</td>
+            </tr>
+            <tr>
+                <td>根据主键删除一条 或多条 数据字典数据记录</td>
+                <td>
+                    <button type="submit" id="deletedict">点击我测试</button>
+                </td>
+                <td>#deletedict</td>
+                <td><span>POST</span></td>
+                <td>{dicId} = 6,7</td>
+            </tr>
+            <tr>
+                <td>查询字典     用MAP分类 返回所有数据</td>
+                <td>
+                    <button type="submit" id="listMap">点击我测试</button>
+                </td>
+                <td>#listMap</td>
+                <td><span>GET</span></td>
+                <td> NULL </td>
+            </tr>
+            <tr>
+                <td>结果</td>
+                <td colspan="4" id="data">
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+
+    //查询字典     用MAP分类 返回所有数据
+    $("#listMap").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8289/dictionary/v1/dict/listMap',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据ID 查询一条数据字典 记录
+    $("#dictObj").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8289/dictionary/v1/dict/info/2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询数据字典List集合
+    $("#dictList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:1 , type:null ,description:null});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8289/dictionary/v1/dict/list',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询数据字典    类型type List集合
+    $("#dictTypeList").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8289/dictionary/v1/dict/dicTypeList',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据主键删除一条 或多条 数据字典数据记录
+    $("#deletedict").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8289/dictionary/v1/dict/delete/6,7',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //新增   或修改 一条数据字典 数据记录
+    $("#savedict").click(function () {
+        var json = {
+            id: 191984099033,
+            value: 7777,
+            label: "9777999",
+            type: "p997777999",
+            description:"999777799",
+            sort:3,
+            remarks: "99999977777779999"
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8289/dictionary/v1/dict/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

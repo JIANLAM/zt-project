@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.datacount.repository.InterviewCountDao">
+
+    <sql id="purchaseOrderCountColumn">
+            pu.id,
+            pu.purchase_code,
+            pu.order_code,
+            us.login_name createLoginName,
+            pe.username createUserName,
+            pu.order_time,
+            pu.create_time,
+            pu.total_quantity,
+            COUNT(bk.ISBN) bookTypeCount,
+            pu.total_price,
+            us2.login_name checkerLoginName,
+            pe2.username checkerUserName,
+            pu.check_status,
+            pu.check_time
+    </sql>
+    <sql id="lendBuyOrderCountColumn">
+        lo.id,
+        lo.order_no orderNo,
+        lo.express_no expressNo,
+        lo.limit_money limitMoney,
+        lo.total_money totalMoney,
+        lo.staff_id staffId,
+        lo.reader_id readerId,
+        lo.create_time createTime,
+		lo.send_time sendTime,
+		lo.taked_time takedTime,
+		lo.`status` lendBuyStatus,
+		lo.`online`,
+		lo.remark,
+        p.username createName,
+        r.reader_card_number readerCardNumber,
+        COUNT(lb.id) bookCount
+    </sql>
+    <sql id="bookLendBuyCountColumn">
+            lb.id,
+			lb.reader_id readerId,
+            lb.price univalent,
+            lb.back_time backTime,
+			lb.online,
+            lb.status,
+            lb.is_submit isSubmit,
+            lo.order_no,
+            pb.pic,
+            pb.title,
+			pb.ISBN,
+            pb.author,
+			pb.book_type,
+            pb.publisher,
+            pb.pubdate,
+			COUNT(lb.prebook_id) as bookCount,
+			(lb.price * COUNT(pb.id)) as total
+    </sql>
+    <sql id="recommBuyCountColumn">
+            g.id,
+            g.create_time createTime,
+            g.reader_id readerId,
+            pb.id  preBookId,
+            IFNULL(pb.pic,'') pic,
+            pb.title,
+            pb.author,
+            pb.publisher,
+            pb.ISBN,
+            pb.book_type bookType,
+            pb.`status` prebookStatus,
+            pb.price,
+            pb.pubdate,
+            COUNT(g.prebook_id) recommBuyCount
+    </sql>
+
+    <!--    订购单统计    -->
+    <select id="purchaseOrderCount" resultType="com.szcti.lcloud.datacount.entity.vo.PurchaseOrderVO">
+        SELECT
+        <include refid="purchaseOrderCountColumn"/>
+        FROM
+        t_purchase_order pu
+        LEFT JOIN t_user us ON us.id = pu.creator
+        LEFT JOIN t_people pe ON pe.user_id = us.id
+        LEFT JOIN t_purchase_book pk ON pk.order_id = pu.id
+        LEFT JOIN t_book bk ON bk.id = pk.book_id
+        LEFT JOIN t_user us2 ON us2.id = pu.checker
+        LEFT JOIN t_people pe2 ON pe2.user_id = us2.id
+        WHERE 1 = 1
+        <if test="libraryId != null">
+            AND pu.library_id = #{libraryId}
+        </if>
+        <if test="purchaseCode != null and purchaseCode != ''">
+            AND pu.purchase_code like concat('%',#{purchaseCode},'%')
+        </if>
+        <if test="createLoginName != null and createLoginName != ''">
+            AND us.login_name like concat('%',#{createLoginName},'%')
+        </if>
+        <if test="createUserName != null and createUserName != ''">
+            AND pe.username like concat('%',#{createUserName},'%')
+        </if>
+        <if test="checkerLoginName != null and checkerLoginName != ''">
+            AND us2.login_name like concat('%',#{checkerLoginName},'%')
+        </if>
+        <if test="checkerUserName != null and checkerUserName != ''">
+            AND pe2.username like concat('%',#{checkerUserName},'%')
+        </if>
+        <if test="placeOrderStartTime != null and placeOrderStartTime != ''">
+            AND pu.order_time >= #{placeOrderStartTime}
+        </if>
+        <if test="placeOrderEndTime != null and placeOrderEndTime != ''">
+            AND pu.order_time <![CDATA[<]]> #{placeOrderEndTime}
+        </if>
+        GROUP BY pu.id
+    </select>
+
+    <!--    借购单统计    -->
+    <select id="lendBuyOrderCount" resultType="com.szcti.lcloud.datacount.entity.vo.LendBuyOrderVO">
+        SELECT
+            <include refid="lendBuyOrderCountColumn"/>
+        FROM
+        t_lendbuy_order lo
+        LEFT JOIN t_lendbuy_book lb ON lb.lendbuy_order_id = lo.id
+		LEFT JOIN t_prebook pk ON lb.prebook_id = pk.id
+        LEFT JOIN t_reader r ON r.id = lo.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1 = 1
+        <if test="libraryId != null">
+            AND r.library_id = #{libraryId}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            AND lo.order_no like concat('%',#{orderNo},'%')
+        </if>
+        <if test="online != null">
+            AND lo.`online` = #{online}
+        </if>
+        <if test="readerCardNumber != null and readerCardNumber != ''">
+            AND r.reader_card_number like concat('%',#{readerCardNumber},'%')
+        </if>
+        <if test="createName != null and createName != ''">
+            AND p.username like concat('%',#{createName},'%')
+        </if>
+        <if test="placeOrderStartTime != null and placeOrderStartTime != ''">
+            AND lo.create_time >= #{placeOrderStartTime}
+        </if>
+        <if test="placeOrderEndTime != null and placeOrderEndTime != ''">
+            AND lo.create_time <![CDATA[<]]> #{placeOrderEndTime}
+        </if>
+		GROUP BY lo.id
+    </select>
+
+    <!--    图书借购统计    -->
+    <select id="bookLendBuyCount" resultType="com.szcti.lcloud.datacount.entity.vo.LendBuyBookVO">
+        SELECT
+        <include refid="bookLendBuyCountColumn"/>
+        FROM t_lendbuy_book lb
+        INNER JOIN t_lendbuy_order lo ON lo.id = lb.lendbuy_order_id
+        LEFT JOIN t_prebook pb ON lb.prebook_id = pb.id
+        LEFT JOIN t_reader r ON r.id = lb.reader_id
+        WHERE 1 = 1
+        <if test="libraryId != null">
+            AND r.library_id = #{libraryId}
+        </if>
+        <if test="lendBuyStatus != null">
+            AND lo.status = #{lendBuyStatus}
+        </if>
+        <if test="bookName != null and bookName != ''">
+            AND pb.title like concat('%',#{bookName},'%')
+        </if>
+        <if test="ISBN != null and ISBN != ''">
+            AND pb.ISBN like concat('%',#{ISBN},'%')
+        </if>
+        <if test="author != null and author != ''">
+            AND pb.author like concat('%',#{author},'%')
+        </if>
+        <if test="bookType != null and bookType != ''">
+            AND pb.book_type like concat('%',#{bookType},'%')
+        </if>
+        <if test="publisher != null and publisher != ''">
+            AND pb.publisher like concat('%',#{publisher},'%')
+        </if>
+        GROUP BY lb.prebook_id
+    </select>
+
+    <!--    图书荐购统计    -->
+    <select id="recommBuyCount" resultType="com.szcti.lcloud.datacount.entity.vo.RecommBuyBookVO">
+        SELECT
+        <include refid="recommBuyCountColumn"/>
+        FROM t_recomm_buy g
+        LEFT JOIN t_prebook pb ON g.prebook_id = pb.id
+        LEFT JOIN t_reader r ON r.id = g.reader_id
+        WHERE 1 = 1
+        <if test="libraryId != null">
+            AND r.library_id = #{libraryId}
+        </if>
+        <if test="prebookStatus != null">
+            <choose>
+                <when test="prebookStatus==2">
+                    AND pb.status = 2
+                </when>
+                <otherwise>
+                    AND (pb.status = 0 OR pb.status = 1)
+                </otherwise>
+            </choose>
+        </if>
+        <if test="bookName != null and bookName != ''">
+            AND pb.title like concat('%',#{bookName},'%')
+        </if>
+        <if test="ISBN != null and ISBN != ''">
+            AND pb.ISBN like concat('%',#{ISBN},'%')
+        </if>
+        <if test="author != null and author != ''">
+            AND pb.author like concat('%',#{author},'%')
+        </if>
+        <if test="bookType != null and bookType != ''">
+            AND pb.book_type like concat('%',#{bookType},'%')
+        </if>
+        <if test="publisher != null and publisher != ''">
+            AND pb.publisher like concat('%',#{publisher},'%')
+        </if>
+        GROUP BY g.prebook_id
+    </select>
+
+</mapper>

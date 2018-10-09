@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.parameter.repository.TitleNumberDao">
+    <sql id="TitleNumberEntityColumns">
+            id,
+            class_number classNumber,
+            curr_seednumber currSeednumber,
+            create_time createTime,
+            user_id userId,
+            remark
+    </sql>
+
+    <select id="findTitleNumberList" resultType="com.szcti.lcloud.parameter.entity.TitleNumberEntity">
+        SELECT
+        <include refid="TitleNumberEntityColumns"/>
+        FROM
+        t_titlenumber
+        WHERE library_id = #{libraryId}
+        <if test="classNumber != null and classNumber != ''">
+            AND class_number LIKE CONCAT('%',#{classNumber},'%')
+        </if>
+        ORDER BY
+        create_time DESC
+    </select>
+
+    <select id="getTitleNumber" resultType="com.szcti.lcloud.parameter.entity.TitleNumberEntity">
+        SELECT
+        <include refid="TitleNumberEntityColumns"/>
+        FROM
+        t_titlenumber
+        WHERE	id = #{id}
+    </select>
+
+    <delete id="delTitleNumber">
+        DELETE FROM t_titlenumber WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insertTitleNumber">
+        INSERT INTO t_titlenumber (
+            id,
+            class_number,
+            curr_seednumber,
+            create_time,
+            user_id,
+            library_id,
+            remark
+            )
+        VALUES(
+            #{id},
+            #{classNumber},
+            #{currSeednumber},
+            #{createTime},
+            #{userId},
+            #{libraryId},
+            #{remark}
+        )
+    </insert>
+
+    <update id="updateTitleNumber">
+       UPDATE t_titlenumber
+            SET
+                class_number = #{classNumber},
+                curr_seednumber = #{currSeednumber},
+                remark = #{remark}
+        WHERE	id = #{id}
+    </update>
+
+    <select id="maxCurrSeednumber" resultType="java.util.Map">
+        SELECT
+            MAX(curr_seednumber) maxNub , id
+        FROM
+            t_titlenumber
+        WHERE 1 = 1
+        <if test="libraryId != null">
+            AND library_id = #{libraryId}
+        </if>
+        <if test="classNumber != null and classNumber != ''">
+            AND class_number = #{classNumber}
+        </if>
+    </select>
+
+    <select id="existsTitlenumber" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            t_titlenumber
+        WHERE
+            class_number = #{classNumber}
+        <if test="libraryId != null">
+            AND library_id = #{libraryId}
+        </if>
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+</mapper>

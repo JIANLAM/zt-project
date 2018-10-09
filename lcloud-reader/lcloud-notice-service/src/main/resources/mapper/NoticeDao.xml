@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.notice.repository.NoticeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+    <select id="findMyNotices" resultType="com.szcti.lcloud.notice.entity.vo.NoticeVO">
+        SELECT
+        ni.id,
+        nr.id noticeReadId,
+        nr.user_id,
+        p.username,
+        ni.title,
+        ni.content,
+        ni.type,
+        ni.`status`,
+        ni.remark,
+        ni.create_by,
+        ni.create_time,
+        nr.read_status,
+        nr.read_time,
+        pp.username as createName,
+        o.`name` as orgName
+        FROM t_notice_info ni
+        LEFT JOIN t_notice_read nr ON ni.id = nr.notice_info_id
+        LEFT JOIN t_people p ON p.user_id = nr.user_id
+        LEFT JOIN t_people pp ON pp.user_id = ni.create_by
+        LEFT JOIN t_user us ON us.id = ni.create_by
+        LEFT JOIN t_organization o ON o.id = us.org_id
+        WHERE ni.status=1
+        <if test="title != null and title != ''">
+            AND ni.title LIKE concat('%',#{title},'%')
+        </if>
+        <if test="orgName != null and orgName != ''">
+            AND o.`name` LIKE concat('%',#{orgName},'%')
+        </if>
+        <if test="createName != null and createName != ''">
+            AND pp.username LIKE concat('%',#{createName},'%')
+        </if>
+        <if test="content != null and content != ''">
+            AND ni.content LIKE concat('%',#{content},'%')
+        </if>
+        <if test="userId != null">
+            AND nr.user_id = #{userId}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND ni.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND ni.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        ORDER BY ni.create_time DESC
+    </select>
+
+    <select id="getNoticeById" resultType="com.szcti.lcloud.notice.entity.vo.NoticeVO">
+        SELECT * FROM t_notice_info
+        WHERE id = #{id}
+    </select>
+
+    <select id="getReadCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM t_notice_read
+        WHERE notice_info_id = #{noticeInfoId}
+        <if test="readStatus != null">
+            AND read_status = #{readStatus}
+        </if>
+    </select>
+
+    <select id="findSendNotices" resultType="com.szcti.lcloud.notice.entity.vo.NoticeVO">
+        SELECT ni.*,p.username FROM t_notice_info ni
+        LEFT JOIN t_user u ON u.id = ni.create_by
+        LEFT JOIN t_people p ON p.user_id = u.id
+        WHERE 1=1
+        <if test="title != null and title != ''">
+            AND ni.title LIKE concat('%',#{title},'%')
+        </if>
+        <if test="content != null and content != ''">
+            AND ni.content LIKE concat('%',#{content},'%')
+        </if>
+        <if test="status != null">
+            AND ni.status = #{status}
+        </if>
+        <if test="createBy != null">
+            AND ni.create_by = #{createBy}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND ni.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND ni.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        ORDER BY ni.create_time DESC
+    </select>
+
+    <select id="findSendUsers" resultType="java.util.HashMap">
+        SELECT
+            nr.id,
+            nr.user_id userId,
+            p.username userName,
+            p.sex,
+            p.phone,
+            p.email
+        FROM t_people p
+        LEFT JOIN t_notice_read nr ON p.user_id = nr.user_id
+        WHERE nr.notice_info_id = #{noticeInfoId}
+    </select>
+
+    <update id="readNotice">
+        UPDATE t_notice_read SET read_status = 1,read_time = #{readTime} WHERE id = #{noticeReadId}
+    </update>
+
+    <update id="sendNotice">
+        UPDATE t_notice_info SET status = 1 , send_time = #{sendTime}  WHERE id = #{noticeInfoId}
+    </update>
+
+    <update id="updateNoticeInfo">
+        UPDATE t_notice_info SET (
+            title = #{title},
+            content = #{content},
+            type = #{type},
+            remark = #{remark}
+        )
+    </update>
+
+    <insert id="insertNoticeInfo">
+        INSERT INTO t_notice_info (
+            id,
+            title,
+            content,
+            type,
+            status,
+            remark,
+            create_by,
+            create_time,
+            send_time
+        ) VALUES (
+            #{id},
+            #{title},
+            #{content},
+            #{type},
+            #{status},
+            #{remark},
+            #{createBy},
+            #{createTime},
+            #{sendTime}
+        )
+    </insert>
+
+    <insert id="insertNoticeRead">
+        INSERT INTO t_notice_read (
+            id,
+            notice_info_id,
+            user_id,
+            read_status,
+            read_time
+        ) VALUES
+        <foreach collection="list" item="e" open="" separator="," close="">
+            (#{e.id},
+            #{e.noticeInfoId},
+            #{e.userId},
+            #{e.readStatus},
+            #{e.readTime})
+        </foreach>
+    </insert>
+
+    <delete id="deleteNoticeInfo">
+        DELETE FROM t_notice_info WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteNoticeReadByInfo">
+        DELETE FROM t_notice_read WHERE notice_info_id = #{noticeInfoId}
+    </delete>
+
+    <delete id="deleteNoticeReadById">
+        DELETE FROM t_notice_read WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

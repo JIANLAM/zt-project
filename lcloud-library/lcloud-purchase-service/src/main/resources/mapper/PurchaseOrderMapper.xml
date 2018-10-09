@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.purchase.repository.PurchaseOrderRepository">
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.purchase.entity.PurchaseOrder" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+        <result column="express_code" property="expressCode" jdbcType="VARCHAR" />
+        <result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
+        <result column="sendee_id" property="sendeeId" jdbcType="BIGINT" />
+        <result column="total_quantity" property="totalQuantity" jdbcType="INTEGER" />
+        <result column="order_status" property="orderStatus" jdbcType="TINYINT" />
+        <result column="library_id" property="libraryId" jdbcType="BIGINT" />
+        <result column="purchase_code" property="purchaseCode" jdbcType="VARCHAR" />
+        <result column="creator" property="creator" jdbcType="BIGINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="book_type_qty" property="bookTypeQty" jdbcType="INTEGER" />
+        <result column="check_status" property="checkStatus" jdbcType="TINYINT" />
+        <result column="checker" property="checker" jdbcType="BIGINT" />
+        <result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+        <result column="budget_amount" property="budgetAmount" jdbcType="REAL" />
+        <result column="total_price" property="totalPrice" jdbcType="REAL" />
+        <result column="budget_id" property="budgetId" jdbcType="BIGINT" />
+        <result column="rule_id" property="ruleId" jdbcType="BIGINT" />
+        <result column="committer" property="committer" jdbcType="BIGINT" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.szcti.lcloud.purchase.entity.PurchaseOrder" extends="BaseResultMap" >
+        <result column="summary" property="summary" jdbcType="LONGVARCHAR" />
+    </resultMap>
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List" >
+    id, order_code, express_code, order_time, sendee_id, total_quantity, order_status,
+    library_id, purchase_code, creator, create_time, book_type_qty, check_status, checker,
+    check_time, budget_amount, total_price, budget_id, rule_id, committer,address
+  </sql>
+    <sql id="Blob_Column_List" >
+    summary
+  </sql>
+    <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrderCriteria" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_purchase_order
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrderCriteria" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from t_purchase_order
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_purchase_order
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_purchase_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrderCriteria" >
+        delete from t_purchase_order
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrder" >
+    insert into t_purchase_order (id, order_code, express_code,
+      order_time, sendee_id, total_quantity,
+      order_status, library_id, purchase_code,
+      creator, create_time, book_type_qty,
+      check_status, checker, check_time,
+      budget_amount, total_price, budget_id,
+      rule_id, committer, summary,address
+      )
+    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{expressCode,jdbcType=VARCHAR},
+      #{orderTime,jdbcType=TIMESTAMP}, #{sendeeId,jdbcType=BIGINT}, #{totalQuantity,jdbcType=INTEGER},
+      #{orderStatus,jdbcType=TINYINT}, #{libraryId,jdbcType=BIGINT}, #{purchaseCode,jdbcType=VARCHAR},
+      #{creator,jdbcType=BIGINT}, now(), #{bookTypeQty,jdbcType=INTEGER},
+      #{checkStatus,jdbcType=TINYINT}, #{checker,jdbcType=BIGINT}, #{checkTime,jdbcType=TIMESTAMP},
+      #{budgetAmount,jdbcType=REAL}, #{totalPrice,jdbcType=REAL}, #{budgetId,jdbcType=BIGINT},
+      #{ruleId,jdbcType=BIGINT}, #{committer,jdbcType=BIGINT},#{summary,jdbcType=LONGVARCHAR},#{address,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrder" >
+        insert into t_purchase_order
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="orderCode != null" >
+                order_code,
+            </if>
+            <if test="expressCode != null" >
+                express_code,
+            </if>
+            <if test="orderTime != null" >
+                order_time,
+            </if>
+            <if test="sendeeId != null" >
+                sendee_id,
+            </if>
+            <if test="totalQuantity != null" >
+                total_quantity,
+            </if>
+            <if test="orderStatus != null" >
+                order_status,
+            </if>
+            <if test="libraryId != null" >
+                library_id,
+            </if>
+            <if test="purchaseCode != null" >
+                purchase_code,
+            </if>
+            <if test="creator != null" >
+                creator,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="bookTypeQty != null" >
+                book_type_qty,
+            </if>
+            <if test="checkStatus != null" >
+                check_status,
+            </if>
+            <if test="checker != null" >
+                checker,
+            </if>
+            <if test="checkTime != null" >
+                check_time,
+            </if>
+            <if test="budgetAmount != null" >
+                budget_amount,
+            </if>
+            <if test="totalPrice != null" >
+                total_price,
+            </if>
+            <if test="budgetId != null" >
+                budget_id,
+            </if>
+            <if test="ruleId != null" >
+                rule_id,
+            </if>
+            <if test="committer != null" >
+                committer,
+            </if>
+            <if test="address != null" >
+                address,
+            </if>
+            <if test="summary != null" >
+                summary,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="orderCode != null" >
+                #{orderCode,jdbcType=VARCHAR},
+            </if>
+            <if test="expressCode != null" >
+                #{expressCode,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTime != null" >
+                #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sendeeId != null" >
+                #{sendeeId,jdbcType=BIGINT},
+            </if>
+            <if test="totalQuantity != null" >
+                #{totalQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null" >
+                #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="libraryId != null" >
+                #{libraryId,jdbcType=BIGINT},
+            </if>
+            <if test="purchaseCode != null" >
+                #{purchaseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null" >
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bookTypeQty != null" >
+                #{bookTypeQty,jdbcType=INTEGER},
+            </if>
+            <if test="checkStatus != null" >
+                #{checkStatus,jdbcType=TINYINT},
+            </if>
+            <if test="checker != null" >
+                #{checker,jdbcType=BIGINT},
+            </if>
+            <if test="checkTime != null" >
+                #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="budgetAmount != null" >
+                #{budgetAmount,jdbcType=REAL},
+            </if>
+            <if test="totalPrice != null" >
+                #{totalPrice,jdbcType=REAL},
+            </if>
+            <if test="budgetId != null" >
+                #{budgetId,jdbcType=BIGINT},
+            </if>
+            <if test="ruleId != null" >
+                #{ruleId,jdbcType=BIGINT},
+            </if>
+            <if test="committer != null" >
+                #{committer,jdbcType=BIGINT},
+            </if>
+            <if test="summary != null" >
+                #{summary,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="address != null" >
+                #{address,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrderCriteria" resultType="java.lang.Integer" >
+        select count(*) from t_purchase_order
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map" >
+        update t_purchase_order
+        <set >
+            <if test="record.id != null" >
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.orderCode != null" >
+                order_code = #{record.orderCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.expressCode != null" >
+                express_code = #{record.expressCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.orderTime != null" >
+                order_time = #{record.orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.sendeeId != null" >
+                sendee_id = #{record.sendeeId,jdbcType=BIGINT},
+            </if>
+            <if test="record.totalQuantity != null" >
+                total_quantity = #{record.totalQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="record.orderStatus != null" >
+                order_status = #{record.orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="record.libraryId != null" >
+                library_id = #{record.libraryId,jdbcType=BIGINT},
+            </if>
+            <if test="record.purchaseCode != null" >
+                purchase_code = #{record.purchaseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.creator != null" >
+                creator = #{record.creator,jdbcType=BIGINT},
+            </if>
+            <if test="record.createTime != null" >
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.bookTypeQty != null" >
+                book_type_qty = #{record.bookTypeQty,jdbcType=INTEGER},
+            </if>
+            <if test="record.checkStatus != null" >
+                check_status = #{record.checkStatus,jdbcType=TINYINT},
+            </if>
+            <if test="record.checker != null" >
+                checker = #{record.checker,jdbcType=BIGINT},
+            </if>
+            <if test="record.checkTime != null" >
+                check_time = #{record.checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.budgetAmount != null" >
+                budget_amount = #{record.budgetAmount,jdbcType=REAL},
+            </if>
+            <if test="record.totalPrice != null" >
+                total_price = #{record.totalPrice,jdbcType=REAL},
+            </if>
+            <if test="record.budgetId != null" >
+                budget_id = #{record.budgetId,jdbcType=BIGINT},
+            </if>
+            <if test="record.ruleId != null" >
+                rule_id = #{record.ruleId,jdbcType=BIGINT},
+            </if>
+            <if test="record.committer != null" >
+                committer = #{record.committer,jdbcType=BIGINT},
+            </if>
+            <if test="record.address != null" >
+                address = #{record.address,jdbcType=VARCHAR},
+            </if>
+            <if test="record.summary != null" >
+                summary = #{record.summary,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map" >
+        update t_purchase_order
+        set id = #{record.id,jdbcType=BIGINT},
+        order_code = #{record.orderCode,jdbcType=VARCHAR},
+        express_code = #{record.expressCode,jdbcType=VARCHAR},
+        order_time = #{record.orderTime,jdbcType=TIMESTAMP},
+        sendee_id = #{record.sendeeId,jdbcType=BIGINT},
+        total_quantity = #{record.totalQuantity,jdbcType=INTEGER},
+        order_status = #{record.orderStatus,jdbcType=TINYINT},
+        library_id = #{record.libraryId,jdbcType=BIGINT},
+        purchase_code = #{record.purchaseCode,jdbcType=VARCHAR},
+        creator = #{record.creator,jdbcType=BIGINT},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        book_type_qty = #{record.bookTypeQty,jdbcType=INTEGER},
+        check_status = #{record.checkStatus,jdbcType=TINYINT},
+        checker = #{record.checker,jdbcType=BIGINT},
+        check_time = #{record.checkTime,jdbcType=TIMESTAMP},
+        budget_amount = #{record.budgetAmount,jdbcType=REAL},
+        total_price = #{record.totalPrice,jdbcType=REAL},
+        budget_id = #{record.budgetId,jdbcType=BIGINT},
+        rule_id = #{record.ruleId,jdbcType=BIGINT},
+        committer = #{record.committer,jdbcType=BIGINT},
+        address = #{record.address,jdbcType=VARCHAR},
+        summary = #{record.summary,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map" >
+        update t_purchase_order
+        set id = #{record.id,jdbcType=BIGINT},
+        order_code = #{record.orderCode,jdbcType=VARCHAR},
+        express_code = #{record.expressCode,jdbcType=VARCHAR},
+        order_time = #{record.orderTime,jdbcType=TIMESTAMP},
+        sendee_id = #{record.sendeeId,jdbcType=BIGINT},
+        total_quantity = #{record.totalQuantity,jdbcType=INTEGER},
+        order_status = #{record.orderStatus,jdbcType=TINYINT},
+        library_id = #{record.libraryId,jdbcType=BIGINT},
+        purchase_code = #{record.purchaseCode,jdbcType=VARCHAR},
+        creator = #{record.creator,jdbcType=BIGINT},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        book_type_qty = #{record.bookTypeQty,jdbcType=INTEGER},
+        check_status = #{record.checkStatus,jdbcType=TINYINT},
+        checker = #{record.checker,jdbcType=BIGINT},
+        check_time = #{record.checkTime,jdbcType=TIMESTAMP},
+        budget_amount = #{record.budgetAmount,jdbcType=REAL},
+        total_price = #{record.totalPrice,jdbcType=REAL},
+        budget_id = #{record.budgetId,jdbcType=BIGINT},
+        rule_id = #{record.ruleId,jdbcType=BIGINT},
+        committer = #{record.committer,jdbcType=BIGINT},
+        summary = #{record.summary,jdbcType=LONGVARCHAR},
+        address = #{record.address,jdbcType=VARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrder" >
+        update t_purchase_order
+        <set >
+            <if test="orderCode != null" >
+                order_code = #{orderCode,jdbcType=VARCHAR},
+            </if>
+            <if test="expressCode != null" >
+                express_code = #{expressCode,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTime != null" >
+                order_time = #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sendeeId != null" >
+                sendee_id = #{sendeeId,jdbcType=BIGINT},
+            </if>
+            <if test="totalQuantity != null" >
+                total_quantity = #{totalQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null" >
+                order_status = #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="libraryId != null" >
+                library_id = #{libraryId,jdbcType=BIGINT},
+            </if>
+            <if test="purchaseCode != null" >
+                purchase_code = #{purchaseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bookTypeQty != null" >
+                book_type_qty = #{bookTypeQty,jdbcType=INTEGER},
+            </if>
+            <if test="checkStatus != null" >
+                check_status = #{checkStatus,jdbcType=TINYINT},
+            </if>
+            <if test="checker != null" >
+                checker = #{checker,jdbcType=BIGINT},
+            </if>
+            <if test="checkTime != null" >
+                check_time = #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="budgetAmount != null" >
+                budget_amount = #{budgetAmount,jdbcType=REAL},
+            </if>
+            <if test="totalPrice != null" >
+                total_price = #{totalPrice,jdbcType=REAL},
+            </if>
+            <if test="budgetId != null" >
+                budget_id = #{budgetId,jdbcType=BIGINT},
+            </if>
+            <if test="ruleId != null" >
+                rule_id = #{ruleId,jdbcType=BIGINT},
+            </if>
+            <if test="committer != null" >
+                committer = #{committer,jdbcType=BIGINT},
+            </if>
+            <if test="address != null" >
+            address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null" >
+                summary = #{summary,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrder" >
+    update t_purchase_order
+    set order_code = #{orderCode,jdbcType=VARCHAR},
+      express_code = #{expressCode,jdbcType=VARCHAR},
+      order_time = #{orderTime,jdbcType=TIMESTAMP},
+      sendee_id = #{sendeeId,jdbcType=BIGINT},
+      total_quantity = #{totalQuantity,jdbcType=INTEGER},
+      order_status = #{orderStatus,jdbcType=TINYINT},
+      library_id = #{libraryId,jdbcType=BIGINT},
+      purchase_code = #{purchaseCode,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      book_type_qty = #{bookTypeQty,jdbcType=INTEGER},
+      check_status = #{checkStatus,jdbcType=TINYINT},
+      checker = #{checker,jdbcType=BIGINT},
+      check_time = #{checkTime,jdbcType=TIMESTAMP},
+      budget_amount = #{budgetAmount,jdbcType=REAL},
+      total_price = #{totalPrice,jdbcType=REAL},
+      budget_id = #{budgetId,jdbcType=BIGINT},
+      rule_id = #{ruleId,jdbcType=BIGINT},
+      committer = #{committer,jdbcType=BIGINT},
+      address = #{address,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.purchase.entity.PurchaseOrder" >
+    update t_purchase_order
+    set order_code = #{orderCode,jdbcType=VARCHAR},
+      express_code = #{expressCode,jdbcType=VARCHAR},
+      order_time = #{orderTime,jdbcType=TIMESTAMP},
+      sendee_id = #{sendeeId,jdbcType=BIGINT},
+      total_quantity = #{totalQuantity,jdbcType=INTEGER},
+      order_status = #{orderStatus,jdbcType=TINYINT},
+      library_id = #{libraryId,jdbcType=BIGINT},
+      purchase_code = #{purchaseCode,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      book_type_qty = #{bookTypeQty,jdbcType=INTEGER},
+      check_status = #{checkStatus,jdbcType=TINYINT},
+      checker = #{checker,jdbcType=BIGINT},
+      check_time = #{checkTime,jdbcType=TIMESTAMP},
+      budget_amount = #{budgetAmount,jdbcType=REAL},
+      total_price = #{totalPrice,jdbcType=REAL},
+      budget_id = #{budgetId,jdbcType=BIGINT},
+      rule_id = #{ruleId,jdbcType=BIGINT},
+      committer = #{committer,jdbcType=BIGINT},
+      address = #{address,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <!--关联自定义SQL-->
+     <select id="queryPage" resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseOrderVO"
+             parameterType="com.szcti.lcloud.purchase.entity.vo.PurchaseOrderVO">
+        select distinct  o.*,(select distinct p.username from t_people p where p.user_id=o.creator) as creatorName,cu.login_name as creatorAccount,
+         (select distinct p.username from t_people p where p.user_id=o.checker) as checkerName ,che.login_name as checkerAccount,
+        obr.rule_name as ruleName,l.name as libraryName,
+        bu.coding as budgetCode
+        from t_purchase_order o
+        left join t_purchase_book ob on o.id=ob.order_id
+        left join t_prebook pre on pre.id=ob.prebook_id
+        left join t_user cu on o.creator=cu.id
+        left join t_people p on p.user_id=o.creator
+        left join t_user che on o.checker=che.id
+        left join t_purchase_rule obr on obr.id=o.rule_id
+        left join t_organization l on l.id=o.library_id
+        left join t_budget bu on bu.id=o.budget_id
+        where 1=1
+        <if test="id != null and id != ''">
+            AND o.id = #{id}
+        </if>
+         <if test="libraryId != null">
+             AND o.library_id = #{libraryId}
+         </if>
+         <if test="orderStatus != null and orderStatus !=''">
+             AND o.order_status =#{orderStatus}
+         </if>
+        <if test="purchaseCode != null and purchaseCode != ''">
+            AND o.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+        </if>
+        <if test="orderCode != null and orderCode != ''">
+            AND o.order_code LIKE CONCAT('%',#{orderCode},'%')
+        </if>
+        <if test="expressCode != null and expressCode != ''">
+            AND o.express_code LIKE CONCAT('%',#{expressCode},'%')
+        </if>
+        <if test="creatorName != null and creatorName != ''">
+            AND p.username LIKE CONCAT('%',#{creatorName},'%')
+        </if>
+         <if test="searchValue != null and searchValue != '' and searchKey=='expressCode'">
+             AND o.express_code LIKE CONCAT('%',#{searchValue},'%')
+         </if>
+         <if test="searchValue != null and searchValue != '' and searchKey=='libraryName'">
+             AND l.name LIKE CONCAT('%',#{searchValue},'%')
+         </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='orderCode'">
+            AND o.order_code LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='purchaseCode'">
+            AND o.purchase_code LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='creatorAccount'">
+            AND cu.login_name LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='creatorName'">
+            AND p.username LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+            AND pre.title LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+            AND pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+            AND pre.author LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+            AND pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="checkStatusSearch != null and checkStatusSearch !=''">
+            AND o.check_status = #{checkStatusSearch}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND o.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND o.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="orderCodeHave != null and orderCodeHave != '' and orderCodeHave==0">
+            AND (o.order_code is null or o.order_code='')
+        </if>
+        <if test="orderCodeHave != null and orderCodeHave != '' and orderCodeHave==1">
+            AND o.order_code<![CDATA[<>]]>'' AND o.order_code is not null
+        </if>
+         <if test="ids != null">
+             AND o.id in
+             <foreach item="id" collection="ids" open="(" separator=", " close=")">
+                 #{id}
+             </foreach>
+         </if>
+         order by o.id desc
+    </select>
+
+    <update id="checkBatchIds" parameterType="java.util.Map">
+    <!--<update id="checkBatchIds">-->
+        update t_purchase_order o set
+        <if test="checkStatus != null" >
+            o.check_status = #{checkStatus},
+        </if>
+        <if test="checker != null and checker != ''" >
+            o.checker = #{checker},
+        </if>
+        <if test="checkTime != null and checkTime != ''" >
+            o.check_time = #{checkTime}
+        </if>
+             where 1=1
+        <if test="id != null and id != ''" >
+            and o.id = #{id}
+        </if>
+        <if test="libraryId != null">
+            AND o.library_id = #{libraryId}
+        </if>
+    </update>
+    <update id="commitBatchIds" parameterType="java.util.Map">
+        update t_purchase_order o set
+        <if test="purchaseCode != null and purchaseCode != ''" >
+            o.purchase_code = #{purchaseCode},
+        </if>
+        <if test="orderCode != null and orderCode != ''" >
+            o.order_code = #{orderCode},
+        </if>
+        <if test="orderStatus != null" >
+            o.order_status = #{orderStatus},
+        </if>
+        <if test="committer != null" >
+            o.committer = #{committer},
+        </if>
+        <if test="orderTime != null and orderTime != ''" >
+            o.order_time = #{orderTime}
+        </if>
+         where 1=1
+        <if test="id != null" >
+            and o.id = #{id}
+        </if>
+        <if test="address != null and address != ''" >
+            and o.address = #{address}
+        </if>
+        <if test="libraryId != null">
+            AND o.library_id = #{libraryId}
+        </if>
+        <if test="sendeeId != null and sendeeId != ''" >
+            and o.sendee_id = #{sendeeId}
+        </if>
+        and o.check_status='1'
+    </update>
+    <select id="selectById" resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseOrderVO">
+        select o.* ,(select distinct p.username from t_people p where p.user_id=o.creator) as creatorName,cu.login_name as creatorAccount from t_purchase_order o
+        left join t_user cu on o.creator=cu.id
+        where 1=1 and o.id = #{id}
+    </select>
+    <delete id="deleteBatchIds" parameterType="java.util.List">
+        <if test="list != null">
+            <foreach collection="list" item="item" index="index">
+                delete from t_purchase_order where id =#{item}
+            </foreach>
+        </if>
+    </delete>
+    <delete id="delete" parameterType="java.lang.Long">
+        <if test="id != null">
+                delete from t_purchase_order where id =#{id}
+        </if>
+    </delete>
+    <update id="refleshPurchaseOrder" parameterType="java.lang.Long">
+        update t_purchase_order o
+        set o.check_status='0' ,o.checker=null,o.check_time=null ,o.total_quantity=(
+        select sum(obb.book_qty) from t_purchase_book obb where obb.order_id=o.id GROUP BY obb.order_id
+        ),
+        o.book_type_qty=(select count(distinct obb1.id) from t_purchase_book obb1 where obb1.order_id=o.id),
+        o.total_price=(select sum(obb2.total_price) from t_purchase_book obb2
+         where obb2.order_id=o.id GROUP BY obb2.order_id)
+        where o.id=#{id}
+    </update>
+    <select id="getByPurchaseCode" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_purchase_order
+        where purchase_code = #{purchaseCode}
+    </select>
+</mapper>

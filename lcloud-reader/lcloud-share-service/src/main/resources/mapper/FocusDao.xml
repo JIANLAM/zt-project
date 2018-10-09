@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.share.repository.FocusDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+    
+    <insert id="insert">
+        INSERT INTO t_reader_focus(
+            focus,
+            is_focused,
+            create_time
+        ) VALUES (
+            #{focus},
+            #{isFocused},
+            #{createTime}
+        )
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM t_reader_focus
+        WHERE focus = #{focus} AND is_focused = #{isFocused}
+    </delete>
+
+    <select id="find" resultType="java.util.HashMap">
+        SELECT * FROM t_reader_focus
+        WHERE focus = #{focus} AND is_focused = #{isFocused}
+    </select>
+
+    <select id="findMyFans" resultType="java.util.HashMap">
+        SELECT
+            r.id readerId,
+            r.people_id peopleId,
+            p.username userName,
+            p.nick_name nickName,
+            p.sex,
+            p.icon,
+            p.signature,
+            o.name libName,
+            CASE WHEN (SELECT COUNT(1) FROM t_reader_focus rf WHERE rf.is_focused = r.id AND rf.focus = #{readerId}) > 0 THEN 1 ELSE 0 END isFocus
+        FROM t_reader r
+        LEFT JOIN t_reader_focus rf ON rf.focus = r.id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_user u ON u.id = p.user_id
+		LEFT JOIN t_organization o ON o.id = u.org_id
+        WHERE rf.is_focused = #{readerId}
+    </select>
+
+    <select id="findMyFocus" resultType="java.util.HashMap">
+        SELECT
+            r.id readerId,
+            r.people_id peopleId,
+            p.username userName,
+            p.nick_name nickName,
+            p.sex,
+            p.icon,
+            p.signature,
+            o.name libName
+        FROM t_reader r
+        LEFT JOIN t_reader_focus rf ON rf.is_focused = r.id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_user u ON u.id = p.user_id
+		LEFT JOIN t_organization o ON o.id = u.org_id
+        WHERE rf.focus = #{readerId}
+    </select>
+
+    <select id="getCount" resultType="java.util.HashMap">
+        SELECT * FROM
+        (SELECT COUNT(1) myFocus FROM t_reader_focus WHERE focus = #{readerId}) myFocus,
+        (SELECT COUNT(1) myFans FROM t_reader_focus WHERE is_focused = #{readerId}) myFans,
+        (SELECT count(1) myAgreed FROM t_share_agree WHERE reader_id = #{readerId}) myAgreed,
+        (SELECT icon FROM t_people p LEFT JOIN t_reader r ON p.id = r.people_id WHERE r.id = #{readerId}) icon,
+        (SELECT nick_name nickName FROM t_people p LEFT JOIN t_reader r ON p.id = r.people_id WHERE r.id = #{readerId}) nickName,
+        (SELECT username userName FROM t_people p LEFT JOIN t_reader r ON p.id = r.people_id WHERE r.id = #{readerId}) userName,
+        (SELECT CASE WHEN (SELECT COUNT(1) FROM t_reader_focus rf WHERE rf.is_focused = #{readerId} AND rf.focus = #{currentReaderId}) > 0 THEN 1 ELSE 0 END isFocus) isFocus
+    </select>
+
+</mapper>

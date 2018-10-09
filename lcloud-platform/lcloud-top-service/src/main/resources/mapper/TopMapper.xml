@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.top.repository.TopRespository" >
+<select id="topLendBook" parameterType="com.szcti.lcloud.top.entity.vo.TopBookVO"
+  resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+     select count(b.id) as recount,h.call_no,h.ownlib as libraryId,org.name as libraryName,h.curlib,b.id,b.pic,b.ISBN,b.title,b.book_type,b.author,b.publisher,b.price,b.pubdate,b.summary from t_lend l
+     left join t_holding h on l.holding_id=h.id
+     left join t_book b on b.id=h.book_id
+     left join t_organization org on h.ownlib=org.id
+     where 1=1
+     <if test="libraryId != null">
+         and (h.curlib = #{libraryId} or h.ownlib=#{libraryId})
+         and l.reader_id in(select r.id from t_reader r
+         left join t_people p on p.id=r.people_id
+         left join t_user u on u.id=p.user_id where u.org_id=#{libraryId})
+    </if>
+       <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+      AND b.title LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+      AND b.isbn LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+      AND b.author LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+      AND b.publisher LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="startTime != null and startTime != ''">
+      AND l.lend_time >= #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+      AND l.lend_time <![CDATA[<]]> #{endTime}
+    </if>
+     group by b.id ORDER BY recount desc
+  </select>
+<select id="topLendReader" parameterType="com.szcti.lcloud.top.entity.vo.TopBookVO"
+            resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+    select count(l.id) as recount,l.reader_id,rp.user_id,rp.username as userName,rp.nick_name,h.ownlib as libraryId,org.name as libraryName,
+    rp.icon,rp.signature,rp.reader_card_number,rp.reader_card_type,rp.reader_type as readerType,rp.sex from t_lend l
+        left join t_holding h on l.holding_id=h.id
+        left join t_book b on b.id=h.book_id
+        left join t_organization org on h.ownlib=org.id
+        left join (select re.id,pe.user_id,pe.username,pe.nick_name,re.reader_type ,pe.signature,re.reader_card_number,re.reader_card_type,pe.sex,pe.icon from t_reader re left join t_people pe on pe.id=re.people_id) rp on rp.id=l.reader_id
+        where 1=1
+        <if test="libraryId != null">
+            and (h.curlib = #{libraryId} or h.ownlib=#{libraryId})
+            and l.reader_id in(select r.id from t_reader r
+            left join t_people p on p.id=r.people_id
+            left join t_user u on u.id=p.user_id where u.org_id=#{libraryId})
+        </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='userName'">
+            AND rp.username LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND l.lend_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND l.lend_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="sex != null and sex!=''">
+            and rp.sex=#{sex}
+        </if>
+    group by l.reader_id ORDER BY recount desc
+</select>
+<select id="topRecommBook" parameterType="com.szcti.lcloud.top.entity.vo.TopBookVO"
+            resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+    select sum(s.co) as recount,s.title,s.ISBN,s.author,s.publisher,s.summary,s.org_id,s.pubdate,s.create_time from
+    ((select count(re.id) as co,b.title,b.ISBN,b.author,b.publisher,b.summary,re.book_from,u.org_id,re.create_time,b.pubdate,'1' as source from t_recomm_book re left join t_book b on re.book_id=b.id
+    left join t_people p on p.id=re.people_id
+    left join t_user u on u.id=p.user_id
+    where 1=1 and re.book_from=1 group by b.ISBN,u.org_id,re.create_time,source order by co desc)
+    UNION
+    (select count(re.id) as co,b.title,b.ISBN,b.author,b.publisher,b.summary,re.book_from ,u.org_id,re.create_time,b.pubdate,b.source from t_recomm_book re left join t_prebook b on re.book_id=b.id
+    left join t_people p on p.id=re.people_id
+    left join t_user u on u.id=p.user_id
+    where 1=1 group by b.ISBN,u.org_id,re.create_time,b.source order by co desc)
+    ) s
+    where 1=1
+    <if test="libraryId != null">
+        and s.org_id=#{libraryId}
+    </if>
+    <if test="source != null and source !=''">
+        and s.source=#{source}
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+        AND s.title LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+        AND s.isbn LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+        AND s.author LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+        AND s.publisher LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="startTime != null and startTime != ''">
+        AND s.create_time >= #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+        AND s.create_time <![CDATA[<]]> #{endTime}
+    </if>
+    GROUP BY s.ISBN order by recount desc
+</select>
+<select id="topRecommBuyBook" parameterType="com.szcti.lcloud.top.entity.vo.TopBookVO"
+        resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+    select count(rb.prebook_id)as recount,rb.prebook_id as bookId ,pre.pic,pre.title,pre.ISBN,pre.author,pre.book_type,
+    pre.publisher,pre.pubdate,'2' as bookFrom
+    from t_recomm_buy rb
+    left join t_reader re on rb.reader_id=re.id
+    left join t_people p on re.people_id=p.id
+    left join t_user u on u.id=p.user_id
+    left join t_prebook pre on pre.id=rb.prebook_id
+    where 1=1
+    <if test="libraryId != null">
+        and u.org_id=#{libraryId}
+    </if>
+    <if test="source != null and source !=''">
+        and pre.source=#{source}
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+        AND pre.title LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+        AND pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+        AND pre.author LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+        AND pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="startTime != null and startTime != ''">
+        AND rb.create_time >= #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+        AND rb.create_time <![CDATA[<]]> #{endTime}
+    </if>
+  group by rb.prebook_id order by recount desc
+</select>
+<select id="topRecommBuyReader" parameterType="com.szcti.lcloud.top.entity.vo.TopBookVO"
+            resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+    select count(rb.id) as recount,rb.reader_id,re.reader_card_number,re.reader_type,re.reader_card_type,p.sex,p.user_id,p.username as userName,p.nick_name,u.org_id as libraryId,org.name as libraryName,p.signature,p.icon
+    from t_recomm_buy rb
+    left join t_reader re on rb.reader_id=re.id
+    left join t_people p on re.people_id=p.id
+    left join t_user u on u.id=p.user_id
+    left join t_organization org on u.org_id=org.id
+    left join t_prebook pre on pre.id=rb.prebook_id
+    where 1=1
+        <if test="libraryId != null">
+            and u.org_id=#{libraryId}
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='userName'">
+            AND p.username
+            LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND rb.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND rb.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="sex != null and sex!=''">
+            and p.sex=#{sex}
+        </if>
+        group by rb.reader_id order by recount desc
+    </select>
+<select id="getPrebook" parameterType="java.lang.String"
+            resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+      select distinct pre.id,pre.isbn,pre.pic,pre.title,pre.author,pre.book_type,
+      pre.publisher,pre.summary,pre.price,pre.pubdate,'2' as bookFrom
+      from t_prebook pre where 1=1
+      and pre.isbn=#{isbn}
+    </select>
+<select id="getBook" parameterType="java.lang.String"
+            resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+      select distinct pre.id,pre.isbn,pre.pic,pre.title,pre.author,pre.book_type,
+      pre.publisher,pre.summary,pre.price,pre.pubdate,'1' as bookFrom
+      from t_book pre where 1=1
+      and pre.isbn=#{isbn}
+    </select>
+<select id="topLendBuyBook" parameterType="com.szcti.lcloud.top.entity.vo.TopBookVO"
+            resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+        select count(lb.id) as recount,pre.title,pre.ISBN,lb.prebook_id as bookId ,pre.pic,
+        pre.pubdate,pre.author,pre.book_type,pre.publisher
+        from t_lendbuy_book lb
+        left join t_reader re on lb.reader_id=re.id
+        left join t_people p on re.people_id=p.id
+        left join t_user u on u.id=p.user_id
+        left join t_prebook pre on pre.id=lb.prebook_id
+        where 1=1
+        <if test="libraryId != null">
+            and u.org_id=#{libraryId}
+        </if>
+        <if test="source != null and source !=''">
+            and pre.source=#{source}
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+            AND pre.title LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+            AND pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+            AND pre.author LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+            AND pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND lb.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND lb.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        group by pre.ISBN order by recount desc
+    </select>
+<select id="topLendBuyReader" parameterType="com.szcti.lcloud.top.entity.vo.TopBookVO"
+            resultType="com.szcti.lcloud.top.entity.vo.TopBookVO">
+        select count(rb.id) as recount,rb.reader_id,re.reader_card_number,re.reader_type,re.reader_card_type,p.sex,p.user_id,p.username as userName,p.nick_name,u.org_id as libraryId,org.name as libraryName,p.signature,p.icon
+        from t_lendbuy_book rb
+        left join t_reader re on rb.reader_id=re.id
+        left join t_people p on re.people_id=p.id
+        left join t_user u on u.id=p.user_id
+        left join t_organization org on u.org_id=org.id
+        left join t_prebook pre on pre.id=rb.prebook_id
+        where 1=1
+        <if test="libraryId != null">
+            and u.org_id=#{libraryId}
+        </if>
+        <if test="searchValue != null and searchValue != '' and searchKey=='userName'">
+            AND p.username LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="sex != null and sex!=''">
+            and p.sex=#{sex}
+        </if>
+        group by rb.reader_id order by recount desc
+    </select>
+</mapper>

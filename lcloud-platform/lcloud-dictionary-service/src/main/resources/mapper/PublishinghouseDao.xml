@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.publishinghouse.repository.PublishinghouseDao">
+
+    <sql id="publishinghouseColumns">
+        id,
+        code,
+        name,
+        address,
+        postalcode,
+        create_date createDate,
+        remarks
+    </sql>
+
+    <!--    查询所有出版社    -->
+    <select id="findList" resultType="com.szcti.lcloud.publishinghouse.entity.PublishinghouseEntity">
+        SELECT
+            <include refid="publishinghouseColumns"/>
+        FROM
+            sys_publishinghouse
+        WHERE 1 =1
+        <if test="code != null and code != ''">
+            AND code = #{code}
+        </if>
+        <if test="name != null and name != ''">
+            AND name = #{name}
+        </if>
+        <if test="address != null and address != ''">
+            AND address = #{address}
+        </if>
+        <if test="postalcode != null and postalcode != ''">
+            AND postalcode = #{postalcode}
+        </if>
+        ORDER BY create_date DESC
+
+    </select>
+
+    <!--    查询一行出版社数据    -->
+    <select id="get" resultType="com.szcti.lcloud.publishinghouse.entity.PublishinghouseEntity">
+        SELECT
+            <include refid="publishinghouseColumns"/>
+        FROM
+            sys_publishinghouse
+        WHERE id = #{id}
+    </select>
+
+    <!--    删除 一条或多条 出版社数据    -->
+    <delete id="delPublishing">
+        DELETE FROM sys_publishinghouse WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    新增 一条 出版社数据    -->
+    <insert id="insertPublishing">
+        INSERT INTO sys_publishinghouse (
+                id,
+                code,
+                name,
+                address,
+                postalcode,
+                create_date,
+                remarks
+        )
+        VALUES
+            (
+                #{id},
+                #{code},
+                #{name},
+                #{address},
+                #{postalcode},
+                #{createDate},
+                #{remarks}
+            )
+    </insert>
+
+    <!--    修改 一条 字典数据    -->
+    <update id="updatePublishing">
+     UPDATE sys_publishinghouse
+         SET
+            code = #{code},
+            name = #{name},
+            address = #{address},
+            postalcode = #{postalcode},
+            remarks = #{remarks}
+         WHERE	id = #{id}
+    </update>
+
+    <!--    是否出现重复的出版社代码    -->
+    <select id="existsPublishing" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sys_publishinghouse
+        WHERE
+            code =#{code}
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    <select id="getFromPubByISBN" resultType="java.util.HashMap">
+        SELECT name publisher FROM sys_publishinghouse WHERE #{ISBN} LIKE CONCAT('%',replace(code,'-',''),'%') LIMIT 1
+    </select>
+
+    <select id="getFromXHByISBN" resultType="java.util.HashMap">
+        SELECT
+            title,
+            pic,
+            author,
+            publisher,
+            pages,
+            `describe`
+        FROM t_book_xh
+        WHERE isbn = #{ISBN}
+        LIMIT 1
+    </select>
+
+</mapper>

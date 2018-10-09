@@ -1,0 +1,255 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>organizeTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -150px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-organize-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>获取组织机构列表信息接口</td>
+            <td>
+                <button type="submit" id="orgList">点击我测试</button>
+            </td>
+            <td>#orgList</td>
+            <td><span>GET</span></td>
+            <td>弹出顺序为 新华机构 type = 2 政府机构 type = 0 其他机构 type = 1</td>
+        </tr>
+        <tr>
+            <td>获取单一组织机构详细信息接口</td>
+            <td>
+                <button type="submit" id="orgInfo">点击我测试</button>
+            </td>
+            <td>#orgInfo</td>
+            <td><span>POST</span></td>
+            <td>{id} 为变量 测试数据为常量 id = 1</td>
+        </tr>
+        <tr>
+            <td>新增或修改组织机构接口</td>
+            <td>
+                <button type="submit" id="orgSave">点击我测试</button>
+            </td>
+            <td>#orgSave</td>
+            <td><span>POST</span></td>
+            <td>id为空则新增 id有值则修改 / 测试默认新增</td>
+        </tr>
+        <tr>
+            <td>删除组织机构接口</td>
+            <td>
+                <button type="submit" id="orgDelete">点击我测试</button>
+            </td>
+            <td>#orgDelete</td>
+            <td><span>POST</span></td>
+            <td>自己到t_organization表新增一条数据 删除条件 id = 刚自己新增的id <br/> <span>测试默认id = 0 数据库并无此数据</span></td>
+        </tr>
+        <tr>
+            <td>查询当前登录的图书馆下的 所有分馆</td>
+            <td>
+                <button type="submit" id="forOrgAll">点击我测试</button>
+            </td>
+            <td>#forOrgAll</td>
+            <td><span>POST</span></td>
+            <td id="data">   </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+
+    //查询当前登录的图书馆下的 所有分馆
+    $("#forOrgAll").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8194/organize/v1/org/list/forOrgAll',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+
+    //删除组织机构接口
+    $("#orgDelete").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8194/organize/v1/org/delete/353261779339',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //新增或修改组织机构接口
+    $("#orgSave").click(function () {
+        var json = {
+            id: 353261779339, parentId: 1, parentIds: "1,2", name: "分部ffffffffffffffffffffff",
+            code: null, linkmanPhone: "13720567004",
+            linkmanName: "赵武22", city: null, type: 1, remark: null,saleType: null,isLendbuy :null
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8194/organize/v1/org/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取单一组织机构详细信息接口
+    $("#orgInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8194/organize/v1/org/info/111',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取组织机构列表信息接口
+    $("#orgList").click(function () {
+        /***************        --学校机构        ***************/
+        var sch = JSON.stringify({name: null, id: null});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8194/organize/v1/org/list/school',
+            data: {"jsonStr": sch},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+        /***************        --新华机构        ***************/
+        var xh = JSON.stringify({name: null, id: null});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8194/organize/v1/org/list/xh',
+            data: {"jsonStr": xh},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+        /***************        --政府机构        ***************/
+        var gov = JSON.stringify({name: null, id: null});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8194/organize/v1/org/list/gov',
+            data: {"jsonStr": gov},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+        /***************        --其他机构        ***************/
+        var ort = JSON.stringify({name: null, id: null});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8194/organize/v1/org/list/otr',
+            data: {"jsonStr": ort},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

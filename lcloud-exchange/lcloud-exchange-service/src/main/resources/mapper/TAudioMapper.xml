@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.exchange.mapper.TAudioMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.exchange.entity.TAudio">
+        <result column="id" property="id" />
+        <result column="member_id" property="memberId" />
+        <result column="device_id" property="deviceId" />
+        <result column="mac" property="mac" />
+        <result column="doc_id" property="docId" />
+        <result column="interest_doc_id" property="interestDocId" />
+        <result column="file_name" property="fileName" />
+        <result column="server_file_name" property="serverFileName" />
+        <result column="server_file_name_full" property="serverFileNameFull" />
+        <result column="local_file_name" property="localFileName" />
+        <result column="works_name" property="worksName" />
+        <result column="reader_no" property="readerNo" />
+        <result column="reader_name" property="readerName" />
+        <result column="cust_name" property="custName" />
+        <result column="activity_id" property="activityId" />
+        <result column="record_time" property="recordTime" />
+        <result column="file_size" property="fileSize" />
+        <result column="duration" property="duration" />
+        <result column="image_file1" property="imageFile1" />
+        <result column="image_file2" property="imageFile2" />
+        <result column="image_file3" property="imageFile3" />
+        <result column="make_time" property="makeTime" />
+        <result column="share" property="share" />
+        <result column="is_choiceness" property="isChoiceness" />
+        <result column="wx_is_show" property="wxIsShow" />
+        <result column="cover_image" property="coverImage" />
+        <result column="message" property="message" />
+        <result column="ranking" property="ranking" />
+        <result column="order_seq" property="orderSeq" />
+        <result column="create_user" property="createUser" />
+        <result column="create_date" property="createDate" />
+        <result column="last_modify_date" property="lastModifyDate" />
+        <result column="last_modify_user" property="lastModifyUser" />
+        <result column="deleted_flag" property="deletedFlag" />
+        <result column="audit_status" property="auditStatus" />
+        <result column="name" property="name" />
+        <result column="member_name" property="memberName" />
+        <result column="headimgul" property="headimgul" />
+        <result column="city" property="city" />
+        <result column="install_address" property="installAddress" />
+        <result column="customer_id" property="customerId" />
+        <result column="customer_name" property="customerName" />
+        <result column="device_name" property="deviceName" />
+        <result column="author" property="author" />
+        <result column="share_count" property="shareCount" />
+        <result column="comment_count" property="commentCount" />
+        <result column="listen_count" property="listenCount" />
+        <result column="praise_count" property="praiseCount" />
+        <result column="votec_ount" property="votecOunt" />
+        <result column="listen_count20" property="listenCount20" />
+        <result column="praise_count20" property="praiseCount20" />
+        <result column="vote_count20" property="voteCount20" />
+        <result column="comment_count20" property="commentCount20" />
+        <result column="neworderseq" property="neworderseq" />
+        <result column="raw_json" property="rawJson" />
+        <result column="sync_date" property="syncDate" />
+    </resultMap>
+
+</mapper>

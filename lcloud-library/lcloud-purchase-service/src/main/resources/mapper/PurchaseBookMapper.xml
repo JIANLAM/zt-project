@@ -1,0 +1,1189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.szcti.lcloud.purchase.repository.PurchaseBookRepository">
+	<resultMap id="BaseResultMap"
+		type="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="order_id" property="orderId" jdbcType="BIGINT" />
+		<result column="book_id" property="bookId" jdbcType="BIGINT" />
+		<result column="book_qty" property="bookQty" jdbcType="INTEGER" />
+		<result column="total_price" property="totalPrice"
+			jdbcType="REAL" />
+		<result column="prebook_id" property="prebookId"
+			jdbcType="BIGINT" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="goods_code" property="goodsCode"
+			jdbcType="VARCHAR" />
+		<result column="checkedmsg" property="checkedmsg"
+			jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="REAL" />
+		<result column="isbn" property="isbn" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="author" property="author" jdbcType="VARCHAR" />
+		<result column="publisher" property="publisher"
+			jdbcType="VARCHAR" />
+		<result column="pubdate" property="pubdate" jdbcType="VARCHAR" />
+		<result column="book_type" property="bookType"
+			jdbcType="VARCHAR" />
+		<result column="pages" property="pages" jdbcType="INTEGER" />
+		<result column="book_size" property="bookSize"
+			jdbcType="VARCHAR" />
+		<result column="source" property="source" jdbcType="TINYINT" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		id, order_id, book_id, book_qty, total_price, prebook_id,
+		status,
+		goods_code, checkedmsg,
+		price, isbn, title, author, publisher,
+		pubdate, book_type, pages, book_size,
+		source
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBookCriteria">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from t_purchase_book
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_purchase_book
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		t_purchase_book
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByExample"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBookCriteria">
+		delete from t_purchase_book
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		insert into t_purchase_book (id, order_id, book_id,
+		book_qty, total_price, prebook_id,
+		status, goods_code, checkedmsg,
+		price, isbn, title, author,
+		publisher, pubdate, book_type,
+		pages,
+		book_size, source
+		)
+		values (#{id,jdbcType=BIGINT},
+		#{orderId,jdbcType=BIGINT},
+		#{bookId,jdbcType=BIGINT},
+		#{bookQty,jdbcType=INTEGER}, #{totalPrice,jdbcType=REAL},
+		#{prebookId,jdbcType=BIGINT},
+		#{status,jdbcType=TINYINT},
+		#{goodsCode,jdbcType=VARCHAR},
+		#{checkedmsg,jdbcType=VARCHAR},
+		#{price,jdbcType=REAL}, #{isbn,jdbcType=VARCHAR},
+		#{title,jdbcType=VARCHAR},
+		#{author,jdbcType=VARCHAR},
+		#{publisher,jdbcType=VARCHAR}, #{pubdate,jdbcType=VARCHAR},
+		#{bookType,jdbcType=VARCHAR},
+		#{pages,jdbcType=INTEGER},
+		#{bookSize,jdbcType=VARCHAR},
+		#{source,jdbcType=TINYINT}
+		)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		insert into t_purchase_book
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="bookId != null">
+				book_id,
+			</if>
+			<if test="bookQty != null">
+				book_qty,
+			</if>
+			<if test="totalPrice != null">
+				total_price,
+			</if>
+			<if test="prebookId != null">
+				prebook_id,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="goodsCode != null">
+				goods_code,
+			</if>
+			<if test="checkedmsg != null">
+				checkedmsg,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="isbn != null">
+				isbn,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="author != null">
+				author,
+			</if>
+			<if test="publisher != null">
+				publisher,
+			</if>
+			<if test="pubdate != null">
+				pubdate,
+			</if>
+			<if test="bookType != null">
+				book_type,
+			</if>
+			<if test="pages != null">
+				pages,
+			</if>
+			<if test="bookSize != null">
+				book_size,
+			</if>
+			<if test="source != null">
+				source,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=BIGINT},
+			</if>
+			<if test="bookId != null">
+				#{bookId,jdbcType=BIGINT},
+			</if>
+			<if test="bookQty != null">
+				#{bookQty,jdbcType=INTEGER},
+			</if>
+			<if test="totalPrice != null">
+				#{totalPrice,jdbcType=REAL},
+			</if>
+			<if test="prebookId != null">
+				#{prebookId,jdbcType=BIGINT},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="goodsCode != null">
+				#{goodsCode,jdbcType=VARCHAR},
+			</if>
+			<if test="checkedmsg != null">
+				#{checkedmsg,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=REAL},
+			</if>
+			<if test="isbn != null">
+				#{isbn,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="author != null">
+				#{author,jdbcType=VARCHAR},
+			</if>
+			<if test="publisher != null">
+				#{publisher,jdbcType=VARCHAR},
+			</if>
+			<if test="pubdate != null">
+				#{pubdate,jdbcType=VARCHAR},
+			</if>
+			<if test="bookType != null">
+				#{bookType,jdbcType=VARCHAR},
+			</if>
+			<if test="pages != null">
+				#{pages,jdbcType=INTEGER},
+			</if>
+			<if test="bookSize != null">
+				#{bookSize,jdbcType=VARCHAR},
+			</if>
+			<if test="source != null">
+				#{source,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBookCriteria"
+		resultType="java.lang.Integer">
+		select count(*) from t_purchase_book
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update t_purchase_book
+		<set>
+			<if test="record.id != null">
+				id = #{record.id,jdbcType=BIGINT},
+			</if>
+			<if test="record.orderId != null">
+				order_id = #{record.orderId,jdbcType=BIGINT},
+			</if>
+			<if test="record.bookId != null">
+				book_id = #{record.bookId,jdbcType=BIGINT},
+			</if>
+			<if test="record.bookQty != null">
+				book_qty = #{record.bookQty,jdbcType=INTEGER},
+			</if>
+			<if test="record.totalPrice != null">
+				total_price = #{record.totalPrice,jdbcType=REAL},
+			</if>
+			<if test="record.prebookId != null">
+				prebook_id = #{record.prebookId,jdbcType=BIGINT},
+			</if>
+			<if test="record.status != null">
+				status = #{record.status,jdbcType=TINYINT},
+			</if>
+			<if test="record.goodsCode != null">
+				goods_code = #{record.goodsCode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.checkedmsg != null">
+				checkedmsg = #{record.checkedmsg,jdbcType=VARCHAR},
+			</if>
+			<if test="record.price != null">
+				price = #{record.price,jdbcType=REAL},
+			</if>
+			<if test="record.isbn != null">
+				isbn = #{record.isbn,jdbcType=VARCHAR},
+			</if>
+			<if test="record.title != null">
+				title = #{record.title,jdbcType=VARCHAR},
+			</if>
+			<if test="record.author != null">
+				author = #{record.author,jdbcType=VARCHAR},
+			</if>
+			<if test="record.publisher != null">
+				publisher = #{record.publisher,jdbcType=VARCHAR},
+			</if>
+			<if test="record.pubdate != null">
+				pubdate = #{record.pubdate,jdbcType=VARCHAR},
+			</if>
+			<if test="record.bookType != null">
+				book_type = #{record.bookType,jdbcType=VARCHAR},
+			</if>
+			<if test="record.pages != null">
+				pages = #{record.pages,jdbcType=INTEGER},
+			</if>
+			<if test="record.bookSize != null">
+				book_size = #{record.bookSize,jdbcType=VARCHAR},
+			</if>
+			<if test="record.source != null">
+				source = #{record.source,jdbcType=TINYINT},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update t_purchase_book
+		set id = #{record.id,jdbcType=BIGINT},
+		order_id =
+		#{record.orderId,jdbcType=BIGINT},
+		book_id =
+		#{record.bookId,jdbcType=BIGINT},
+		book_qty =
+		#{record.bookQty,jdbcType=INTEGER},
+		total_price =
+		#{record.totalPrice,jdbcType=REAL},
+		prebook_id =
+		#{record.prebookId,jdbcType=BIGINT},
+		status =
+		#{record.status,jdbcType=TINYINT},
+		goods_code =
+		#{record.goodsCode,jdbcType=VARCHAR},
+		checkedmsg =
+		#{record.checkedmsg,jdbcType=VARCHAR},
+		price =
+		#{record.price,jdbcType=REAL},
+		isbn = #{record.isbn,jdbcType=VARCHAR},
+		title = #{record.title,jdbcType=VARCHAR},
+		author =
+		#{record.author,jdbcType=VARCHAR},
+		publisher =
+		#{record.publisher,jdbcType=VARCHAR},
+		pubdate =
+		#{record.pubdate,jdbcType=VARCHAR},
+		book_type =
+		#{record.bookType,jdbcType=VARCHAR},
+		pages =
+		#{record.pages,jdbcType=INTEGER},
+		book_size =
+		#{record.bookSize,jdbcType=VARCHAR},
+		source =
+		#{record.source,jdbcType=TINYINT}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		update t_purchase_book
+		<set>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=BIGINT},
+			</if>
+			<if test="bookId != null">
+				book_id = #{bookId,jdbcType=BIGINT},
+			</if>
+			<if test="bookQty != null">
+				book_qty = #{bookQty,jdbcType=INTEGER},
+			</if>
+			<if test="totalPrice != null">
+				total_price = #{totalPrice,jdbcType=REAL},
+			</if>
+			<if test="prebookId != null">
+				prebook_id = #{prebookId,jdbcType=BIGINT},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="goodsCode != null">
+				goods_code = #{goodsCode,jdbcType=VARCHAR},
+			</if>
+			<if test="checkedmsg != null">
+				checkedmsg = #{checkedmsg,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				price = #{price,jdbcType=REAL},
+			</if>
+			<if test="isbn != null">
+				isbn = #{isbn,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="author != null">
+				author = #{author,jdbcType=VARCHAR},
+			</if>
+			<if test="publisher != null">
+				publisher = #{publisher,jdbcType=VARCHAR},
+			</if>
+			<if test="pubdate != null">
+				pubdate = #{pubdate,jdbcType=VARCHAR},
+			</if>
+			<if test="bookType != null">
+				book_type = #{bookType,jdbcType=VARCHAR},
+			</if>
+			<if test="pages != null">
+				pages = #{pages,jdbcType=INTEGER},
+			</if>
+			<if test="bookSize != null">
+				book_size = #{bookSize,jdbcType=VARCHAR},
+			</if>
+			<if test="source != null">
+				source = #{source,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		update t_purchase_book
+		set order_id =
+		#{orderId,jdbcType=BIGINT},
+		book_id = #{bookId,jdbcType=BIGINT},
+		book_qty = #{bookQty,jdbcType=INTEGER},
+		total_price =
+		#{totalPrice,jdbcType=REAL},
+		prebook_id = #{prebookId,jdbcType=BIGINT},
+		status = #{status,jdbcType=TINYINT},
+		goods_code =
+		#{goodsCode,jdbcType=VARCHAR},
+		checkedmsg =
+		#{checkedmsg,jdbcType=VARCHAR},
+		price = #{price,jdbcType=REAL},
+		isbn =
+		#{isbn,jdbcType=VARCHAR},
+		title = #{title,jdbcType=VARCHAR},
+		author =
+		#{author,jdbcType=VARCHAR},
+		publisher = #{publisher,jdbcType=VARCHAR},
+		pubdate = #{pubdate,jdbcType=VARCHAR},
+		book_type =
+		#{bookType,jdbcType=VARCHAR},
+		pages = #{pages,jdbcType=INTEGER},
+		book_size = #{bookSize,jdbcType=VARCHAR},
+		source =
+		#{source,jdbcType=TINYINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<!--关联自定义SQL -->
+	<select id="queryPage"
+		resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO">
+		select distinct o.order_code as order_code,
+		o.express_code as
+		express_code,
+		o.order_time as order_time,
+		o.sendee_id as sendee_id,
+		o.total_quantity as total_quantity,
+		o.order_status as order_status,
+		o.library_id as library_id,
+		o.purchase_code as purchase_code,
+		o.creator
+		as creator,
+		(select cp.username from t_people cp where 1=1 and
+		cp.user_id=o.creator) as
+		creatorName,
+		o.create_time as create_time,
+		o.check_status as check_status,
+		o.checker as checker,
+		o.check_time as
+		check_time,
+		o.rule_id as rule_id,
+		o.committer as committer,
+		ob.*,org.name as libraryName from t_purchase_book ob
+		left join
+		t_purchase_order o on o.id=ob.order_id
+		left join t_organization org on
+		org.id=o.library_id
+		left join t_people p on p.user_id=o.creator
+		left
+		join t_user u on u.id=p.user_id
+		where 1=1
+		<if test="id != null and id != ''">
+			AND ob.id = #{id}
+		</if>
+		<if test="orderId != null">
+			AND ob.order_id = #{orderId}
+		</if>
+		<if test="libraryId != null">
+			AND o.library_id = #{libraryId}
+		</if>
+		<if test="purchaseCode != null and purchaseCode != ''">
+			AND o.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+		</if>
+		<if test="orderCode != null and orderCode != ''">
+			AND o.order_code LIKE CONCAT('%',#{orderCode},'%')
+		</if>
+		<if test="expressCode != null and expressCode != ''">
+			AND o.express_code LIKE CONCAT('%',#{expressCode},'%')
+		</if>
+		<if test="creatorName != null and creatorName != ''">
+			AND p.username LIKE CONCAT('%',#{creatorName},'%')
+		</if>
+		<if
+			test="orderCodeHave != null and orderCodeHave != '' and orderCodeHave==0">
+			AND (o.order_code is null or o.order_code='')
+		</if>
+		<if
+			test="orderCodeHave != null and orderCodeHave != '' and orderCodeHave==1">
+			AND o.order_code<![CDATA[<>]]>''
+			AND o.order_code is not null
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='libraryName'">
+			AND org.name LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='orderCode'">
+			AND o.order_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='purchaseCode'">
+			AND o.purchase_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='creatorAccount'">
+			AND u.login_name LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='creatorName'">
+			AND p.username LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='bookType'">
+			AND ob.book_type LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='title'">
+			AND ob.title LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+			AND ob.isbn LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='author'">
+			AND ob.author LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+			AND ob.publisher LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if test="checkStatusSearch != null and checkStatusSearch != ''">
+			AND ob.status = #{checkStatusSearch}
+		</if>
+		<if test="orderStatus != null and orderStatus != ''">
+			AND ob.order_status = #{orderStatus}
+		</if>
+		<if test="status != null and status != ''">
+			AND ob.status = #{status}
+		</if>
+		<if test="source != null and source != ''">
+			AND ob.source = #{source}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			AND ob.pubdate >= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND ob.pubdate <![CDATA[<]]>
+			#{endTime}
+		</if>
+		<if test="ids != null">
+			AND ob.id in
+			<foreach item="id" collection="ids" open="(" separator=", "
+				close=")">
+				#{id}
+			</foreach>
+		</if>
+	</select>
+	<select id="queryPrePage"
+		resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO">
+		select distinct
+		ob.id,ob.prebook_id,ob.book_id,ob.status,ob.checkedmsg,ob.isbn,
+		o.id as
+		orderId,o.library_id,o.order_code,o.purchase_code,o.rule_id,
+		pre.title
+		as title,pre.author,pre.publisher,pre.source,
+		pre.book_type as
+		bookType,pre.pubdate,pre.price,ob.book_qty,ob.total_price,
+		cu.login_name as creatorName,
+		cu.login_name as creatorAccount,
+		che.login_name as checkerName ,che.login_name as checkerAccount
+		from
+		t_purchase_book ob
+		left join t_purchase_order o on o.id=ob.order_id
+		left join t_prebook pre on pre.id=ob.prebook_id
+		left join t_user cu on
+		o.creator=cu.id
+		left join t_user che on o.checker=che.id
+		where 1=1 and
+		ob.prebook_id is not null
+		<if test="id != null and id != ''">
+			AND ob.id = #{id}
+		</if>
+		<if test="orderId != null">
+			AND o.id = #{orderId}
+		</if>
+		<if test="libraryId != null">
+			AND o.library_id = #{libraryId}
+		</if>
+		<if test="purchaseCode != null and purchaseCode != ''">
+			AND o.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+		</if>
+		<if test="orderCode != null and orderCode != ''">
+			AND o.order_code LIKE CONCAT('%',#{orderCode},'%')
+		</if>
+		<if test="expressCode != null and expressCode != ''">
+			AND o.express_code LIKE CONCAT('%',#{expressCode},'%')
+		</if>
+		<if test="creatorName != null and creatorName != ''">
+			AND cr.login_name LIKE CONCAT('%',#{creatorName},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='orderCode'">
+			AND o.order_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='purchaseCode'">
+			AND o.purchase_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='creatorAccount'">
+			AND cr.login_name LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='creatorName'">
+			AND cr.login_name LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='title'">
+			AND pre.title LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+			AND pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='author'">
+			AND pre.author LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+			AND pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if test="checkStatusSearch != null and checkStatusSearch !=''">
+			AND o.check_status = #{checkStatusSearch}
+		</if>
+		<if test="orderStatus != null and orderStatus !=''">
+			AND o.order_status = #{orderStatus}
+		</if>
+		<if test="source != null and source != ''">
+			AND pre.source = #{source}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			AND o.create_time >= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND o.create_time <![CDATA[<]]>
+			#{endTime}
+		</if>
+	</select>
+	<select id="queryLibraryBookPage"
+		resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO">
+		select distinct
+		ob.id,ob.prebook_id,ob.book_id,ob.status,ob.checkedmsg,ob.isbn,
+		o.id as
+		orderId,o.library_id,o.order_code,o.purchase_code,o.rule_id,
+		b.title as
+		title,b.author,b.publisher,'2'as source,
+		b.book_type as
+		bookType,b.pubdate,b.price,ob.book_qty,ob.total_price,
+		cu.login_name as
+		creatorName,
+		cu.login_name as creatorAccount,
+		che.login_name as
+		checkerName ,che.login_name as checkerAccount
+		from t_purchase_book ob
+		left join t_purchase_order o on o.id=ob.order_id
+		left join t_book b on
+		b.id=ob.book_id
+		left join t_user cu on o.creator=cu.id
+		left join t_user
+		che on o.checker=che.id
+		where 1=1 and ob.book_id is not NULL and
+		ob.prebook_id is null
+		<if test="id != null">
+			AND ob.id = #{id}
+		</if>
+		<if test="orderId != null">
+			AND o.id = #{orderId}
+		</if>
+		<if test="libraryId != null ">
+			AND o.library_id = #{libraryId}
+		</if>
+		<if test="purchaseCode != null and purchaseCode != ''">
+			AND o.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+		</if>
+		<if test="orderCode != null and orderCode != ''">
+			AND o.order_code LIKE CONCAT('%',#{orderCode},'%')
+		</if>
+		<if test="expressCode != null and expressCode != ''">
+			AND o.express_code LIKE CONCAT('%',#{expressCode},'%')
+		</if>
+		<if test="creatorName != null and creatorName != ''">
+			AND cr.username LIKE CONCAT('%',#{creatorName},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='orderCode'">
+			AND o.order_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='purchaseCode'">
+			AND o.purchase_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='creatorAccount'">
+			AND cr.login_name LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='creatorName'">
+			AND cr.username LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='title'">
+			AND b.title LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+			AND b.isbn LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='author'">
+			AND b.author LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+			AND b.publisher LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if test="checkStatusSearch != null and checkStatusSearch != ''">
+			AND o.check_status = #{checkStatusSearch}
+		</if>
+
+		<if test="startTime != null and startTime != ''">
+			AND o.create_time >= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND o.create_time <![CDATA[<]]>
+			#{endTime}
+		</if>
+	</select>
+	<select id="getBooks"
+		parameterType="com.szcti.lcloud.purchase.entity.vo.BookInfo"
+		resultType="java.lang.Long">
+		select distinct ob.id
+		from v_order_book ob
+		where 1=1
+		<if test="title != null and title != ''">
+			AND ob.title=#{title}
+		</if>
+		<if test="orderId != null">
+			AND ob.order_id=#{orderId}
+		</if>
+		<if test="isbn != null and isbn != ''">
+			AND ob.isbn=#{isbn}
+		</if>
+		<if test="author != null and author != ''">
+			AND ob.author=#{author}
+		</if>
+		<if test="publisher != null and publisher != ''">
+			AND ob.publisher =#{publisher}
+		</if>
+
+		<if test="pubdate != null and pubdate != ''">
+			AND ob.pubdate = #{pubdate}
+		</if>
+		<if test="barcode != null and barcode != ''">
+			AND ob.barcode = #{barcode}
+		</if>
+		<if test="source != null and source != ''">
+			AND ob.source = #{source}
+		</if>
+	</select>
+	<select id="getDupBooks"
+		parameterType="com.szcti.lcloud.purchase.entity.vo.BookInfo"
+		resultType="java.lang.Long">
+		select distinct ob.id
+		from v_order_book ob
+		/* left join t_purchase_order
+		po on po.id=ob.order_id
+		left join t_prebook pre on
+		pre.id=ob.prebook_id*/
+		where 1=1
+		<if test="orderId != null">
+			AND ob.order_id=#{orderId}
+		</if>
+		<if test="libraryId != null and libraryId != ''">
+			AND ob.library_id=#{libraryId}
+		</if>
+		<if test="title != null and title != ''">
+			AND ob.title=#{title}
+		</if>
+		<if test="isbn != null and isbn != ''">
+			AND ob.isbn=#{isbn}
+		</if>
+		<if test="author != null and author != ''">
+			AND ob.author=#{author}
+		</if>
+		<if test="publisher != null and publisher != ''">
+			AND ob.publisher =#{publisher}
+		</if>
+
+		<if test="pubdate != null and pubdate != ''">
+			AND ob.pubdate = #{pubdate}
+		</if>
+		<if test="barcode != null and barcode != ''">
+			AND ob.barcode = #{barcode}
+		</if>
+		<if test="status != null">
+			AND ob.status = #{status}
+		</if>
+		<if test="orderStatus != null">
+			AND ob.order_status = #{orderStatus}
+		</if>
+		<if test="source != null">
+			AND ob.source = #{source}
+		</if>
+	</select>
+	<select id="getAcceptBook"
+		parameterType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO"
+		resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO">
+		select DISTINCT po.purchase_code,po.order_code,po.library_id,pb.*
+		,(select sum(obb.book_qty) from t_orderbatch_book obb where
+		obb.purchase_book_id=pb.id)as batchQty,
+		(select sum(obb1.checked_qty)
+		from t_orderbatch_book obb1 where
+		obb1.purchase_book_id=pb.id) as
+		checkedQty,
+		(pb.book_qty-(select sum(obb1.checked_qty) from
+		t_orderbatch_book obb1 where
+		obb1.purchase_book_id=pb.id)) as remainQty
+		from t_purchase_order po left join t_purchase_book pb on
+		po.id=pb.order_id
+		left join t_organization li on po.library_id=li.id
+		where po.committer>0 and po.order_status>2
+		<if test="id != null">
+			AND pb.id = #{id}
+		</if>
+		<if test="orderId != null">
+			AND pb.order_id = #{orderId}
+		</if>
+		<if test="libraryId != null">
+			AND po.library_id = #{libraryId}
+		</if>
+		<if test="purchaseCode != null and purchaseCode != ''">
+			AND po.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+		</if>
+		<if test="orderCode != null and orderCode != ''">
+			AND po.order_code LIKE CONCAT('%',#{orderCode},'%')
+		</if>
+		<if test="expressCode != null and expressCode != ''">
+			AND po.express_code LIKE CONCAT('%',#{expressCode},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='orderCode'">
+			AND po.order_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='purchaseCode'">
+			AND po.purchase_code LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='title'">
+			AND pb.title LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+			AND pb.isbn LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='author'">
+			AND pb.author LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if
+			test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+			AND pb.publisher LIKE CONCAT('%',#{searchValue},'%')
+		</if>
+		<if test="checkStatusSearch != null">
+			AND po.check_status = #{checkStatusSearch}
+		</if>
+		<if test="orderStatus != null and orderStatus !=''">
+			AND po.order_status = #{orderStatus}
+		</if>
+		<if test="status != null and status !=''">
+			AND pb.status = #{status}
+		</if>
+		<if test="source != null and source !=''">
+			AND pb.source = #{source}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			AND po.create_time >= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND po.create_time <![CDATA[<]]>
+			#{endTime}
+		</if>
+		<if test="ids != null">
+			AND pb.id in
+			<foreach item="id" collection="ids" open="(" separator=", "
+				close=")">
+				#{id}
+			</foreach>
+		</if>
+		<if test="statusList != null">
+			AND pb.id in
+			<foreach item="status" collection="statusList" open="("
+				separator=", " close=")">
+				#{status}
+			</foreach>
+		</if>
+		<if test="orderStatusList != null">
+			AND po.order_status in
+			<foreach item="orderStatus" collection="orderStatusList"
+				open="(" separator=", " close=")">
+				#{orderStatus}
+			</foreach>
+		</if>
+		<if test="checkStatusList != null">
+			AND po.check_status in
+			<foreach item="checkStatus" collection="checkStatusList"
+				open="(" separator=", " close=")">
+				#{checkStatus}
+			</foreach>
+		</if>
+	</select>
+	<select id="getPurchasingBooks"
+		parameterType="com.szcti.lcloud.purchase.entity.vo.BookInfo"
+		resultType="java.lang.Long">
+		select distinct ob.id
+		from v_order_book ob
+		where 1=1 and ob.status
+		in('3','4','5','6')
+		<if test="orderId != null">
+			AND ob.order_id=#{orderId}
+		</if>
+		<if test="libraryId != null and libraryId != ''">
+			AND ob.library_id=#{libraryId}
+		</if>
+		<if test="title != null and title != ''">
+			AND ob.title=#{title}
+		</if>
+		<if test="isbn != null and isbn != ''">
+			AND ob.isbn=#{isbn}
+		</if>
+		<if test="author != null and author != ''">
+			AND ob.author=#{author}
+		</if>
+		<if test="publisher != null and publisher != ''">
+			AND ob.publisher =#{publisher}
+		</if>
+
+		<if test="pubdate != null and pubdate != ''">
+			AND ob.pubdate = #{pubdate}
+		</if>
+		<if test="barcode != null and barcode != ''">
+			AND ob.barcode = #{barcode}
+		</if>
+		<if test="status != null and status !=''">
+			AND ob.status = #{status}
+		</if>
+		<if test="orderStatus != null and orderStatus !=''">
+			AND ob.order_status = #{orderStatus}
+		</if>
+		<if test="source != null and source !=''">
+			AND ob.source = #{source}
+		</if>
+	</select>
+
+	<select id="queryPurchaseBook"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook"
+		resultType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		select * from t_purchase_book where 1=1
+		<if test="orderId != null">
+			and order_id=#{orderId}
+		</if>
+		<if test="libraryId != null and libraryId != ''">
+			and library_id=#{libraryId}
+		</if>
+		<if test="source != null and source !=''">
+			and source = #{source}
+		</if>
+		<if test="bookId != null and bookId !=''">
+			and book_id = #{bookId}
+		</if>
+	</select>
+
+
+	<insert id="insertPurchaseBook"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		insert into t_purchase_book (
+		order_id,book_id,
+		book_qty,status,source,library_id
+		)
+		values (
+		#{orderId,jdbcType=BIGINT},
+		#{bookId,jdbcType=BIGINT},
+		#{bookQty,jdbcType=INTEGER},#{status,jdbcType=TINYINT},
+		#{source,jdbcType=TINYINT},#{libraryId,jdbcType=TINYINT}
+		)
+	</insert>
+
+
+	<update id="updatePurchaseBook"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		update t_purchase_book
+		<set>
+			<if test="bookQty != null">
+				book_qty=book_qty+ #{bookQty,jdbcType=BIGINT},
+			</if>
+		</set>
+		where order_id=#{orderId} and
+		library_id=#{libraryId} and
+		source=#{source} and
+		book_id = #{bookId}
+	</update>
+
+	<select id="getPageBook"
+		resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO">
+		select
+		b.id,b.title,b.isbn,b.author,b.book_type,b.publisher,b.pubdate,b.price,a.book_qty,a.source
+		from t_purchase_book a left join t_book_xh b ON a.book_id=b.id and
+		a.library_id=#{libraryId}
+		where 1=1
+		<if test="isbn != null and isbn != ''">
+			and b.isbn like concat('%', #{isbn}, '%')
+		</if>
+		<if test="title != null and title != ''">
+			and b.title like concat('%', #{title}, '%')
+		</if>
+		<if test="author != null and author != ''">
+			and b.author like concat('%', #{author}, '%')
+		</if>
+		<if test="publisher != null and publisher != ''">
+			and b.publisher like concat('%', #{publisher}, '%')
+		</if>
+		<if test="startTime != null and startTime != ''">
+			and b.createtime >= DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		</if>
+		<if test="endTime != null and endTime != ''">
+			and b.createtime >= DATE_FORMAT(#{endTime},'%Y-%m-%d')
+		</if>
+	</select>
+	<select id="queryPagePreBook"
+		resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO">
+		select
+		b.id,b.title,b.isbn,b.author,b.book_type,b.publisher,b.pubdate,b.price,a.book_qty,a.source
+		from t_purchase_book a left join t_book_xh b ON a.book_id=b.id and
+		a.library_id=#{libraryId}
+		where 1=1
+		<if test="isbn != null and isbn != ''">
+			and b.isbn like concat('%', #{isbn}, '%')
+		</if>
+		<if test="title != null and title != ''">
+			and b.title like concat('%', #{title}, '%')
+		</if>
+		<if test="author != null and author != ''">
+			and b.author like concat('%', #{author}, '%')
+		</if>
+		<if test="publisher != null and publisher != ''">
+			and b.publisher like concat('%', #{publisher}, '%')
+		</if>
+		<if test="startTime != null and startTime != ''">
+			and b.createtime >= DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		</if>
+		<if test="endTime != null and endTime != ''">
+			and b.createtime >= DATE_FORMAT(#{endTime},'%Y-%m-%d')
+		</if>
+
+
+	</select>
+	<select id="queryPageBookXH"
+		resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseBookVO">
+		select
+		b.id,b.title,b.isbn,b.author,b.cip as
+		book_type,b.publisher,b.pubdate,b.price,a.book_qty,a.source
+		from
+		t_purchase_book a left join t_book_xh b ON a.book_id=b.id and
+		a.library_id=#{libraryId}
+		where 1=1
+		<if test="isbn != null and isbn != ''">
+			and b.isbn like concat('%', #{isbn}, '%')
+		</if>
+		<if test="title != null and title != ''">
+			and b.title like concat('%', #{title}, '%')
+		</if>
+		<if test="author != null and author != ''">
+			and b.author like concat('%', #{author}, '%')
+		</if>
+		<if test="publisher != null and publisher != ''">
+			and b.publisher like concat('%', #{publisher}, '%')
+		</if>
+		<if test="startTime != null and startTime != ''">
+			and b.createtime >= DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		</if>
+		<if test="endTime != null and endTime != ''">
+			and b.createtime >= DATE_FORMAT(#{endTime},'%Y-%m-%d')
+		</if>
+	</select>
+
+	<insert id="insertPurchaseBook"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		insert into t_purchase_book (
+		order_id,book_id,
+		book_qty,status,source,library_id
+		)
+		values (
+		#{orderId,jdbcType=BIGINT},
+		#{bookId,jdbcType=BIGINT},
+		#{bookQty,jdbcType=INTEGER},#{status,jdbcType=TINYINT},
+		#{source,jdbcType=TINYINT},#{libraryId,jdbcType=TINYINT}
+		)
+	</insert>
+
+	<delete id="deletePurchaseBook"
+		parameterType="com.szcti.lcloud.purchase.entity.PurchaseBook">
+		delete from t_purchase_book where 1=1 and
+		order_id=#{orderId,jdbcType=BIGINT} and
+		book_id=#{bookId,jdbcType=BIGINT} and
+		library_id=#{libraryId,jdbcType=TINYINT}
+	</delete>
+</mapper>

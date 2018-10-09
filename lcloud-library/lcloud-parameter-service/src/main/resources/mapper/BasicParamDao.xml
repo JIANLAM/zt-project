@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.parameter.repository.BasicParamDao">
+
+    <sql id="BasicParamEntityColumns">
+            id,
+            `value`,
+            label,
+            type,
+            description,
+            library_id,
+            create_date createDate,
+            create_by createBy,
+            remarks
+    </sql>
+
+    <!--    查询所有基本参数    -->
+    <select id="findList" resultType="com.szcti.lcloud.parameter.entity.BasicParamEntity">
+        SELECT
+            <include refid="BasicParamEntityColumns"/>
+        FROM
+            sys_basicparam
+        WHERE 1 =1
+        <if test=" type != null and type!= ''">
+            AND type = #{type}
+        </if>
+        <if test=" libraryId != null ">
+            AND library_id = #{libraryId}
+        </if>
+        ORDER BY create_date DESC
+    </select>
+
+    <!--    查询一行基本参数    -->
+    <select id="get" resultType="com.szcti.lcloud.parameter.entity.BasicParamEntity">
+        SELECT
+            <include refid="BasicParamEntityColumns"/>
+        FROM
+            sys_basicparam
+        WHERE id = #{id}
+    </select>
+
+    <!--    删除 一条或多条 基本参数    -->
+    <delete id="delCustom">
+        DELETE FROM sys_basicparam WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    新增 一条 基本参数    -->
+    <insert id="insertCustom">
+        INSERT INTO sys_basicparam (
+                id,
+                `value`,
+                label,
+                type,
+                description,
+                library_id,
+                create_date,
+                create_by,
+                remarks
+        )
+        VALUES
+            (
+                #{id},
+                #{value},
+                #{label},
+                #{type},
+                #{description},
+                #{libraryId},
+                #{createDate},
+                #{createBy},
+                #{remarks}
+            )
+    </insert>
+
+    <!--    修改 一条 基本参数    -->
+    <update id="updateCustom">
+     UPDATE sys_basicparam
+         SET
+            `value` = #{value},
+            label = #{label},
+            description = #{description},
+            remarks = #{remarks}
+         WHERE	id = #{id}
+    </update>
+
+    <!--    新增同一类型 是否出现相同的键值    -->
+    <select id="existsValue" resultType="Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sys_basicparam
+        WHERE
+            type =#{type} AND VALUE = #{value}
+        <if test=" libraryId != null ">
+            AND library_id = #{libraryId}
+        </if>
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+
+    </select>
+
+    <!--  **************************************************        读者证类型         ***************************************************  -->
+
+    <!--    查询读者证类型    -->
+    <select id="readerCardList" resultType="com.szcti.lcloud.parameter.entity.ReaderCardEntity">
+        SELECT
+            c.id,
+            c.
+            value,
+            c.label,
+            c.library_id,
+            r.rule_name museumRuleTest,
+            r2.rule_name interlibraryRuleTest,
+            c.museum_rule,
+            c.interlibrary_rule,
+            c.create_date,
+            c.create_by,
+            c.remarks
+        FROM
+            t_readercard c
+        LEFT JOIN t_lend_rule r ON c.museum_rule = r.id
+        LEFT JOIN t_lend_rule r2 ON c.interlibrary_rule = r2.id
+        WHERE 1 = 1
+        <if test=" libraryId != null ">
+            AND c.library_id = #{libraryId}
+        </if>
+    </select>
+
+    <!--    查询读者证类型 一条数据    -->
+    <select id="readerCardGet" resultType="com.szcti.lcloud.parameter.entity.ReaderCardEntity">
+        SELECT
+            id,
+            value,
+            label,
+            library_id,
+            museum_rule,
+            interlibrary_rule,
+            create_date,
+            create_by,
+            remarks
+        FROM
+            t_readercard
+        WHERE id = {id}
+    </select>
+
+    <!--    删除 一条或多条 读者证类型    -->
+    <delete id="delReaderCard">
+        DELETE FROM t_readercard WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    新增 一条 读者证类型    -->
+    <insert id="insertReaderCard">
+        INSERT INTO t_readercard (
+            id,
+            `value`,
+            label,
+            library_id,
+            museum_rule,
+            interlibrary_rule,
+            create_date,
+            create_by,
+            remarks
+        )
+        VALUES
+        (
+            #{id},
+            #{value},
+            #{label},
+            #{libraryId},
+            #{museumRule},
+            #{interlibraryRule},
+            #{createDate},
+            #{createBy},
+            #{remarks}
+        )
+    </insert>
+
+    <!--    修改 一条 读者证类型    -->
+    <update id="updateReaderCard">
+        UPDATE t_readercard
+        SET
+        `value` = #{value},
+        label = #{label},
+        museum_rule = #{museumRule},
+        interlibrary_rule = #{interlibraryRule},
+        remarks = #{remarks}
+        WHERE	id = #{id}
+    </update>
+
+    <!--    新增读者证类型 是否出现相同的键值    -->
+    <select id="existsReaderValue" resultType="Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            t_readercard
+        WHERE
+            value = #{value}
+        <if test=" libraryId != null ">
+            AND library_id = #{libraryId}
+        </if>
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+</mapper>

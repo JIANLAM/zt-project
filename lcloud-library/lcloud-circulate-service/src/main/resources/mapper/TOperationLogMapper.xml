@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.circulate.mapper.TOperationLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.circulate.entity.TOperationLog">
+        <id column="id" property="id" />
+        <result column="module_id" property="moduleId" />
+        <result column="module_name" property="moduleName" />
+        <result column="operation_type" property="operationType" />
+        <result column="library_id" property="libraryId" />
+        <result column="library_name" property="libraryName" />
+        <result column="user_id" property="userId" />
+        <result column="login_name" property="loginName" />
+        <result column="user_name" property="userName" />
+        <result column="ip" property="ip" />
+        <result column="op_content" property="opContent" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+</mapper>

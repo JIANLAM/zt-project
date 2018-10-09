@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.purchase.repository.LibraryAddressRepository">
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.purchase.entity.LibraryAddress">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="library_id" jdbcType="BIGINT" property="libraryId" />
+    <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="area_id" jdbcType="INTEGER" property="areaId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="bill_code" jdbcType="VARCHAR" property="billCode" />
+    <result column="ratepayer_code" jdbcType="VARCHAR" property="ratepayerCode" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="creator" jdbcType="BIGINT" property="creator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="postcode" jdbcType="VARCHAR" property="postcode" />
+    <result column="default_set" jdbcType="VARCHAR" property="defaultSet" />
+  </resultMap>
+ <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select * from t_library_address
+    where id = #{id}
+  </select>
+ <select id="queryPage" parameterType="com.szcti.lcloud.purchase.entity.vo.LibraryAddressVO" resultType="com.szcti.lcloud.purchase.entity.vo.LibraryAddressVO">
+    select * from t_library_address li where 1=1
+    <if test="id != null" >
+      and li.id = #{id}
+    </if>
+    <if test="libraryId != null" >
+      and li.library_id = #{libraryId}
+    </if>
+    <if test="provinceId != null" >
+      and li.province_id = #{provinceId}
+    </if>
+    <if test="cityId != null" >
+      and li.city_id = #{cityId}
+    </if>
+    <if test="areaId != null" >
+      and li.area_id = #{areaId}
+    </if>
+    <if test="address != null and address !=''" >
+      and li.address LIKE CONCAT('%',#{address},'%')
+    </if>
+    <if test="contact != null and contact !=''" >
+      and li.contact LIKE CONCAT('%',#{contact},'%')
+    </if>
+    <if test="phone != null and phone !=''" >
+      and li.phone LIKE CONCAT('%',#{phone},'%')
+    </if>
+    <if test="email != null and email !=''" >
+      and li.email LIKE CONCAT('%',#{email},'%')
+    </if>
+    <if test="billCode != null and billCode !=''" >
+      and li.bill_code LIKE CONCAT('%',#{billCode},'%')
+    </if>
+    <if test="ratepayerCode != null and ratepayerCode !=''" >
+      and li.ratepayer_code LIKE CONCAT('%',#{ratepayerCode},'%')
+    </if>
+    <if test="creator != null" >
+      and li.creator =#{creator}
+    </if>
+    <if test="status != null and status !=''" >
+      and li.status =#{status}
+    </if>
+    <if test="postcode != null and postcode !=''" >
+      and li.postcode =#{postcode}
+    </if>
+    <if test="defaultSet != null and defaultSet !=''" >
+      and li.default_set =#{defaultSet}
+    </if>
+    <if test="searchKey != null and searchKey =='address'" >
+      and li.address LIKE CONCAT('%',#{address},'%')
+    </if>
+    <if test="searchKey != null and searchKey =='contact'" >
+      and li.contact LIKE CONCAT('%',#{contact},'%')
+    </if>
+    <if test="searchKey != null and searchKey =='phone'" >
+      and li.phone LIKE CONCAT('%',#{phone},'%')
+    </if>
+    <if test="searchKey != null and searchKey =='email'" >
+      and li.email LIKE CONCAT('%',#{email},'%')
+    </if>
+    <if test="searchKey != null and searchKey =='billCode'" >
+      and li.bill_code LIKE CONCAT('%',#{billCode},'%')
+    </if>
+    <if test="searchKey != null and searchKey =='ratepayerCode'" >
+      and li.ratepayer_code LIKE CONCAT('%',#{ratepayerCode},'%')
+    </if>
+  </select>
+  <select id="queryMapList" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select ad.id,ad.address,ad.bill_code as billCode,ad.ratepayer_code as ratepayerCode,ad.contact,ad.phone
+    from t_library_address ad where 1=1
+    <if test="status != null and status != ''">
+      and ad.status=#{status}
+    </if>
+    <if test="id != null and id != ''">
+      and ad.id=#{id}
+    </if>
+    <if test="libraryId != null and libraryId != ''">
+      and ad.library_id=#{libraryId}
+    </if>
+  </select>
+</mapper>

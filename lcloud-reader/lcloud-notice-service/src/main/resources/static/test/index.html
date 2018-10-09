@@ -1,0 +1,277 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>noticeTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-notice-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>获取我的通知接口</td>
+            <td>
+                <button type="submit" id="myNoticeList">点击我测试</button>
+            </td>
+            <td>#myNoticeList</td>
+            <td><span>GET</span></td>
+            <td>传值 var json = JSON.stringify({userId:1,startTime:"2017-01-01",endTime:null});</td>
+        </tr>
+        <tr>
+            <td>获取单个通知信息接口</td>
+            <td>
+                <button type="submit" id="myNoticeInfo">点击我测试</button>
+            </td>
+            <td>#myNoticeInfo</td>
+            <td><span>GET</span></td>
+            <td>传值 id = 1</td>
+        </tr>
+        <tr>
+            <td>获取我的通知接口</td>
+            <td>
+                <button type="submit" id="sendNoticeList">点击我测试</button>
+            </td>
+            <td>#sendNoticeList</td>
+            <td><span>GET</span></td>
+            <td>传值 var json = JSON.stringify({createBy:1,startTime:"2017-01-01",endTime:null});</td>
+        </tr>
+        <tr>
+            <td>发送通知接口</td>
+            <td>
+                <button type="submit" id="sendNoticeSave">点击我测试</button>
+            </td>
+            <td>#sendNoticeSave</td>
+            <td><span>POST</span></td>
+            <td> 新增</td>
+        </tr>
+        <tr>
+            <td>获取通知消息被读数目接口</td>
+            <td>
+                <button type="submit" id="sendNoticeCount">点击我测试</button>
+            </td>
+            <td>#sendNoticeCount</td>
+            <td><span>GET</span></td>
+            <td>传值 noticeInfoId = 1</td>
+        </tr>
+        <tr>
+            <td>通知变更为已读接口</td>
+            <td>
+                <button type="submit" id="sendNoticeRead">点击我测试</button>
+            </td>
+            <td>#sendNoticeRead</td>
+            <td><span>POST</span></td>
+            <td>传值 noticeInfoId = 1 修改</td>
+        </tr>
+        <tr>
+            <td>删除我的通知接口</td>
+            <td>
+                <button type="submit" id="deleteMyNotice">点击我测试</button>
+            </td>
+            <td>#deleteMyNotice</td>
+            <td><span>POST</span></td>
+            <td>传值 noticeReadId = 1，2 修改</td>
+        </tr>
+        <tr>
+            <td>将草稿通知 变为发送通知</td>
+            <td>
+                <button type="submit" id="sendNotice">点击我测试</button>
+            </td>
+            <td>#sendNotice</td>
+            <td><span>POST</span></td>
+            <td>{noticeInfoId} = 30</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    //将草稿通知 变为发送通知
+    $("#sendNotice").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8190/notice/v1/sendNotice/send/30',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+
+    //删除我的通知接口
+    $("#deleteMyNotice").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8190/notice/v1/myNotice/delete/1,2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //通知变更为已读接口
+    $("#sendNoticeRead").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8190/notice/v1/myNotice/read/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取通知消息被读数目接口
+    $("#sendNoticeCount").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8190/notice/v1/sendNotice/count/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //发送通知接口
+    $("#sendNoticeSave").click(function () {
+        var json = {title: "标题wsy", content: "内容111", type: 0, userIds: ["1", "2", "3"],status : 1};
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8190/notice/v1/sendNotice/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取已发送的通知接口
+    $("#sendNoticeList").click(function () {
+        var json = JSON.stringify({createBy: 1, startTime: "2017-01-01", endTime: null});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8190/notice/v1/sendNotice/list',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取单个通知信息接口
+    $("#myNoticeInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8190/notice/v1/myNotice/info/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取我的通知接口
+    $("#myNoticeList").click(function () {
+        var json = JSON.stringify({userId: 1});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8190/notice/v1/myNotice/list',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

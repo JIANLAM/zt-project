@@ -1,0 +1,209 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+	<script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+	<title>bookTest</title>
+	<style type="text/css">
+		body {
+			padding: 35px;
+		}
+
+		.big {
+			border: 1px #66B3FF solid;
+			box-shadow: -2px -1.5px 3px #0080FF;
+			width: 100%;
+			padding: 30px 0px;
+			margin: 0px auto;
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			align-items: flex-start;
+			height: 800px;
+			overflow: scroll;
+		}
+
+		table {
+			border: 1px #66B3FF solid;
+			box-shadow: 2px -1.5px 4px #66B3FF;
+			width: 70%;
+			text-align: center;
+			font-family: "黑体";
+			margin-top: -250px;
+		}
+
+		tr {
+			line-height: 35px;
+		}
+
+		td {
+			border: 1px white solid;
+		}
+
+		span {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+<div class="big">
+	<div style="width: 100%;text-align: center"><h1>lcloud-book-service 接口对接</h1></div>
+	<table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+		<thead>
+		<tr>
+			<td><strong>接口名称</strong></td>
+			<td><strong>点击按钮</strong></td>
+			<td><strong>绑定id名</strong></td>
+			<td><strong>请求方式</strong></td>
+			<td><strong>备注信息</strong></td>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>3.3.3.8.1	查询图书馆书籍列表接口</td>
+			<td>
+				<button type="submit" id="libBookList">点击我测试</button>
+			</td>
+			<td>#libBookList</td>
+			<td><span>GET</span></td>
+			<td> 传参 {qualification: null}</td>
+		</tr>
+		<tr>
+			<td>3.3.3.8.1	查询新华或其他书籍列表接口</td>
+			<td>
+				<button type="submit" id="foreighBookList">点击我测试</button>
+			</td>
+			<td>#foreighBookList</td>
+			<td><span>GET</span></td>
+			<td> 传参 {qualification: null}</td>
+		</tr>
+		<tr>
+			<td>查询图书馆书籍详细信息接口</td>
+			<td>
+				<button type="submit" id="libBookInfo">点击我测试</button>
+			</td>
+			<td>#libBookInfo</td>
+			<td><span>GET</span></td>
+			<td> 传参 bookId = 1 </td>
+		</tr>
+		<tr>
+			<td>查询新华或其他书籍详细信息接口</td>
+			<td>
+				<button type="submit" id="foreighBookInfo">点击我测试</button>
+			</td>
+			<td>#foreighBookInfo</td>
+			<td><span>GET</span></td>
+			<td> 传参 preBookTempId = 1 </td>
+		</tr>
+		<tr>
+			<td>查询本馆图书详情时查询可借阅 可预览 已借出</td>
+			<td>
+				<button type="submit" id="getBookInfoTable">点击我测试</button>
+			</td>
+			<td>#getBookInfoTable</td>
+			<td><span>GET</span></td>
+			<td> 传参 ｛status｝= 0 ｛bookId｝ = 0 </td>
+		</tr>
+		<tr>
+			<td colspan="5" id="data"></td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<script type="text/javascript">
+	//查询本馆图书详情时查询可借阅 可预览 已借出
+    $("#getBookInfoTable").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8188/book/v1/libBook/0/getBookInfoTable/2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    /***********************************微信端   图书查询******************************************/
+    //查询新华或其他书籍详细信息接口
+    $("#foreighBookInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8188/book/v1/foreighBook/info/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //查询图书馆书籍详细信息接口
+    $("#libBookInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8188/book/v1/libBook/info/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //3.3.3.8.4	查询新华或其他书籍列表接口
+    $("#foreighBookList").click(function () {
+        var json = JSON.stringify({title: null, author: null, ISBN: null, publisher: null, startTime:"2018-07-04"});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8188/book/v1/foreighBook/list',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //3.3.3.8.1	查询图书馆书籍列表接口
+    $("#libBookList").click(function () {
+        var json = JSON.stringify({callNo: "G451.2/1"});
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8286/holding/v1/manage/delete/'+'1531443791155,1531443791156',
+        //    data: json,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

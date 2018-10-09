@@ -1,0 +1,13 @@
+server:
+    #tomcat:
+    undertow:
+    port: 8192
+    connection-timeout: 5000
+    context-path: /apiCredit
+spring:
+  application:
+    name: service-credit
+  sleuth:
+    sampler:
+      percentage: 1
+

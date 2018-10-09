@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.lendbuy.repository.LendBuyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="getOrder" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyOrderVO">
+        SELECT * FROM t_lendbuy_order WHERE id = #{lendBuyOrderId}
+    </select>
+
+    <select id="findBooksInOrder" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyBookVO">
+        SELECT
+            lb.id,
+            lb.lendbuy_order_id,
+            lb.price,
+            lb.back_time,
+            lb.status,
+            lb.is_submit,
+            lb.online,
+            lb.due_back_time,
+            lo.order_no,
+            pb.id preBookId,
+            pb.pic,
+            pb.title,
+            pb.author,
+            pb.publisher,
+            pb.pubdate,
+            pb.book_pages,
+            pb.book_size,
+            pb.summary,
+            pb.ISBN,
+            pb.book_type,
+            p.username,
+            o.name libName
+        FROM t_lendbuy_book lb
+        LEFT JOIN t_prebook pb ON lb.prebook_id = pb.id
+        LEFT JOIN t_lendbuy_order lo ON lo.id = lb.lendbuy_order_id
+        LEFT JOIN t_reader r ON r.id = lo.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_user u ON u.id = p.user_id
+        LEFT JOIN t_organization o ON o.id = u.org_id
+        WHERE 1=1
+        <if test="libId != null">
+            AND r.library_id = #{libId}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND p.username LIKE CONCAT('%',#{userName},'%')
+        </if>
+        <if test="libName != null and libName != ''">
+            AND o.name LIKE CONCAT('%',#{libName},'%')
+        </if>
+        <if test="publisher != null and publisher != ''">
+            AND pb.publisher LIKE CONCAT('%',#{publisher},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND pb.pubdate >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND pb.pubdate <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="online != null">
+            AND lb.online = #{online}
+        </if>
+        <if test="orderNo != null">
+            AND lo.order_no = #{orderNo}
+        </if>
+        <if test="lendBuyOrderId != null">
+            AND lb.lendbuy_order_id = #{lendBuyOrderId}
+        </if>
+        <if test="readerId != null">
+            AND lo.reader_id = #{readerId}
+        </if>
+        <if test="title != null and title != ''">
+            AND pb.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="ISBN != null and ISBN != ''">
+            AND pb.isbn = #{ISBN}
+        </if>
+        <if test="author != null and author != ''">
+            AND pb.author LIKE CONCAT('%',#{author},'%')
+        </if>
+        <if test="status != null">
+            AND lb.status=#{status}
+        </if>
+        <if test="isSubmit != null">
+            AND lb.is_submit=#{isSubmit}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND (pb.title LIKE CONCAT('%',#{qualification},'%') OR pb.author LIKE CONCAT('%',#{qualification},'%'))
+        </if>
+    </select>
+    <!--购物书车-->
+    <select id="findBooks" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyBookVO">
+        SELECT
+            lb.id,
+            lb.lendbuy_order_id,
+            lb.price,
+            lb.back_time,
+            lb.status,
+            lb.is_submit,
+            lb.online,
+            lb.due_back_time,
+            pb.id preBookId,
+            pb.pic,
+            pb.title,
+            pb.author,
+            pb.publisher,
+            pb.pubdate,
+            pb.book_pages,
+            pb.book_size,
+            pb.summary,
+            pb.ISBN,
+            pb.book_type,
+            p.username
+        FROM t_lendbuy_book lb
+        LEFT JOIN t_prebook pb ON lb.prebook_id = pb.id
+        LEFT JOIN t_reader r ON r.id = lb.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1=1
+        <if test="libId != null">
+            AND r.library_id = #{libId}
+        </if>
+        <if test="online != null">
+            AND lb.online = #{online}
+        </if>
+        <if test="readerId != null">
+            AND lb.reader_id = #{readerId}
+        </if>
+        <if test="title != null and title != ''">
+            AND pb.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="author != null and author != ''">
+            AND pb.author LIKE CONCAT('%',#{author},'%')
+        </if>
+        <if test="status != null">
+            AND lb.status=#{status}
+        </if>
+        <if test="isSubmit != null">
+            AND lb.is_submit=#{isSubmit}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND (pb.title LIKE CONCAT('%',#{qualification},'%') OR pb.author LIKE CONCAT('%',#{qualification},'%'))
+        </if>
+    </select>
+
+    <select id="findOrders" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyOrderVO">
+        SELECT
+        lo.id,
+        lo.order_no,
+        lo.express_no,
+        lo.limit_money,
+        lo.total_money,
+        lo.staff_id,
+        lo.reader_id,
+        lo.create_time,
+        lo.send_time,
+        lo.taked_time,
+        lo.`online`,
+        lo.remark,
+        p.username,
+        r.reader_card_number,
+        l. NAME libName,
+        concat_ws(
+        ',',
+        s.address,
+        s. NAME,
+        s.phone
+        ) sendeeInfo,
+        COUNT(lb.id) bookCount,
+        CASE
+        WHEN lb.back_time is NOT NULL THEN
+        4
+        ELSE
+        lo.`status`
+        END `status`
+        FROM
+        t_lendbuy_order lo
+        LEFT JOIN t_lendbuy_book lb ON lb.lendbuy_order_id = lo.id
+        LEFT JOIN t_reader r ON r.id = lo.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_sendee s ON s.people_id = p.id
+        LEFT JOIN t_organization l ON l.id = r.library_id
+        WHERE
+        s.is_default = 1
+        <if test="libId != null">
+            AND r.library_id = #{libId}
+        </if>
+        <if test="online != null">
+            AND lo.online = #{online}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND p.username like concat('%',#{userName},'%')
+        </if>
+        <if test="libName != null and libName != ''">
+            AND l.name like concat('%',#{libName},'%')
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            AND lo.order_no = #{orderNo}
+        </if>
+        <if test="readerId != null and readerId != ''">
+            AND lo.reader_id = #{readerId}
+        </if>
+        <if test="status != null">
+            AND lo.status=#{status}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND lo.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND lo.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        GROUP BY lo.id,sendeeInfo,`status`
+    </select>
+
+    <update id="updateOrderStatus">
+        update t_lendbuy_order
+        set
+        status = #{status}
+        <if test="staffId != null">
+            ,staff_id = #{staffId}
+        </if>
+        <if test="sendTime != null and sendTime != ''">
+            ,send_time = #{sendTime}
+        </if>
+        <if test="takedTime != null and takedTime != ''">
+            ,taked_time = #{takedTime}
+        </if>
+        where id = #{lendBuyOrderId}
+    </update>
+
+    <update id="book2Order" parameterType="java.util.ArrayList">
+        update t_lendbuy_book set is_submit = #{isSubmit},lendbuy_order_id = #{lendBuyOrderId} where id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="cancelBook" parameterType="java.util.ArrayList">
+        update t_lendbuy_book set reader_id = null where id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="setDueBackTime" parameterType="java.util.ArrayList">
+        update t_lendbuy_book set due_back_time = #{dueBackTime} where id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateTotalMoney">
+        update t_lendbuy_order set
+        total_money = #{totalMoney}
+        where id = #{lendBuyOrderId}
+    </update>
+
+    <select id="findRepeatBooks" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyBookVO">
+        SELECT *
+        FROM t_lendbuy_book
+        WHERE prebook_id = #{preBookId}
+        <if test="readerId != null and readerId != ''">
+            AND reader_id = #{readerId}
+        </if>
+    </select>
+
+    <select id="getBookById" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyBookVO">
+        SELECT
+            lb.id,
+            lb.lendbuy_order_id,
+            lb.price,
+            lb.back_time,
+            lb.status,
+            lb.is_submit,
+            lb.online,
+            pb.id preBookId,
+            pb.pic,
+            pb.title,
+            pb.author,
+            pb.publisher,
+            pb.pubdate,
+            pb.book_pages,
+            pb.book_size,
+            pb.summary,
+            pb.ISBN,
+            pb.book_type
+        FROM t_lendbuy_book lb
+        LEFT JOIN t_prebook pb ON pb.id = lb.prebook_id
+        WHERE lb.id = #{id}
+    </select>
+
+    <select id="findBooksByIds" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyBookVO" parameterType="java.util.ArrayList">
+        SELECT
+        lb.id,
+        lb.lendbuy_order_id,
+        lb.price,
+        lb.back_time,
+        lb.status,
+        lb.is_submit,
+        lb.online,
+        pb.id preBookId,
+        pb.pic,
+        pb.title,
+        pb.author,
+        pb.publisher,
+        pb.pubdate,
+        pb.book_pages,
+        pb.book_size,
+        pb.summary,
+        pb.ISBN,
+        pb.book_type
+        FROM t_lendbuy_book lb
+        LEFT JOIN t_prebook pb ON pb.id = lb.prebook_id
+        WHERE lb.id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="findBooksByISBN" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyBookVO">
+        SELECT *
+        FROM t_lendbuy_book lb
+        LEFT JOIN t_prebook pb ON pb.id = lb.prebook_id
+        WHERE pb.ISBN = #{isbn}
+        AND lb.reader_id = #{readerId}
+    </select>
+
+    <select id="findReadyBooks" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyBookVO">
+        SELECT
+            lb.prebook_id
+        FROM
+        t_lendbuy_order lo
+        LEFT JOIN t_lendbuy_book lb ON lo.id = lb.lendbuy_order_id
+        LEFT JOIN t_prebook pb ON pb.id = lb.prebook_id
+        LEFT JOIN t_reader r ON r.id = lb.reader_id
+        WHERE
+            pb.ISBN = #{isbn}
+        AND r.library_id = #{libId}
+        AND lo.status !=3
+    </select>
+
+    <delete id="deleteBooks" parameterType="java.util.ArrayList">
+        DELETE FROM t_lendbuy_book WHERE id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="getOrderPrice" resultType="java.lang.Float">
+        SELECT sum(price) totalMoney FROM t_lendbuy_book WHERE id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getReaderTypeById" resultType="java.lang.Integer">
+        SELECT reader_type FROM t_reader WHERE id =#{id}
+    </select>
+
+    <insert id="insertBook">
+        INSERT INTO t_lendbuy_book(
+            id,
+            prebook_id,
+            reader_id,
+            price,
+            online,
+            back_time,
+            status,
+            is_submit
+        ) VALUES (
+            #{id},
+            #{preBookId},
+            #{readerId},
+            #{price},
+            #{online},
+            #{backTime},
+            #{status},
+            #{isSubmit}
+        )
+    </insert>
+
+    <insert id="insertOrder">
+        INSERT INTO t_lendbuy_order(
+            id,
+            order_no,
+            limit_money,
+            express_no,
+            total_money,
+            online,
+            reader_id,
+            create_time,
+            status,
+            remark
+        ) VALUES (
+            #{id},
+            #{orderNo},
+            #{limitMoney},
+            #{expressNo},
+            #{totalMoney},
+            #{online},
+            #{readerId},
+            #{createTime},
+            #{status},
+            #{remark}
+        )
+    </insert>
+
+</mapper>

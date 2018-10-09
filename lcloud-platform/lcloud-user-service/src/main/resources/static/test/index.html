@@ -1,0 +1,37 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+	<script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+	<script type="text/javascript">
+        (function(){
+            var obj = {userId:1,name:"冯达",address:"湖北武汉",phone:"13720201004"}
+            $.ajax({
+                type : 'post',
+                url : 'http://localhost:8180/account/v1/sendee/save',
+                data: JSON.stringify(obj),
+                dataType: "json",
+                contentType: "application/json",
+                success : function(result) {
+                    alert("ok");
+                    console.log(result)
+                },
+                error : function erryFunction() {
+                    alert("error");
+                }
+            });
+        })()
+
+	</script>
+
+	<title>postDate</title>
+</head>
+<body>
+<h2>post_data测试</h2>
+name：<input type="text" id="name" /><br>
+password：<input type="text" id="password" /><br>
+<button type="submit" onclick="showInfo()">提交</button>
+
+</body>
+
+</html>

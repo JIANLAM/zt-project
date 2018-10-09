@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.parameter.repository.OutBoxDao">
+
+    <sql id="OutBoxVOColumns">
+            x.id,
+            x.address,
+            x.smtp_server,
+            x.license_key,
+            x.create_date,
+            x.create_by
+    </sql>
+
+    <!--    查询所有发送邮箱设置    -->
+    <select id="findList" resultType="com.szcti.lcloud.parameter.entity.vo.OutBoxVO">
+        SELECT
+          <include refid="OutBoxVOColumns"/>
+        FROM
+            t_outbox x
+            LEFT JOIN t_user u ON x.create_by = u.id
+        WHERE 1 = 1
+        <if test=" libraryId != null ">
+            AND u.org_id = #{libraryId}
+        </if>
+        ORDER BY x.create_date DESC
+    </select>
+
+    <!--    查询一行发送邮箱设置    -->
+    <select id="get" resultType="com.szcti.lcloud.parameter.entity.vo.OutBoxVO">
+        SELECT
+            <include refid="OutBoxVOColumns"/>
+        FROM
+            t_outbox x
+        WHERE x.id = #{id}
+    </select>
+
+    <!--    删除 一条或多条 发送邮箱设置    -->
+    <delete id="delOutbox">
+        DELETE FROM t_outbox WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    新增 一条 发送邮箱设置    -->
+    <insert id="insertOutbox">
+        INSERT INTO t_outbox (
+                id,
+                address,
+                smtp_server,
+                license_key,
+                create_date,
+                create_by
+        )
+        VALUES
+            (
+                #{id},
+                #{address},
+                #{smtpServer},
+                #{licenseKey},
+                #{createDate},
+                #{createBy}
+            )
+    </insert>
+
+    <!--    修改 一条 发送邮箱设置    -->
+    <update id="updateOutbox">
+     UPDATE t_outbox
+         SET
+            address = #{address},
+            smtp_server = #{smtpServer},
+            license_key = #{licenseKey}
+         WHERE	id = #{id}
+    </update>
+
+
+</mapper>

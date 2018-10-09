@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.szcti.lcloud.catalog.repository.HoldingRepository">
+	<resultMap id="BaseResultMap"
+		type="com.szcti.lcloud.catalog.entity.Holding">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="call_no" jdbcType="VARCHAR" property="callNo" />
+		<result column="book_id" jdbcType="BIGINT" property="bookId" />
+		<result column="barcode" jdbcType="VARCHAR" property="barcode" />
+		<result column="ownlib" jdbcType="BIGINT" property="ownlib" />
+		<result column="curlib" jdbcType="BIGINT" property="curlib" />
+		<result column="shelf" jdbcType="BIGINT" property="shelf" />
+		<result column="indate" jdbcType="TIMESTAMP" property="indate" />
+		<result column="singleprice" jdbcType="REAL"
+			property="singleprice" />
+		<result column="totalprice" jdbcType="REAL"
+			property="totalprice" />
+		<result column="source" jdbcType="TINYINT" property="source" />
+		<result column="status" jdbcType="TINYINT" property="status" />
+		<result column="act_type" jdbcType="BIGINT" property="actType" />
+		<result column="RFID" jdbcType="VARCHAR" property="rfid" />
+		<result column="recno" jdbcType="INTEGER" property="recno" />
+		<result column="bookrecno" jdbcType="INTEGER"
+			property="bookrecno" />
+		<result column="rowid" jdbcType="VARCHAR" property="rowid" />
+		<result column="collAddress_id" jdbcType="BIGINT"
+			property="colladdressId" />
+		<result column="catalog_batch" jdbcType="VARCHAR"
+			property="catalogBatch" />
+		<result column="partition" jdbcType="VARCHAR"
+			property="partition" />
+		<result column="volume" jdbcType="VARCHAR" property="volume" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value"
+										item="listItem" open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		id, call_no, book_id, barcode, ownlib, curlib, shelf,
+		indate,
+		singleprice, totalprice,
+		source, status, act_type, RFID, recno,
+		bookrecno, rowid, collAddress_id,
+		catalog_batch,
+		partition, volume,
+		remark
+	</sql>
+	<select id="selectByExample"
+		parameterType="com.szcti.lcloud.catalog.entity.HoldingCriteria"
+		resultMap="BaseResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from t_holding
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_holding
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		t_holding
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert"
+		parameterType="com.szcti.lcloud.catalog.entity.Holding">
+		insert into t_holding (id, call_no, book_id,
+		barcode,
+		ownlib, curlib,
+		shelf, indate, singleprice,
+		totalprice, source, status,
+		act_type, RFID, recno,
+		bookrecno, rowid, collAddress_id,
+		catalog_batch,
+		partition, volume,
+		remark)
+		values (#{id,jdbcType=BIGINT},
+		#{callNo,jdbcType=VARCHAR},
+		#{bookId,jdbcType=BIGINT},
+		#{barcode,jdbcType=VARCHAR}, #{ownlib,jdbcType=BIGINT},
+		#{curlib,jdbcType=BIGINT},
+		#{shelf,jdbcType=BIGINT},
+		#{indate,jdbcType=TIMESTAMP},
+		#{singleprice,jdbcType=REAL},
+		#{totalprice,jdbcType=REAL}, #{source,jdbcType=TINYINT},
+		#{status,jdbcType=TINYINT},
+		#{actType,jdbcType=BIGINT},
+		#{rfid,jdbcType=VARCHAR},
+		#{recno,jdbcType=INTEGER},
+		#{bookrecno,jdbcType=INTEGER}, #{rowid,jdbcType=VARCHAR},
+		#{colladdressId,jdbcType=BIGINT},
+		#{catalogBatch,jdbcType=VARCHAR},
+		#{partition,jdbcType=VARCHAR},
+		#{volume,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.szcti.lcloud.catalog.entity.Holding">
+		insert into t_holding
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="callNo != null and callNo!=''">
+				call_no,
+			</if>
+			<if test="bookId != null">
+				book_id,
+			</if>
+			<if test="barcode != null and barcode!=''">
+				barcode,
+			</if>
+			<if test="ownlib != null">
+				ownlib,
+			</if>
+			<if test="curlib != null">
+				curlib,
+			</if>
+			<if test="shelf != null">
+				shelf,
+			</if>
+			<if test="indate != null">
+				indate,
+			</if>
+			<if test="singleprice != null">
+				singleprice,
+			</if>
+			<if test="totalprice != null">
+				totalprice,
+			</if>
+			<if test="source != null and source!=''">
+				source,
+			</if>
+			<if test="status != null and status!=''">
+				status,
+			</if>
+			<if test="actType != null and actType!=''">
+				act_type,
+			</if>
+			<if test="rfid != null and rfid!=''">
+				RFID,
+			</if> 
+			<if test="recno != null">
+				recno,
+			</if>
+			<if test="bookrecno != null">
+				bookrecno,
+			</if>
+			<if test="rowid != null and rowid !=''">
+				rowid,
+			</if>
+			<if test="colladdressId != null and colladdressId !=''">
+				collAddress_id,
+			</if>
+			<if test="catalogBatch != null and catalogBatch !=''">
+				catalog_batch,
+			</if>
+			<if test="partition != null and partition !=''">
+				partition,
+			</if>
+			<if test="volume != null and volume !=''">
+				volume,
+			</if>
+			<if test="remark != null and remark !=''">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="callNo != null and callNo !=''">
+				#{callNo,jdbcType=VARCHAR},
+			</if>
+			<if test="bookId != null">
+				#{bookId,jdbcType=BIGINT},
+			</if>
+			<if test="barcode != null and barcode !=''">
+				#{barcode,jdbcType=VARCHAR},
+			</if>
+			<if test="ownlib != null">
+				#{ownlib,jdbcType=BIGINT},
+			</if>
+			<if test="curlib != null">
+				#{curlib,jdbcType=BIGINT},
+			</if>
+			<if test="shelf != null">
+				#{shelf,jdbcType=BIGINT},
+			</if>
+			<if test="indate != null">
+				#{indate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="singleprice != null">
+				#{singleprice,jdbcType=REAL},
+			</if>
+			<if test="totalprice != null">
+				#{totalprice,jdbcType=REAL},
+			</if>
+			<if test="source != null and source!=''">
+				#{source,jdbcType=TINYINT},
+			</if>
+			<if test="status != null and status!=''">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="actType != null and actType!=''">
+				#{actType,jdbcType=BIGINT},
+			</if> 
+			 <if test="rfid != null and rfid!=''">
+				#{rfid,jdbcType=VARCHAR},
+			</if> 
+			<if test="recno != null">
+				#{recno,jdbcType=INTEGER},
+			</if>
+			<if test="bookrecno != null">
+				#{bookrecno,jdbcType=INTEGER},
+			</if>
+			<if test="rowid != null and rowid !=''">
+				#{rowid,jdbcType=VARCHAR},
+			</if>
+			<if test="colladdressId != null and colladdressId !=''">
+				#{colladdressId,jdbcType=BIGINT},
+			</if>
+			<if test="catalogBatch != null and remark!=''">
+				#{catalogBatch,jdbcType=VARCHAR},
+			</if>
+			<if test="partition != null and partition!=''">
+				#{partition,jdbcType=VARCHAR},
+			</if>
+			<if test="volume != null and volume!=''">
+				#{volume,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null and remark!=''">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKey"
+		parameterType="com.szcti.lcloud.catalog.entity.Holding">
+		update t_holding
+		<set>
+			<if test="callNo != null">
+				call_no = #{callNo},
+			</if>
+			<if test="bookId != null">
+				book_id = #{bookId},
+			</if>
+			<if test="barcode != null">
+				barcode = #{barcode},
+			</if>
+			<if test="ownlib != null">
+				ownlib = #{ownlib},
+			</if>
+			<if test="curlib != null">
+				curlib = #{curlib},
+			</if>
+			<if test="shelf != null">
+				shelf = #{shelf},
+			</if>
+			<if test="indate != null">
+				indate = #{indate},
+			</if>
+			<if test="singleprice != null">
+				singleprice = #{singleprice},
+			</if>
+			<if test="totalprice != null">
+				totalprice = #{totalprice},
+			</if>
+			<if test="source != null">
+				source = #{source},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="actType != null">
+				act_type = #{actType},
+			</if>
+			<if test="rfid != null">
+				RFID = #{rfid},
+			</if>
+			<if test="recno != null">
+				recno = #{recno},
+			</if>
+			<if test="bookrecno != null">
+				bookrecno = #{bookrecno},
+			</if>
+			<if test="rowid != null">
+				rowid = #{rowid},
+			</if>
+			<if test="colladdressId != null">
+				collAddress_id = #{colladdressId},
+			</if>
+			<if test="catalogBatch != null">
+				catalog_batch = #{catalogBatch},
+			</if>
+			<if test="partition != null">
+				partition = #{partition},
+			</if>
+			<if test="volume != null">
+				volume = #{volume},
+			</if>
+			<if test="remark != null">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<!--自定义扩展 -->
+	<select id="queryPage"
+		parameterType="com.szcti.lcloud.catalog.entity.vo.HoldingVO"
+		resultType="com.szcti.lcloud.catalog.entity.vo.HoldingVO">
+		select distinct h.*,b.title,b.isbn,org.name as libraryName from
+		t_holding h left join t_book b on b.id=h.book_id
+		left join
+		t_organization org on h.ownlib=org.id where 1=1 and status !='5'
+		and
+		h.ownlib=#{ownlib}
+		<if test="id!=null">
+			and h.id=#{id}
+		</if>
+		<if test="bookId!=null">
+			and h.book_id=#{bookId}
+		</if>
+		<if test="isbn!=null and isbn!=''">
+			and b.isbn=#{isbn}
+		</if>
+		<if test="title!=null and title!=''">
+			and b.title=#{title}
+		</if>
+		<if test="author!=null and author!=''">
+			and b.author=#{author}
+		</if>
+		<if test="barcode!=null and barcode!=''">
+			and h.barcode=#{barcode}
+		</if>
+		<if test="callNo!=null and callNo!=''">
+			and h.call_no=#{callNo}
+		</if>
+	</select>
+	<select id="getMaxBarcode"
+		parameterType="com.szcti.lcloud.catalog.entity.vo.LableVO"
+		resultType="com.szcti.lcloud.catalog.entity.vo.LableVO">
+		select max(h.barcode) as barcode from t_holding h
+		left join t_book b on
+		b.id=h.book_id
+		where 1=1
+		<if test="libraryId!=null">
+			and h.ownlib=#{libraryId}
+		</if>
+		<if test="barcodeStart!=null and barcodeStart!=''">
+			and h.barcode>=#{barcodeStart}
+		</if>
+		<if test="barcodeEnd!=null and barcodeEnd!=''">
+			AND h.barcode <![CDATA[<=]]>
+			#{barcodeEnd}
+		</if>
+		<if test="callNoStart!=null and callNoStart!=''">
+			and h.call_no>=#{callNoStart}
+		</if>
+		<if test="callNoEnd!=null and callNoEnd!=''">
+			AND h.call_no <![CDATA[<=]]>
+			#{callNoEnd}
+		</if>
+		<if test="bookTypeStart!=null and bookTypeStart!=''">
+			and b.book_type>=#{bookTypeStart}
+		</if>
+		<if test="bookTypeEnd!=null and bookTypeEnd!=''">
+			AND b.book_type <![CDATA[<=]]>
+			#{bookTypeEnd}
+		</if>
+	</select>
+	<select id="getPrintLabel"
+		parameterType="com.szcti.lcloud.catalog.entity.vo.LableVO"
+		resultType="com.szcti.lcloud.catalog.entity.vo.HoldingVO">
+		select h.id,h.barcode,h.call_no,b.book_type,b.title,b.author,b.isbn,
+		(select max(tm.curr_seednumber)from t_titlenumber tm
+		where
+		tm.library_id=h.ownlib and h.call_no LIKE
+		concat('%',tm.class_number,'%')) as curr_seednumber
+		from t_holding h
+		left join t_book b on b.id=h.book_id
+		where 1=1
+		<if test="libraryId!=null">
+			and h.ownlib=#{libraryId}
+		</if>
+		<if test="barcodeStart!=null and barcodeStart!=''">
+			and h.barcode>=#{barcodeStart}
+		</if>
+		<if test="barcodeEnd!=null and barcodeEnd!=''">
+			AND h.barcode <![CDATA[<=]]>
+			#{barcodeEnd}
+		</if>
+		<if test="callNoStart!=null and callNoStart!=''">
+			and h.call_no>=#{callNoStart}
+		</if>
+		<if test="callNoEnd!=null and callNoEnd!=''">
+			AND h.call_no <![CDATA[<=]]>
+			#{callNoEnd}
+		</if>
+		<if test="bookTypeStart!=null and bookTypeStart!=''">
+			and b.book_type>=#{bookTypeStart}
+		</if>
+		<if test="bookTypeEnd!=null and bookTypeEnd!=''">
+			AND b.book_type <![CDATA[<=]]>
+			#{bookTypeEnd}
+		</if>
+	</select>
+	
+	<select id="queryHoldingVO"
+		parameterType="com.szcti.lcloud.catalog.entity.vo.HoldingVO"
+		resultType="com.szcti.lcloud.catalog.entity.vo.HoldingVO">
+		select * from	t_holding h where 1=1 and h.ownlib=#{ownlib}
+		<if test="id!=null and id!=0">
+			and h.id=#{id}
+		</if>
+		<if test="bookId!=null and bookId!=0">
+			and h.book_id=#{bookId}
+		</if>
+		<if test="isbn!=null and isbn!=''">
+			and b.isbn=#{isbn}
+		</if>
+		<if test="title!=null and title!=''">
+			and b.title=#{title}
+		</if>
+		<if test="author!=null and author!=''">
+			and b.author=#{author}
+		</if>
+		<if test="barcode!=null and barcode!=''">
+			and h.barcode=#{barcode}
+		</if>
+		<if test="callNo!=null and callNo!=''">
+			and h.call_no=#{callNo}
+		</if>
+	</select>
+	
+	<select id="queryHoldingList"
+		parameterType="com.szcti.lcloud.catalog.entity.vo.HoldingVO"
+		resultType="com.szcti.lcloud.catalog.entity.vo.HoldingVO">
+		select * from t_holding h where h.status!=5 and h.book_id=#{bookId} and  h.ownlib=#{libraryId}
+	</select>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.user.mapper.TReaderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.user.entity.TReader">
+        <id column="id" property="id" />
+        <result column="people_id" property="peopleId" />
+        <result column="reader_card_type" property="readerCardType" />
+        <result column="reader_card_number" property="readerCardNumber" />
+        <result column="status" property="status" />
+        <result column="reader_type" property="readerType" />
+        <result column="grade" property="grade" />
+        <result column="classes" property="classes" />
+        <result column="remark" property="remark" />
+        <result column="stuwork_number" property="stuworkNumber" />
+        <result column="library_id" property="libraryId" />
+        <result column="pre_payment" property="prePayment" />
+        <result column="arrear" property="arrear" />
+        <result column="pic" property="pic" />
+        <result column="start_date" property="startDate" />
+        <result column="end_date" property="endDate" />
+        <result column="create_date" property="createDate" />
+    </resultMap>
+
+</mapper>

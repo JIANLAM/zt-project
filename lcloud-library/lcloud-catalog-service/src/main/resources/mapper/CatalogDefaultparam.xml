@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.catalog.repository.CatalogDefaultparamDao">
+
+    <sql id="CatalogDefaultparamColumns">
+            id,
+            collAddress_id,
+            barcode_id,
+            circulation_id,
+            revision_id,
+            language_id,
+            book_size,
+            carrier_type,
+            binding_id,
+            literature_id,
+            catalog_batch,
+            curr_user,
+            library_id,
+            create_by,
+            create_time,
+            update_by,
+            update_time,
+            remark
+    </sql>
+
+    <!--    查询一行 普通编目  默认参数设置    -->
+    <select id="get" resultType="com.szcti.lcloud.catalog.entity.CatalogDefaultparam">
+        SELECT
+            <include refid="CatalogDefaultparamColumns"/>
+        FROM
+            t_catalog_defaultparam
+        WHERE library_id = #{libraryId}
+    </select>
+
+    <!--    新增 一条 普通编目  默认参数设置    -->
+    <insert id="insert">
+        INSERT INTO t_catalog_defaultparam (
+                id,
+                collAddress_id,
+                barcode_id,
+                circulation_id,
+                revision_id,
+                language_id,
+                book_size,
+                carrier_type,
+                binding_id,
+                literature_id,
+                catalog_batch,
+                curr_user,
+                library_id,
+                create_by,
+                create_time,
+                remark
+        )
+        VALUES
+            (
+                #{id},
+                #{collAddressId},
+                #{barcodeId},
+                #{circulationId},
+                #{revisionId},
+                #{languageId},
+                #{bookSize},
+                #{carrierType},
+                #{bindingId},
+                #{literatureId},
+                #{catalogBatch},
+                #{currUser},
+                #{libraryId},
+                #{createBy},
+                #{createTime},
+                #{remark}
+            )
+    </insert>
+
+    <!--    修改 一条 普通编目  默认参数设置   -->
+    <update id="update">
+     UPDATE t_catalog_defaultparam
+         SET
+            collAddress_id = #{collAddressId},
+            barcode_id = #{barcodeId},
+            circulation_id = #{circulationId},
+            revision_id = #{revisionId},
+            language_id = #{languageId},
+            book_size = #{bookSize},
+            carrier_type = #{carrierType},
+            binding_id = #{bindingId},
+            literature_id = #{literatureId},
+            catalog_batch = #{catalogBatch},
+            curr_user = #{currUser},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            remark = #{remark}
+         WHERE	library_id = #{libraryId}
+    </update>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.organize.repository.OrgDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="findList" resultType="com.szcti.lcloud.organize.entity.OrgEntity">
+        SELECT * FROM t_organization
+        WHERE 1 = 1
+        <if test="type != null">
+            AND type = #{type}
+        </if>
+        <if test="code != null and code != ''">
+            AND code = #{code}
+        </if>
+        <if test="linkmanName != null and linkmanName != ''">
+            AND linkman_name LIKE concat('%',#{linkmanName},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+        <if test="id != null">
+            AND (parent_ids LIKE concat('%',#{id},',%') OR id = #{id})
+        </if>
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.organize.entity.OrgEntity">
+        SELECT * FROM t_organization
+        WHERE id=#{id}
+    </select>
+
+    <update id="update">
+        UPDATE t_organization SET
+        parent_id = #{parentId},
+        parent_ids = #{parentIds},
+        name = #{name},
+        sex = #{sex},
+        code = #{code},
+        linkman_name = #{linkmanName},
+        linkman_phone = #{linkmanPhone},
+        is_lendbuy = #{isLendbuy},
+        sale_type = #{saleType},
+        remark = #{remark},
+        type = #{type},
+        city = #{city}
+        WHERE
+        id = #{id}
+    </update>
+
+    <update id="updatePrtIds">
+        UPDATE t_organization SET
+        parent_ids = #{parentIds}
+        WHERE
+        id = #{id}
+    </update>
+
+    <insert id="insert">
+        INSERT INTO t_organization(
+              id,
+              parent_id,
+              parent_ids,
+              name,
+              sex,
+              code,
+              linkman_name,
+              linkman_phone,
+              is_lendbuy,
+              sale_type,
+              remark,
+              type,
+			  city
+        ) VALUES (
+              #{id},
+              #{parentId},
+              #{parentIds},
+              #{name},
+              #{sex},
+              #{code},
+              #{linkmanName},
+              #{linkmanPhone},
+              #{isLendbuy},
+              #{saleType},
+              #{remark},
+              #{type},
+			  #{city}
+        )
+    </insert>
+
+    <delete id="delete"  parameterType="java.util.ArrayList">
+        DELETE FROM t_organization WHERE id IN
+        <foreach item="item" index="index" collection="ids" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

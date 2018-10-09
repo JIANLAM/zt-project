@@ -1,0 +1,13 @@
+server:
+   # tomcat:
+    undertow:
+    port: 8289
+    connection-timeout: 5000
+    context-path: /dictionary
+spring:
+  application:
+    name: service-dictionary
+  sleuth:
+    sampler:
+      percentage: 1
+

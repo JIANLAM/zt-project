@@ -1,0 +1,13 @@
+server:
+   # tomcat:
+    undertow:
+    port: 8284
+    connection-timeout: 5000
+    context-path: /apioperationlog
+spring:
+  application:
+    name: service-operationlog
+  sleuth:
+    sampler:
+      percentage: 1
+

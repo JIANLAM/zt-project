@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.holding.repository.HoldingDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="findCopysByIds" resultType="com.szcti.lcloud.holding.entity.vo.BookCopyVO" parameterType="java.util.ArrayList">
+        SELECT h.barcode,b.title
+        FROM t_holding h
+        LEFT JOIN t_book b ON b.id = h.book_id
+        WHERE h.id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--<update id="delete" parameterType="java.util.ArrayList">
+        UPDATE t_holding SET status = 5
+        WHERE id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>-->
+
+    <delete id="delete" parameterType="java.util.ArrayList">
+        DELETE FROM t_holding
+        WHERE id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="java.util.ArrayList">
+        UPDATE t_holding
+        <set>
+            <if test="bookCopyVO.callNo != null and bookCopyVO.callNo != ''" >
+                call_no = #{bookCopyVO.callNo},
+            </if>
+            <if test="bookCopyVO.bookId != null" >
+                book_id = #{bookCopyVO.bookId},
+            </if>
+            <if test="bookCopyVO.shelf != null" >
+                shelf = #{bookCopyVO.shelf},
+            </if>
+            <if test="bookCopyVO.status != null" >
+                status = #{bookCopyVO.status},
+            </if>
+            <if test="bookCopyVO.actType != null" >
+                act_type = #{bookCopyVO.actType},
+            </if>
+            <if test="bookCopyVO.barCode != null and bookCopyVO.barCode != ''" >
+                barcode = #{bookCopyVO.barCode},
+            </if>
+        </set>
+        WHERE id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="findList" resultType="com.szcti.lcloud.holding.entity.vo.BookCopyVO">
+        SELECT
+            h.id,
+            h.call_no,
+            h.barcode,
+            h.status,
+            h.act_type,
+            sb.label actName,
+            h.shelf,
+            sb2.label shelfName,
+            b.title,
+            b.ISBN
+        FROM
+            t_holding h
+        LEFT JOIN t_book b ON b.id = h.book_id
+        LEFT JOIN sys_basicparam sb ON sb.id = h.act_type
+        LEFT JOIN sys_basicparam sb2 ON sb2.id = h.shelf
+        WHERE h.ownlib = #{libId}
+        <if test="barCodeStart != null and barCodeStart != ''" >
+            AND h.barcode >= #{barCodeStart}
+        </if>
+        <if test="barCodeEnd != null and barCodeEnd != ''" >
+            AND h.barcode <![CDATA[<=]]> #{barCodeEnd}
+        </if>
+        <if test="callNoStart != null and callNoStart != ''" >
+            AND h.call_no >= #{callNoStart}
+        </if>
+        <if test="callNoEnd != null and callNoEnd != ''" >
+            AND h.call_no <![CDATA[<=]]> #{callNoEnd}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND h.indate >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND h.indate <![CDATA[<=]]> #{endTime}
+        </if>
+        <if test="status != null" >
+            AND h.status = #{status}
+        </if>
+        <if test="actType != null" >
+            AND h.act_type = #{actType}
+        </if>
+        <if test="shelf != null" >
+            AND h.shelf = #{shelf}
+        </if>
+        <if test="barCode != null and barCode != ''" >
+            AND h.barcode LIKE CONCAT('%',#{barCode},'%')
+        </if>
+        <if test="title != null and title != ''" >
+            AND b.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="callNo != null and callNo!=''" >
+            AND h.call_no LIKE CONCAT('%',#{callNo},'%')
+        </if>
+        <if test="ISBN != null and ISBN!=''" >
+            AND b.ISBN LIKE CONCAT('%',#{ISBN},'%')
+        </if>
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.holding.entity.vo.BookCopyVO">
+        SELECT
+            h.id,
+            h.call_no,
+            h.barcode,
+            h.status,
+            h.act_type,
+            o.name libName,
+	        b.id bookId,
+            h.shelf,
+            b.title,
+            b.ISBN,
+            b.pic
+        FROM
+            t_holding h
+        LEFT JOIN t_book b ON b.id = h.book_id
+        LEFT JOIN t_organization o ON o.id = h.ownlib
+        WHERE h.id = #{id}
+    </select>
+
+    <select id="getLendInfo" resultType="com.szcti.lcloud.holding.entity.vo.BookCopyVO">
+        SELECT
+            l.lend_time,
+            l.due_back_time,
+            l.back_time,
+            l.lend_status,
+            r.reader_card_number,
+            r.id readerId,
+            p.user_id,
+            p.username
+        FROM t_lend l
+        LEFT JOIN t_reader r ON r.id = l.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE
+            l.lend_status = 0
+        AND l.holding_id = #{holdingId}
+    </select>
+
+    <select id="getReaderIdByCard" resultType="java.util.HashMap">
+        SELECT
+            r.id readerId,
+            p.user_id userId
+        FROM t_reader r
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE reader_card_number = #{readerCardNumber}
+    </select>
+
+    <update id="updateLend" parameterType="java.util.ArrayList">
+        UPDATE t_lend
+        <set>
+            <if test="lendInfo.readerId != null" >
+                reader_id = #{lendInfo.readerId},
+            </if>
+            <if test="lendInfo.userId != null" >
+                user_id = #{lendInfo.userId},
+            </if>
+            <if test="lendInfo.lendTime != null and lendInfo.lendTime != ''" >
+                lend_time = #{lendInfo.lendTime},
+            </if>
+            <if test="lendInfo.dueBackTime != null and lendInfo.dueBackTime != ''" >
+                due_back_time = #{lendInfo.dueBackTime},
+            </if>
+        </set>
+        WHERE id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="deleteLend" parameterType="java.util.ArrayList">
+        DELETE FROM t_lend
+        WHERE lend_status != 1
+        AND reader_id = #{readerId}
+        AND holding_id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insertLend" parameterType="com.szcti.lcloud.holding.entity.vo.BookCopyVO">
+        INSERT INTO t_lend(
+            id,
+            holding_id,
+            lend_time,
+            due_back_time,
+            lend_status,
+            reader_id,
+            user_id
+        ) VALUES (
+            #{lendId},
+            #{id},
+            #{lendTime},
+            #{dueBackTime},
+            0,
+            #{readerId},
+            #{userId}
+        )
+    </insert>
+    
+</mapper>

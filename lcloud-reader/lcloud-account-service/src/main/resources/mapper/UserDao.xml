@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.account.repository.UserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="getUserInfo" resultType="com.szcti.lcloud.account.entity.vo.UserInfoVO">
+        SELECT
+            u.id userId,
+            p.id peopleId,
+            u.login_name loginName,
+            p.username userName,
+            u.password password,
+            p.sex sex,
+            p.card_type cardType,
+            p.card_number cardNumber,
+            p.phone phone,
+            p.email email,
+            p.icon icon,
+            u.type type,
+            u.status status,
+            u.create_by createBy,
+            u.create_time createTime,
+            (select g.login_time from t_login_log g where g.user_id = #{userId} ORDER BY g.login_time desc LIMIT 1) as loginTime,
+			(select g.login_ip from t_login_log g where g.user_id = #{userId} ORDER BY g.login_time desc LIMIT 1) as loginIp,
+			p.nick_name as nickName,p.signature
+        FROM t_user u
+        LEFT JOIN t_people p ON u.id = p.user_id
+        WHERE u.id = #{userId}
+    </select>
+
+    <select id="getReader" resultType="com.szcti.lcloud.account.entity.vo.ReaderVO">
+       SELECT  r.*,l.`name` as libraryName,c.own_value as ownValue
+        FROM t_reader r
+        left join t_organization l on r.library_id = l.id
+		left join t_people p on r.people_id = p.id
+        left join t_credit c on p.user_id = c.user_id
+        WHERE r.people_id = #{peopleId}
+    </select>
+
+    <select id="getRoleInfo" resultType="com.szcti.lcloud.account.entity.RoleEntity">
+        select r.id,r.role_name as roleName,r.role_code as roleCode,r.org_type as orgType
+        from t_user_role ur
+        left join t_role r on ur.role_id = r.id
+        where ur.user_id = #{userId}
+    </select>
+
+    <select id="getStaff" resultType="com.szcti.lcloud.account.entity.vo.StaffVO">
+        SELECT * FROM t_staff s
+        WHERE s.people_id = #{peopleId}
+    </select>
+
+    <update id="modifyPwd">
+        UPDATE t_user SET password = #{newPassword} WHERE id = #{userId}
+    </update>
+
+    <insert id="insertUser">
+        INSERT INTO t_user (
+            id,
+            login_name,
+            password,
+            type,
+            status,
+            create_by,
+            create_time
+        ) VALUES (
+            #{userId},
+            #{loginName},
+            #{password},
+            #{type},
+            #{status},
+            #{createBy},
+            #{createTime}
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE t_user SET
+              type = #{type},
+              status = #{status}
+        WHERE
+          id = #{userId}
+    </update>
+
+    <insert id="insertPeople">
+        INSERT INTO t_people (
+            id,
+            user_id,
+            username,
+            sex,
+            card_type,
+            card_number,
+            phone,
+            email,
+            icon
+        ) VALUES (
+            #{peopleId},
+            #{userId},
+            #{userName},
+            #{sex},
+            #{cardType},
+            #{cardNumber},
+            #{phone},
+            #{email},
+            #{icon}
+        )
+    </insert>
+
+    <update id="updatePeople">
+        UPDATE t_people SET
+            username = #{userName},
+            sex = #{sex},
+            card_type = #{cardType},
+            card_number = #{cardNumber},
+            phone = #{phone},
+            email = #{email},
+            icon = #{icon},
+            signature = #{signature}
+        WHERE
+          user_id = #{userId}
+    </update>
+
+    <insert id="insertReader">
+        INSERT INTO t_reader (
+            id,
+            people_id,
+            reader_card_type,
+            reader_card_number,
+            status,
+            grade,
+            remark,
+            library_id
+        ) VALUES (
+            #{id},
+            #{peopleId},
+            #{readerCardType},
+            #{readerCardNumber},
+            #{status},
+            #{grade},
+            #{remark},
+            #{libraryId}
+        )
+    </insert>
+
+    <update id="updateReader">
+        UPDATE t_reader SET
+            reader_card_type = #{readerCardType},
+            reader_card_number = #{readerCardNumber},
+            status = #{status},
+            grade = #{grade},
+            remark = #{remark},
+            library_id = #{libraryId}
+        WHERE id=#{id}
+    </update>
+
+    <insert id="insertStaff">
+        INSERT INTO t_staff (
+            id,
+            people_id,
+            staff_code,
+            possie,
+            is_leader,
+            status,
+            remark,
+            org_id
+        ) VALUES (
+            #{id},
+            #{peopleId},
+            #{staffCode},
+            #{possie},
+            #{isLeader},
+            #{status},
+            #{remark},
+            #{orgId}
+        )
+    </insert>
+
+    <update id="updateStaff">
+        UPDATE t_staff SET
+            staff_code = #{staffCode},
+            possie = #{possie},
+            is_leader = #{isLeader},
+            status = #{status},
+            remark = #{remark},
+            org_id = #{orgId}
+        WHERE id=#{id}
+    </update>
+
+   <!--  修改读者资料         读者微信端-->
+    <update id="updateReadInfo">
+        update t_people
+        <set>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="signature != null and signature != ''">
+                signature = #{signature},
+            </if>
+            <if test="icon != null and icon != ''">
+                icon = #{icon},
+            </if>
+        </set>
+        WHERE
+        user_id = #{userId}
+    </update>
+</mapper>

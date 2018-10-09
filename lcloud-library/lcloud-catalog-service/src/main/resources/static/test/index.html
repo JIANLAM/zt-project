@@ -1,0 +1,436 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>catalogTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-catalogTest-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>导出中央库书目数据列表</td>
+                <td>
+                    <button type="submit" id="circulationList">点击我测试</button>
+                </td>
+                <td>#circulationList</td>
+                <td><span>GET</span></td>
+                <td> </td>
+            </tr>
+            <tr>
+                <td>导出采访库书目数据列表</td>
+                <td>
+                    <button type="submit" id="exportPreBook">点击我测试</button>
+                </td>
+                <td>#exportPreBook</td>
+                <td><span>GET</span></td>
+                <td> </td>
+            </tr>
+            <tr>
+                <td>下载导入书目 模板</td>
+                <td>
+                    <button type="submit" id="exportMould">点击我测试</button>
+                </td>
+                <td>#exportMould</td>
+                <td><span>GET</span></td>
+                <td> </td>
+            </tr>
+            <tr>
+                <form id="importForm"  enctype="multipart/form-data"  >
+                    <td colspan="2"><input type="file" id="fileName" name="fileName" value="fileName" /></td>
+                </form>
+                <td><button type="button" id="importPrebookMarc">点击我测试</button></td>
+
+            </tr>
+            <tr>
+                <td>导出中央库书目数据列表      MARC</td>
+                <td>
+                    <button type="submit" id="exportPrebookMARC">点击我测试</button>
+                </td>
+                <td>#exportPrebookMARC</td>
+                <td><span>GET</span></td>
+                <td> </td>
+            </tr>
+            <tr>
+                <td colspan="5" id="data">
+
+                </td>
+            </tr>
+            <tr>
+                <td>查询 普通编目  默认参数设置</td>
+                <td>
+                    <button type="submit" id="defaultparamInfo">点击我测试</button>
+                </td>
+                <td>#defaultparamInfo</td>
+                <td><span>GET</span></td>
+                <td> NULL </td>
+            </tr>
+            <tr>
+                <td>新增   或修改 普通编目  默认参数设置</td>
+                <td>
+                    <button type="submit" id="defaultparamSave">点击我测试</button>
+                </td>
+                <td>#defaultparamSave</td>
+                <td><span>POST</span></td>
+                <td> …… </td>
+            </tr>
+            <tr>
+                <td>书目导入导出 查看一条内容详细marc信息    采访库      MARC</td>
+                <td>
+                    <button type="submit" id="infopre">点击我测试</button>
+                </td>
+                <td>#infopre</td>
+                <td><span>GET</span></td>
+                <td>preBookId = 1 </td>
+            </tr>
+            <tr>
+                <td>书目导入导出 查看一条内容详细marc信息    中央库      MARC</td>
+                <td>
+                    <button type="submit" id="info">点击我测试</button>
+                </td>
+                <td>#info</td>
+                <td><span>GET</span></td>
+                <td>bookId = 1 </td>
+            </tr>
+            <tr>
+                <td>目导入导出 初始化数据列表   中央库   MARC</td>
+                <td>
+                    <button type="submit" id="bookList">点击我测试</button>
+                </td>
+                <td>#bookList</td>
+                <td><span>GET</span></td>
+                <td> null </td>
+            </tr>
+            <tr>
+                <td>书目导入导出 初始化数据列表   采访库   MARC</td>
+                <td>
+                    <button type="submit" id="preBookList">点击我测试</button>
+                </td>
+                <td>#preBookList</td>
+                <td><span>GET</span></td>
+                <td> null </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+
+    //书目导入导出 初始化数据列表   采访库   MARC
+    $("#preBookList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:1 , bookType:"I"});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/preBook/list',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //目导入导出 初始化数据列表   中央库   MARC
+    $("#bookList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:1 , bookType:"I"});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/book/list',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //书目导入导出 查看一条内容详细marc信息    采访库      MARC
+    $("#infopre").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/infopre/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //书目导入导出 查看一条内容详细marc信息    中央库      MARC
+    $("#info").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/info/4',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //导出中央库书目数据列表      MARC
+    $("#exportPrebookMARC").click(function () {
+        var jsonStr = JSON.stringify({});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/exportPrebookMARC',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //批量导入 采访书库书目 MARC数据记录
+    $("#importPrebookMarc").click(function () {
+        var data = new FormData($("#importForm")[0]);
+        $.ajax({
+            type:"post",
+            url:"http://localhost:8290/apiCatalog/v1/catalogue/importPrebookMarc",
+            data:data,
+            dataType:"json",
+            processData: false,
+            contentType:false, //multipart/form-data
+            success: function (result) {
+                alert(result.msg)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        })
+    });
+
+    //新增   或修改 普通编目  默认参数设置
+    $("#defaultparamSave").click(function () {
+        var json = {
+            id: 675105694741,
+            collAddressId: 122222,
+            barcodeId: 1,
+            circulationId: 1,
+            revisionId: 1,
+            languageId: 1,
+            bookSize: 1,
+            carrierType: 1,
+            bindingId: 1,
+            literatureId: 1,
+            catalogBatch: "pcpcpcpppcpcpcpcc",
+            currUser: 1,
+            remark: "beizhu"
+        };
+        $.ajax({
+            type: 'post',
+            url:"http://localhost:8290/apiCatalog/v1/defaultparam/save",
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询 普通编目  默认参数设置
+    $("#defaultparamInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url:"http://localhost:8290/apiCatalog/v1/defaultparam/info",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //批量导入 采访书库书目 数据记录
+    $("#importPrebook").click(function () {
+        var data = new FormData($("#importForm")[0]);
+        $.ajax({
+            type:"post",
+            url:"http://localhost:8290/apiCatalog/v1/catalogue/importPrebook",
+            data:data,
+            dataType:"json",
+            processData: false,
+            contentType:false, //multipart/form-data
+            success: function (result) {
+                alert(result.msg)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        })
+    });
+
+    //批量导入 中央书库书目 数据记录
+    $("#importBook").click(function () {
+        var data = new FormData($("#importForm")[0]);
+        $.ajax({
+            type:"post",
+            url:"http://localhost:8290/apiCatalog/v1/catalogue/importBook",
+            data:data,
+            dataType:"json",
+            processData: false,
+            contentType:false, //multipart/form-data
+            success: function (result) {
+                alert(result.msg)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        })
+    });
+
+    //下载导入书目 模板
+    $("#exportMould").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:20});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/exportMould',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //导出采访库书目数据列表
+    $("#exportPreBook").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:20});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/exportPreBook',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //导出中央库书目数据列表
+    $("#circulationList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:20});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8290/apiCatalog/v1/catalogue/exportBook',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

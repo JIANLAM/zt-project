@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.lendrule.repository.LendRuleDao">
+
+    <!--    查询所有借阅规则    -->
+    <select id="findList" resultType="com.szcti.lcloud.lendrule.entity.vo.LendRuleVo">
+            SELECT
+                ld.*,
+                p1.username createName,
+                p2.username updaterName
+            FROM t_lend_rule ld
+            LEFT JOIN t_people p1 ON p1.user_id = ld.create_by
+            LEFT JOIN t_people p2 ON p2.user_id = ld.update_by
+            WHERE 1=1
+            <if test="status != null">
+                AND ld.status = #{status}
+            </if>
+            <if test="libraryId != null">
+                AND ld.library_id = #{libraryId}
+            </if>
+            <if test="ruleType != null">
+                AND ld.rule_type = #{ruleType}
+            </if>
+            order by ld.create_time desc
+    </select>
+
+    <!--    查询一行借阅规则    -->
+    <select id="get" resultType="com.szcti.lcloud.lendrule.entity.vo.LendRuleVo">
+        SELECT
+           *
+            <if test="idArray != null">
+                ,(
+                    SELECT
+                        GROUP_CONCAT(label SEPARATOR ',')
+                    FROM
+                        sys_basicparam
+                    WHERE id IN
+                        <foreach item="item" index="index" collection="idArray" open="("
+                                               separator="," close=")">
+                            #{item}
+                        </foreach>
+                ) as literatureTypeTest
+            </if>
+        FROM t_lend_rule
+        WHERE 1 = 1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+    </select>
+
+    <!--    删除 一条或多条 借阅规则    -->
+    <delete id="delLendRule">
+        DELETE FROM t_lend_rule WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--    新增 一条 借阅规则    -->
+    <insert id="insertLendRule">
+        INSERT INTO t_lend_rule (
+                id,
+                rule_code,
+                rule_name,
+                lend_qty,
+                lend_days,
+                renew_qty,
+                renew_days,
+                overdue_payrate,
+                lost_payrate,
+                broken_payrate,
+				rule_type,
+                credit,
+                literature_type,
+                status,
+				library_id,
+                create_by,
+                create_time,
+                remarks
+        )
+        VALUES
+            (
+                #{id},
+                #{ruleCode},
+                #{ruleName},
+                #{lendQty},
+                #{lendDays},
+                #{renewQty},
+                #{renewDays},
+                #{overduePayrate},
+                #{lostPayrate},
+                #{brokenPayrate},
+                #{ruleType},
+                #{credit},
+                #{literatureType},
+                #{status},
+                #{libraryId},
+                #{createBy},
+                #{createTime},
+                #{remarks}
+            )
+    </insert>
+
+    <!--    修改 一条 借阅规则    -->
+    <update id="updateLendRule">
+     UPDATE t_lend_rule
+         SET
+
+                rule_code = #{ruleCode},
+
+
+                rule_name = #{ruleName},
+
+
+                lend_qty = #{lendQty},
+
+
+                lend_days = #{lendDays},
+
+                renew_qty = #{renewQty},
+
+                renew_days = #{renewDays},
+
+                overdue_payrate =#{overduePayrate},
+
+                lost_payrate = #{lostPayrate},
+
+                broken_payrate = #{brokenPayrate},
+
+               rule_type = #{ruleType},
+
+                credit =#{credit},
+
+                update_by = #{updateBy},
+
+                update_time = #{updateTime},
+
+                remarks = #{remarks}
+         WHERE	id = #{id}
+    </update>
+
+    <!--    借阅规则  同一图书馆 不能存在相同的规则代码   -->
+    <select id="existsRuleCode" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            t_lend_rule
+        WHERE rule_code = #{ruleCode}
+        <if test="ruleType != null">
+            AND rule_type = #{ruleType}
+        </if>
+        <if test="libraryId != null">
+            AND library_id = #{libraryId}
+        </if>
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    <!--    禁用 一条 借阅规则    -->
+    <update id="ruleClose">
+        UPDATE t_lend_rule
+        SET status = 0
+        WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!--    启用 一条 借阅规则    -->
+    <update id="ruleOpen">
+        UPDATE t_lend_rule
+        SET status = 1
+        WHERE id  in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!--    禁用这个类型的所有规则 借阅规则    -->
+    <update id="ruleAllClose">
+         UPDATE t_lend_rule
+         SET status = 0
+         WHERE reader_type = #{readerType} AND library_id = #{libraryId}
+    </update>
+
+    <!--    借阅规则 查询一行时可借文献类型  -->
+   <!-- <select id="rowLendLiterType" resultType="java.lang.String">
+        SELECT
+        id
+        FROM
+        sys_basicparam
+        WHERE
+        type = "circulation"
+        AND library_id = #{libraryId}
+        AND label = #{literatureType}
+    </select>-->
+
+    <!--    借阅规则 批量导入 文献类类型 图书馆是否存在  -->
+    <select id="existsLiteratureType" resultType="java.lang.String">
+        SELECT
+              id
+        FROM
+            sys_basicparam
+        WHERE
+            type = "circulation"
+            AND library_id = #{libraryId}
+            AND label = #{literatureType}
+    </select>
+
+    <!--************************************    读者借阅图书校验   *******************************************-->
+    <!--    根据id查询读者信息    -->
+    <select id="getReaderInfo" resultType="java.util.HashMap">
+        SELECT id,library_id as libraryId ,reader_type as readerType  FROM t_reader WHERE id = #{readerId};
+    </select>
+
+    <!--    统计读者已经借阅了几本书    -->
+    <select id="readerCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM t_lend WHERE reader_id = #{readerId} AND lend_status != 1;
+    </select>
+
+    <!--    读者信用值分    -->
+    <select id="creditNumber" resultType="java.lang.Integer">
+        SELECT
+            t.own_value
+        FROM
+            t_reader r
+        LEFT JOIN t_people p ON r.people_id = p.id
+        LEFT JOIN t_user u ON p.user_id = u.id
+        LEFT JOIN t_credit t ON t.user_id = u.id
+        WHERE
+            r.id = #{readerId}
+    </select>
+
+    <!--    查询每本书的续借次数    -->
+    <select id="bookRelendCount" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            t_holding h
+        LEFT JOIN t_lend d ON h.id = d.holding_id
+        LEFT JOIN t_relend r ON d.id = r.lend_id
+        WHERE
+            h.id = #{holdingId} AND d.reader_id = #{readerId}
+    </select>
+
+    <!--    查询书的文献类型  ownlib所属馆  -->
+    <select id="bookArticleType" resultType="java.util.HashMap">
+        SELECT act_type actType , ownlib FROM t_holding WHERE id = #{holdingId}
+    </select>
+
+    <!--    一种读者证类型对应 一条馆内规则    一条馆际规则      查询馆内规则    -->
+    <select id="readerMuseumRule" resultType="com.szcti.lcloud.lendrule.entity.vo.LendRuleVo">
+        SELECT
+            c.`value`,
+            c.label,
+            r.*
+        FROM
+            t_readercard c
+        LEFT JOIN t_lend_rule r ON c.museum_rule = r.id
+        WHERE
+            c.id = #{readerCardId} AND r.`status` = 1
+    </select>
+
+    <!--    一种读者证类型对应 一条馆内规则    一条馆际规则      查询馆际规则    -->
+    <select id="readerInterRule" resultType="com.szcti.lcloud.lendrule.entity.vo.LendRuleVo">
+        SELECT
+            c.`value`,
+            c.label,
+            r.*
+        FROM
+            t_readercard c
+        LEFT JOIN t_lend_rule r ON c.interlibrary_rule = r.id
+        WHERE
+            c.id = #{readerCardId} AND r.`status` = 1
+    </select>
+
+
+
+</mapper>

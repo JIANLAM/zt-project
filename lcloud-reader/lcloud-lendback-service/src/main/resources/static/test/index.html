@@ -1,0 +1,301 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>lendbackTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -250px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-lendback-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>查询我的借阅信息接口</td>
+            <td>
+                <button type="submit" id="lendWorkList">点击我测试</button>
+            </td>
+            <td>#lendWorkList</td>
+            <td><span>GET</span></td>
+            <td> lendId = 1</td>
+        </tr>
+        <tr>
+            <td>续借接口</td>
+            <td>
+                <button type="submit" id="lendWorkReLend">点击我测试</button>
+            </td>
+            <td>#lendWorkReLend</td>
+            <td><span>POST</span></td>
+            <td> lendId = 1</td>
+        </tr>
+        <tr>
+            <td>查询我的预借信息接口</td>
+            <td>
+                <button type="submit" id="preLendWorkList">点击我测试</button>
+            </td>
+            <td>#preLendWorkList</td>
+            <td><span>GET</span></td>
+            <td>传参 {startTime:"2017-01-01",endTime:null,title:"西游记",author:"吴承恩"}</td>
+        </tr>
+        <tr>
+            <td>完成预借接口</td>
+            <td>
+                <button type="submit" id="preLendWorkFinish">点击我测试</button>
+            </td>
+            <td>#preLendWorkFinish</td>
+            <td><span>POST</span></td>
+            <td> preLendId = 1 preLendStatus = 1 预借 preLendStatus = 2 取消预借</td>
+        </tr>
+        <tr>
+            <td>取消预借接口</td>
+            <td>
+                <button type="submit" id="preLendWorkCancel">点击我测试</button>
+            </td>
+            <td>#preLendWorkCancel</td>
+            <td><span>POST</span></td>
+            <td> preLendId = 1 preLendStatus = 1 预借 preLendStatus = 2 取消预借</td>
+        </tr>
+        <tr>
+            <td>——————</td>
+            <td>
+                ——————
+            </td>
+            <td>——————</td>
+            <td>——————</td>
+            <td>——————</td>
+        </tr>
+        <tr>
+            <td>查询我的借阅信息接口  微信端</td>
+            <td>
+                <button type="submit" id="weChatList">点击我测试</button>
+            </td>
+            <td>#weChatList</td>
+            <td><span>GET</span></td>
+            <td> {readerId:1,qualification: "西游记"} </td>
+        </tr>
+        <tr>
+            <td>查询我的借阅        每本书详情信息接口</td>
+            <td>
+                <button type="submit" id="weChatInfo">点击我测试</button>
+            </td>
+            <td>#weChatInfo</td>
+            <td><span>GET</span></td>
+            <td> lendId = 1</td>
+        </tr>
+        <tr>
+            <td>根据条件查找当前用户的预借信息</td>
+            <td>
+                <button type="submit" id="weChatListYuJie">点击我测试</button>
+            </td>
+            <td>#weChatListYuJie</td>
+            <td><span>GET</span></td>
+            <td> {readerId:1,qualification: "西游记"} </td>
+        </tr>
+
+        <tr>
+            <td>结果数据</td>
+            <td colspan="4" id="data">
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+        /****************************微信端****************************/
+
+
+        //根据条件查找当前用户的预借信息
+        $("#weChatListYuJie").click(function () {
+            var json = JSON.stringify({readerId:1,qualification: "西游记"});
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8181/lendback/v1/preLendWork/weChatList',
+                data: {"jsonStr": json},
+                dataType: "json",
+                contentType: "application/json",
+                success: function (result) {
+                    $("#data").text(JSON.stringify(result));
+                    alert(JSON.stringify(result));
+                    console.log(result)
+                },
+                error: function erryFunction() {
+                    alert("error");
+                }
+            });
+        });
+
+        //查询我的借阅信息接口
+        $("#weChatList").click(function () {
+            var json = JSON.stringify({readerId:1,qualification: "西游记"});
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8181/lendback/v1/lendWork/weChatList',
+                data: {"jsonStr": json},
+                dataType: "json",
+                contentType: "application/json",
+                success: function (result) {
+                    alert(JSON.stringify(result));
+                    console.log(result)
+                },
+                error: function erryFunction() {
+                    alert("error");
+                }
+            });
+        });
+        //查询我的借阅        每本书详情信息接口
+        $("#weChatInfo").click(function () {
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8181/lendback/v1/lendWork/weChatInfo/1',
+                dataType: "json",
+                contentType: "application/json",
+                success: function (result) {
+                    alert(JSON.stringify(result));
+                    console.log(result)
+                },
+                error: function erryFunction() {
+                    alert("error");
+                }
+            });
+        });
+
+
+
+    //取消预借接口
+    $("#preLendWorkCancel").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8181/lendback/v1/preLendWork/cancel/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //完成预借接口
+    $("#preLendWorkFinish").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8181/lendback/v1/preLendWork/finish/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //查询我的预借信息接口
+    $("#preLendWorkList").click(function () {
+        var json = JSON.stringify({startTime: "2017-01-01", endTime: null, title: "西游记", author: "吴承恩"});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8181/lendback/v1/preLendWork/list',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //续借接口
+    $("#lendWorkReLend").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8181/lendback/v1/lendWork/reLend/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //查询我的借阅信息接口
+    $("#lendWorkList").click(function () {
+        var json = JSON.stringify({startTime: "2017-01-01", endTime: null, title: "西游记", author: "吴承恩"});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8181/lendback/v1/lendWork/list',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

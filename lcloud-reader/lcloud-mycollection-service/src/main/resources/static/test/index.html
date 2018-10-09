@@ -1,0 +1,130 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+	<script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+	<title>mycollectionTest</title>
+	<style type="text/css">
+		body {
+			padding: 35px;
+		}
+
+		.big {
+			border: 1px #66B3FF solid;
+			box-shadow: -2px -1.5px 3px #0080FF;
+			width: 100%;
+			padding: 30px 0px;
+			margin: 0px auto;
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			align-items: flex-start;
+			height: 800px;
+			overflow: scroll;
+		}
+
+		table {
+			border: 1px #66B3FF solid;
+			box-shadow: 2px -1.5px 4px #66B3FF;
+			width: 70%;
+			text-align: center;
+			font-family: "黑体";
+			margin-top: -250px;
+		}
+
+		tr {
+			line-height: 35px;
+		}
+
+		td {
+			border: 1px white solid;
+		}
+
+		span {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+<div class="big">
+	<div style="width: 100%;text-align: center"><h1>lcloud-mycollection-service 接口测试</h1></div>
+	<table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+		<thead>
+		<tr>
+			<td><strong>接口名称</strong></td>
+			<td><strong>点击按钮</strong></td>
+			<td><strong>绑定id名</strong></td>
+			<td><strong>请求方式</strong></td>
+			<td><strong>备注信息</strong></td>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>查询我的收藏列表接口</td>
+			<td>
+				<button type="submit" id="btn">点击我测试</button>
+			</td>
+			<td>#btn</td>
+			<td><span>GET</span></td>
+			<td> {readerId:1,qualification: null} </td>
+		</tr>
+		<tr>
+			<td>查看收藏图书每本书的详情</td>
+			<td>
+				<button type="submit" id="getInfoBook">点击我测试</button>
+			</td>
+			<td>#getInfoBook</td>
+			<td><span>GET</span></td>
+			<td> collectFrom = 1  bookId = 1</td>
+		</tr>
+		<tr>
+			<td>显示值</td>
+			<td colspan="4" id="data">
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<script type="text/javascript">
+    //查看收藏图书每本书的详情
+    $("#getInfoBook").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8187/mycollection/v1/collectWork/{collectFrom}/getInfo/{bookId}',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+	//3.3.3.10.1	查询我的收藏列表接口
+    $("#btn").click(function () {
+        alert("goin");
+        var obj = JSON.stringify({readerId:1,qualification: null});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8187/mycollection/v1/collectWork/bookList',
+            data:{"jsonStr" : obj},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

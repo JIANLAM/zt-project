@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.readingt.mapper.ReadingAudioMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.readingt.entity.ReadingAudio">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="member_id" property="memberId" jdbcType="BIGINT" />
+        <result column="device_id" property="deviceId" jdbcType="BIGINT" />
+        <result column="mac" property="mac" jdbcType="VARCHAR" />
+        <result column="doc_id" property="docId" jdbcType="BIGINT" />
+        <result column="interest_doc_id" property="interestDocId" jdbcType="BIGINT" />
+        <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+        <result column="server_file_name" property="serverFileName" jdbcType="VARCHAR" />
+        <result column="server_file_name_full" property="serverFileNameFull" jdbcType="VARCHAR" />
+        <result column="works_name" property="worksName" jdbcType="VARCHAR" />
+        <result column="reader_no" property="readerNo" jdbcType="VARCHAR" />
+        <result column="reader_name" property="readerName" jdbcType="VARCHAR" />
+        <result column="cust_name" property="custName" jdbcType="VARCHAR" />
+        <result column="activity_id" property="activityId" jdbcType="BIGINT" />
+        <result column="record_time" property="recordTime" jdbcType="VARCHAR" />
+        <result column="file_size" property="fileSize" jdbcType="DOUBLE" />
+        <result column="duration" property="duration" jdbcType="DOUBLE" />
+        <result column="image_file1" property="imageFile1" jdbcType="VARCHAR" />
+        <result column="image_file2" property="imageFile2" jdbcType="VARCHAR" />
+        <result column="image_file3" property="imageFile3" jdbcType="VARCHAR" />
+        <result column="make_time" property="makeTime" jdbcType="VARCHAR" />
+        <result column="share" property="share" jdbcType="TINYINT" />
+        <result column="is_choiceness" property="isChoiceness" jdbcType="VARCHAR" />
+        <result column="wx_is_show" property="wxIsShow" jdbcType="VARCHAR" />
+        <result column="cover_image" property="coverImage" jdbcType="VARCHAR" />
+        <result column="message" property="message" jdbcType="VARCHAR" />
+        <result column="ranking" property="ranking" jdbcType="VARCHAR" />
+        <result column="order_seq" property="orderSeq" jdbcType="TINYINT" />
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+        <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+        <result column="last_modify_date" property="lastModifyDate" jdbcType="VARCHAR" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+        <result column="deleted_flag" property="deletedFlag" jdbcType="VARCHAR" />
+        <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="member_name" property="memberName" jdbcType="VARCHAR" />
+        <result column="headimgul" property="headimgul" jdbcType="VARCHAR" />
+        <result column="city" property="city" jdbcType="VARCHAR" />
+        <result column="install_address" property="installAddress" jdbcType="VARCHAR" />
+        <result column="customer_id" property="customerId" jdbcType="BIGINT" />
+        <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+        <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+        <result column="author" property="author" jdbcType="VARCHAR" />
+        <result column="share_count" property="shareCount" jdbcType="TINYINT" />
+        <result column="comment_count" property="commentCount" jdbcType="TINYINT" />
+        <result column="listen_count" property="listenCount" jdbcType="TINYINT" />
+        <result column="praise_count" property="praiseCount" jdbcType="TINYINT" />
+        <result column="votec_ount" property="votecOunt" jdbcType="TINYINT" />
+        <result column="listen_count20" property="listenCount20" jdbcType="TINYINT" />
+        <result column="praise_count20" property="praiseCount20" jdbcType="TINYINT" />
+        <result column="vote_count20" property="voteCount20" jdbcType="TINYINT" />
+        <result column="comment_count20" property="commentCount20" jdbcType="TINYINT" />
+        <result column="neworderseq" property="neworderseq" jdbcType="TINYINT" />
+        <result column="raw_json" property="rawJson" jdbcType="VARCHAR" />
+        <result column="sync_date" property="syncDate" jdbcType="DATE" />
+    </resultMap>
+
+
+    <select id="queryAudioList"  resultType="java.util.Map">
+        select id,server_file_full_name as serverFileName,works_name as worksName,reader_no as readerNo,
+          reader_name as readerName,record_time as recordTime,duration,image_file1 as ImageFile1
+          ,image_file2 as ImageFile2,image_file3 as ImageFile3, make_time as makeTime, wx_is_show as wxIsShow,
+          cover_image as CoverImage,message,order_seq as OrderSeq,create_user as createUser,
+          create_date as createDate, install_address as installAddress, customer_id as customerID,
+          customer_name as customerName, device_name as deviceName,author,share_count as shareCount,
+          comment_count as commentCount,listen_count as ListenCount,praise_count as PraiseCount,
+          votec_ount as voteCount
+           from t_audio;
+    </select>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
+
+    <appender name="FILE"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - [%thread] - %-40.40logger:%L{39} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/tmp/logs/exchange-service.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>0</maxHistory>
+        </rollingPolicy>
+    </appender>
+    
+	 <!-- 开发、测试环境 -->
+    <springProfile name="dev,test">
+        <logger name="com.szcti" level="DEBUG" >
+            <appender-ref ref="FILE" />
+        </logger>
+    </springProfile>
+
+    <!-- 生产环境 -->
+    <springProfile name="prod">
+        <logger name="com.szcti" level="ERROR" >
+            <appender-ref ref="FILE" />
+        </logger>
+    </springProfile>
+	
+    
+</configuration>

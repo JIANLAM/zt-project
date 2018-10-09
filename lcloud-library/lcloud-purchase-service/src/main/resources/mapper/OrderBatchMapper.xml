@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.purchase.repository.OrderBatchRepository" >
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.purchase.entity.OrderBatch">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coding" jdbcType="VARCHAR" property="coding" />
+    <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode" />
+    <result column="express_code" jdbcType="VARCHAR" property="expressCode" />
+    <result column="creator" jdbcType="BIGINT" property="creator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="book_type_qty" jdbcType="INTEGER" property="bookTypeQty" />
+    <result column="total_quantity" jdbcType="INTEGER" property="totalQuantity" />
+    <result column="supplier_id" jdbcType="BIGINT" property="supplierId" />
+    <result column="butget_id" jdbcType="BIGINT" property="butgetId" />
+    <result column="checker" jdbcType="BIGINT" property="checker" />
+    <result column="check_time" jdbcType="TIMESTAMP" property="checkTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="accept_status" jdbcType="VARCHAR" property="acceptStatus" />
+    <result column="accept_code" jdbcType="VARCHAR" property="acceptCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, coding, purchase_code, express_code, creator, create_time, book_type_qty, total_quantity,
+    supplier_id, butget_id, checker, check_time, remark, accept_status, accept_code
+  </sql>
+  <select id="selectByExample" parameterType="com.szcti.lcloud.purchase.entity.OrderBatchCriteria" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_order_batch
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_order_batch
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_order_batch
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.purchase.entity.OrderBatch">
+    insert into t_order_batch (id, coding, purchase_code,
+      express_code, creator, create_time,
+      book_type_qty, total_quantity, supplier_id,
+      butget_id, checker, check_time,
+      remark, accept_status, accept_code
+      )
+    values (#{id,jdbcType=BIGINT}, #{coding,jdbcType=VARCHAR}, #{purchaseCode,jdbcType=VARCHAR},
+      #{expressCode,jdbcType=VARCHAR}, #{creator,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{bookTypeQty,jdbcType=INTEGER}, #{totalQuantity,jdbcType=INTEGER}, #{supplierId,jdbcType=BIGINT},
+      #{butgetId,jdbcType=BIGINT}, #{checker,jdbcType=BIGINT}, #{checkTime,jdbcType=TIMESTAMP},
+      #{remark,jdbcType=VARCHAR}, #{acceptStatus,jdbcType=VARCHAR}, #{acceptCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.purchase.entity.OrderBatch">
+    update t_order_batch
+    set coding = #{coding,jdbcType=VARCHAR},
+      purchase_code = #{purchaseCode,jdbcType=VARCHAR},
+      express_code = #{expressCode,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      book_type_qty = #{bookTypeQty,jdbcType=INTEGER},
+      total_quantity = #{totalQuantity,jdbcType=INTEGER},
+      supplier_id = #{supplierId,jdbcType=BIGINT},
+      butget_id = #{butgetId,jdbcType=BIGINT},
+      checker = #{checker,jdbcType=BIGINT},
+      check_time = #{checkTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      accept_status = #{acceptStatus,jdbcType=VARCHAR},
+      accept_code = #{acceptCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--自定扩展-->
+  <select id="queryPage" parameterType="com.szcti.lcloud.purchase.entity.vo.OrderBatchVO"
+  resultType="com.szcti.lcloud.purchase.entity.vo.OrderBatchVO">
+    select distinct p.order_code,ob.*,pcr.username as createName,pch.username as checkerName ,
+    s.name as supplierName,bu.coding as budgetCode
+    from t_order_batch ob
+    left join t_purchase_order p on ob.purchase_code=p.purchase_code
+    left join t_people pcr on pcr.user_id=ob.creator
+    left join t_people pch on pch.user_id=ob.checker
+    left join t_supplier s on s.id=ob.supplier_id
+    left join t_budget bu on bu.id=ob.butget_id
+    where 1=1
+    <if test="id != null">
+      AND ob.id = #{id}
+    </if>
+    <if test="libraryId != null">
+      AND p.library_id = #{libraryId}
+    </if>
+    <if test="orderStatus != null and orderStatus !=''">
+      AND p.order_status =#{orderStatus}
+    </if>
+    <if test="orderCode != null and orderCode != ''">
+      AND p.order_code LIKE CONCAT('%',#{orderCode},'%')
+    </if>
+    <if test="purchaseCode != null and purchaseCode != ''">
+      AND ob.purchase_code LIKE CONCAT('%',#{purchaseCode},'%')
+    </if>
+    <if test="coding != null and coding != ''">
+      AND ob.coding LIKE CONCAT('%',#{coding},'%')
+    </if>
+    <if test="expressCode != null and expressCode != ''">
+      AND ob.express_code LIKE CONCAT('%',#{expressCode},'%')
+    </if>
+    <if test="creatorName != null and creatorName != ''">
+      AND pcr.user_name LIKE CONCAT('%',#{creatorName},'%')
+    </if>
+    <if test="acceptStatus != null and acceptStatus != ''">
+      AND ob.accept_status =#{acceptStatus}
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='orderCode'">
+      AND ob.order_code LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='purchaseCode'">
+      AND ob.purchase_code LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='checkerName'">
+      AND pch.user_name LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='coding'">
+      AND ob.coding LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='supplierName'">
+      AND s.name LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="timeKey!=null and timeKey=='createTime'">
+      <if test="startTime != null and startTime != ''">
+        AND ob.create_time >= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        AND ob.create_time <![CDATA[<]]> #{endTime}
+      </if>
+    </if>
+    <if test="timeKey!=null and timeKey=='checkTime'">
+      <if test="startTime != null and startTime != ''">
+        AND ob.check_time >= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        AND ob.check_time <![CDATA[<]]> #{endTime}
+      </if>
+    </if>
+    <if test="ids != null">
+      AND ob.id in
+      <foreach item="id" collection="ids" open="(" separator=", " close=")">
+        #{id}
+      </foreach>
+    </if>
+  </select>
+</mapper>

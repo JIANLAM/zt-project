@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.grade.repository.GradeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM t_grade WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.szcti.lcloud.grade.entity.GradeEntity">
+        UPDATE t_grade
+        <set>
+            <if test="code != null and code != ''" >
+                code = #{code},
+            </if>
+            <if test="name != null and name != ''" >
+                name = #{name},
+            </if>
+            <if test="level != null" >
+                level = #{level},
+            </if>
+            <if test="lendRule != null" >
+                lend_rule = #{lendRule},
+            </if>
+            <if test="graduate != null" >
+                graduate = #{graduate},
+            </if>
+            <if test="graduateTime != null and graduateTime != ''" >
+                graduate_time = #{graduateTime},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="com.szcti.lcloud.grade.entity.GradeEntity">
+        INSERT INTO t_grade(
+            id,
+            lib_id,
+            type,
+            code,
+            name,
+            level,
+            lend_rule,
+            graduate
+        ) VALUES (
+            #{id},
+            #{libId},
+            #{type},
+            #{code},
+            #{name},
+            #{level},
+            #{lendRule},
+            0
+        )
+    </insert>
+
+    <select id="findList" resultType="com.szcti.lcloud.grade.entity.GradeEntity">
+        SELECT
+            *
+        FROM
+            t_grade
+        WHERE lib_id = #{libId}
+        AND graduate = 0
+        ORDER BY level
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.grade.entity.GradeEntity">
+        SELECT
+            *
+        FROM
+            t_grade
+        WHERE id = #{id}
+    </select>
+
+    <select id="getCountByCode" resultType="java.lang.Integer">
+        SELECT
+            count(1)
+        FROM
+            t_grade
+        WHERE code = #{code}
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    <select id="hasNext" resultType="java.lang.Integer">
+        SELECT
+          count(1)
+        FROM
+        t_grade
+        WHERE type = #{type}
+        AND lib_id = #{libId}
+        AND level = #{level} +1
+        AND graduate = 0
+    </select>
+
+
+    
+</mapper>

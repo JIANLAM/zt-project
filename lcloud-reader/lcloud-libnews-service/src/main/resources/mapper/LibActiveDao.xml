@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.news.repository.LibActiveDao">
+    <sql id="LibActiveVoColumns">
+        a.id,
+        a.title,
+        a.content,
+        a.create_time AS createTime,
+        a.start_time AS startTime,
+        a.closure_time AS closureTime,
+        a.create_by as createBy,
+        a.address
+    </sql>
+    <select id="findList" resultType="com.szcti.lcloud.news.entity.vo.LibActiveVo">
+        SELECT
+            <include refid="LibActiveVoColumns"/>
+        FROM
+            t_libraractivities a
+        ORDER BY
+            a.create_time DESC
+    </select>
+
+    <select id="imgList" resultType="com.szcti.lcloud.news.entity.LibactiveImgEntity">
+        SELECT
+            libActive_id AS libActiveId,
+            libActive_img AS libActiveImg
+        FROM
+            t_libactive_img
+        WHERE
+            libActive_id = #{libActiveId}
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.news.entity.vo.LibActiveVo">
+        SELECT
+            <include refid="LibActiveVoColumns"/>
+        FROM
+            t_libraractivities a
+        WHERE
+            a.id = #{activeId}
+    </select>
+
+    <select id="isEnroll" resultType="java.lang.Integer">
+       SELECT
+            count(1)
+        FROM
+            t_libactive_enroll
+        WHERE
+            libActive_id = #{libActiveId}
+        AND reader_id = #{readerId}
+    </select>
+
+    <insert id="saveLibActiveEnroll">
+        INSERT INTO t_libactive_enroll (
+            libActive_id,
+            reader_id,
+            create_time
+        )
+        VALUES(
+            #{libActiveId},
+            #{readerId},
+            #{createTime}
+        )
+    </insert>
+
+    <insert id="insertLibActive">
+         INSERT INTO t_libraractivities(
+            id,
+            title,
+            content,
+            create_time,
+			start_time,
+			closure_time,
+            address,
+            create_by
+         ) VALUES (
+            #{id},
+            #{title},
+            #{content},
+            #{createTime},
+            #{startTime},
+            #{closureTime},
+			#{address},
+			#{createBy}
+         )
+    </insert>
+
+    <insert id="insertLibActiveImg">
+        INSERT INTO t_libactive_img(
+            libActive_id,
+			libActive_img
+        ) VALUES
+        <foreach collection="list" item="item" open="" separator="," close="">
+            (
+                #{item.libActiveId},
+                #{item.libActiveImg}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateLibActive">
+        UPDATE t_libraractivities
+        SET
+            title = #{title},
+            content = #{content},
+            start_time = #{startTime},
+			closure_time = #{closureTime},
+			address = #{address}
+        WHERE	id = #{id}
+    </update>
+
+    <delete id="delLibActiveImg">
+        DELETE FROM t_libactive_img where libActive_id = #{libActiveId}
+    </delete>
+
+    <delete id="delLibActiveById">
+        DELETE FROM t_libraractivities WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="delLibActiveImgById">
+        DELETE FROM t_libactive_img WHERE libActive_id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.mycollection.repository.CollectionDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="get" resultType="com.szcti.lcloud.mycollection.entity.vo.CollectionVO">
+        SELECT
+            c.id,
+            c.prebook_id,
+            c.create_time,
+            c.collect_from,
+            c.reader_id
+        FROM t_collection c
+        WHERE c.prebook_id = #{preBookId}
+        <if test="readerId != null and readerId != ''">
+            AND c.reader_id = #{readerId}
+        </if>
+    </select>
+    <sql id="CollectionVOColumn">
+            c.id,
+            c.create_time,
+            c.collect_from,
+            c.reader_id,
+            b.id preBookId,
+            b.title,
+            b.pic,
+            b.author,
+            b.publisher,
+            b.ISBN,
+            b.book_type,
+            b.summary,
+            b.pubdate,
+            p.username,
+            b.price
+    </sql>
+    <select id="getInfo" resultType="com.szcti.lcloud.mycollection.entity.vo.CollectionVO">
+        SELECT
+        <include refid="CollectionVOColumn"/>
+        <choose>
+            <when test="collectFrom != 2">
+                ,(SELECT count(1) FROM t_holding hd WHERE hd.book_id = 1) AS collCount,
+                h.barcode
+            </when>
+        </choose>
+        FROM t_collection c
+        <choose>
+            <when test="collectFrom==2">
+                LEFT JOIN t_prebook b ON c.prebook_id = b.id
+            </when>
+            <otherwise>
+                LEFT JOIN t_book b ON c.prebook_id = b.id
+            </otherwise>
+        </choose>
+        LEFT JOIN t_reader r ON r.id = c.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_holding h ON b.id = h.book_id
+        WHERE c.id = #{bookId}
+        GROUP BY c.id
+    </select>
+    <select id="findList" resultType="com.szcti.lcloud.mycollection.entity.vo.CollectionVO">
+        SELECT
+        <include refid="CollectionVOColumn"/>
+        FROM t_collection c
+        LEFT JOIN t_prebook b ON c.prebook_id = b.id
+        LEFT JOIN t_reader r ON r.id = c.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1=1 and c.collect_from = 2
+        and b.source = 1 and b.`status` !=2
+        <if test="readerId != null and readerId != ''">
+            AND c.reader_id = #{readerId}
+        </if>
+        <if test="title != null and title != ''">
+            AND b.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="author != null and author != ''">
+            AND b.author LIKE CONCAT('%',#{author},'%')
+        </if>
+        <if test="status != null">
+            AND b.status=#{status}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND c.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND c.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND (b.title LIKE CONCAT('%',#{qualification},'%') OR b.author LIKE CONCAT('%',#{qualification},'%'))
+        </if>
+        union all SELECT <include refid="CollectionVOColumn"/>
+        FROM t_collection c
+        LEFT JOIN t_book b ON c.prebook_id = b.id
+        LEFT JOIN t_reader r ON r.id = c.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1=1 and c.collect_from != 2
+        <if test="readerId != null and readerId != ''">
+            AND c.reader_id = #{readerId}
+        </if>
+        <if test="title != null and title != ''">
+            AND b.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="author != null and author != ''">
+            AND b.author LIKE CONCAT('%',#{author},'%')
+        </if>
+        <if test="status != null">
+            AND b.status=#{status}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND c.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND c.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND (b.title LIKE CONCAT('%',#{qualification},'%') OR b.author LIKE CONCAT('%',#{qualification},'%'))
+        </if>
+    </select>
+
+    <select id="bookCollectionCount" resultType = "java.lang.Integer">
+      select COUNT(1) from t_collection where prebook_id = #{preBookId} and collect_from = #{collectFrom}
+    </select>
+
+    <delete id="delete" parameterType="java.util.ArrayList">
+        DELETE FROM t_collection WHERE id IN
+        <foreach item="item" index="index" collection="collectionIds" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insert">
+        INSERT INTO t_collection(
+			id,
+			prebook_id,
+			reader_id,
+			create_time,
+			collect_from
+		) VALUES (
+			#{id},
+			#{preBookId},
+			#{readerId},
+			#{createTime},
+			#{collectFrom}
+		)
+    </insert>
+
+</mapper>

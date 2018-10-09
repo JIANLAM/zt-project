@@ -1,0 +1,367 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>circulateTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-circulate-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>新增   或修改 一条借阅规则 数据记录</td>
+                <td>
+                    <button type="submit" id="saveLendRule">点击我测试</button>
+                </td>
+                <td>#saveLendRule</td>
+                <td><span>POST</span></td>
+                <td>null</td>
+            </tr>
+            <tr>
+                <td>根据主键删除一条 或多条 借阅规则记录</td>
+                <td>
+                    <button type="submit" id="deleteLendRule">点击我测试</button>
+                </td>
+                <td>#deleteLendRule</td>
+                <td><span>POST</span></td>
+                <td>{lendRuleIds} = 2,3</td>
+            </tr>
+            <tr>
+                <td>查询借阅规则List集合</td>
+                <td>
+                    <button type="submit" id="lendRuleList">点击我测试</button>
+                </td>
+                <td>#lendRuleList</td>
+                <td><span>GET</span></td>
+                <td>{pageNum:0 , pageSize:1 , libraryId:1}</td>
+            </tr>
+            <tr>
+                <td>根据ID 查询一条借阅规则 记录</td>
+                <td>
+                    <button type="submit" id="lendRuleObj">点击我测试</button>
+                </td>
+                <td>#lendRuleObj</td>
+                <td><span>GET</span></td>
+                <td>{lendRuleIds} = 1</td>
+            </tr>
+            <tr>
+                <td>导出借阅规则 记录</td>
+                <td>
+                    <button type="submit" id="exportRule">点击我测试</button>
+                </td>
+                <td>#exportRule</td>
+                <td><span>GET</span></td>
+                <td>null</td>
+            </tr>
+            <tr>
+                <td>借阅图书时 校验规则</td>
+                <td>
+                    <button type="submit" id="lendRule">点击我测试</button>
+                </td>
+                <td>#lendRule</td>
+                <td><span>GET</span></td>
+                <td>{readerId},{bookId}</td>
+            </tr>
+            <tr>
+                <td>启用 一条规则</td>
+                <td>
+                    <button type="submit" id="ruleOpen">点击我测试</button>
+                </td>
+                <td>#ruleOpen</td>
+                <td><span>POST</span></td>
+                <td>{ruleId},{readerType}</td>
+            </tr>
+            <tr>
+                <td>禁用 一条规则</td>
+                <td>
+                    <button type="submit" id="ruleClose">点击我测试</button>
+                </td>
+                <td>#ruleClose</td>
+                <td><span>POST</span></td>
+                <td>{ruleId}</td>
+            </tr>
+
+
+
+            <tr>
+                <td>下载导入 借阅规则模版 数据记录</td>
+                <td>
+                    <button type="submit" id="exportMould">点击我测试</button>
+                </td>
+                <td>#exportMould</td>
+                <td><span>GET</span></td>
+                <td>null</td>
+            </tr>
+
+            <tr>
+                <form id="importForm"  enctype="multipart/form-data"  >
+                    <td colspan="2"><input type="file" id="fileName" name="fileName" value="fileName" /></td>
+                </form>
+                <td><button type="button" id="import">点击我测试</button></td>
+
+            </tr>
+            <tr>
+                <td colspan="5" id="data">
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    //下载导入 借阅规则模版 数据记录
+    $("#exportMould").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8283/circulate/v1/rule/exportMould',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    $("#import").click(function () {
+        var data = new FormData($("#importForm")[0]);
+        alert(JSON.stringify(data));
+        $.ajax({
+            type:"post",
+            url:"http://localhost:8283/circulate/v1/rule/import",
+            data:data,
+            dataType:"json",
+            processData: false,
+            contentType:false, //multipart/form-data
+            success: function (result) {
+                alert(result.msg)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        })
+    });
+
+
+
+    //禁用 一条规则
+    $("#ruleClose").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8283/circulate/v1/rule/ruleClose/2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //启用 一条规则
+    $("#ruleOpen").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8283/circulate/v1/rule/2/ruleOpen/15',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //借阅图书时 校验规则
+    $("#lendRule").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8283/circulate/v1/rule/1/checkLendRule/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //导出借阅 记录
+    $("#exportRule").click(function () {
+        var jsonStr = JSON.stringify({libraryId: 1});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8283/circulate/v1/rule/exportRule',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据ID 查询一条借阅规则 记录
+    $("#lendRuleObj").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8283/circulate/v1/rule/info/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询借阅规则List集合
+    $("#lendRuleList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:20 , libraryId:1 });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8283/circulate/v1/rule/list',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据主键删除一条 或多条 借阅规则记录
+    $("#deleteLendRule").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8283/circulate/v1/rule/delete/2,3',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //新增   或修改 一条借阅规则 数据记录
+    $("#saveLendRule").click(function () {
+        var json = {
+            id: 848963759253,
+            ruleName: "ddddddddd",
+            lendQty: 1,
+            lendDays: 1,
+            renewQty: "1",
+            renewDays: "1",
+            overduePayrate: "1",
+            lostPayrate: "1",
+            brokenPayrate: "1",
+            readerType: "1",
+            credit: "1",
+            literatureType: "1",
+            status: "1",
+            startTime: "2015-02-03",
+            stopTime: "2018-12-05"
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8283/circulate/v1/rule/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

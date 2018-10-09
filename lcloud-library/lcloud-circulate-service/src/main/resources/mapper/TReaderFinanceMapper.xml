@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.circulate.mapper.TReaderFinanceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.circulate.entity.TReaderFinance">
+        <id column="id" property="id" />
+        <result column="reader_id" property="readerId" />
+        <result column="reader_card_number" property="readerCardNumber" />
+        <result column="type" property="type" />
+        <result column="type_name" property="typeName" />
+        <result column="finance_datetime" property="financeDatetime" />
+        <result column="forfeit" property="forfeit" />
+        <result column="status" property="status" />
+        <result column="pay_method" property="payMethod" />
+        <result column="book_id" property="bookId" />
+        <result column="book_name" property="bookName" />
+        <result column="barcode" property="barcode" />
+        <result column="operator_id" property="operatorId" />
+        <result column="create_date" property="createDate" />
+    </resultMap>
+
+</mapper>

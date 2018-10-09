@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.purchase.repository.PurchaseRuleRepository">
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.purchase.entity.PurchaseRule" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+        <result column="checker" property="checker" jdbcType="BIGINT" />
+        <result column="start_time" property="startTime" jdbcType="DATE" />
+        <result column="end_time" property="endTime" jdbcType="DATE" />
+        <result column="creator" property="creator" jdbcType="BIGINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="budget_id" property="budgetId" jdbcType="BIGINT" />
+        <result column="budget_price" property="budgetPrice" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="TINYINT" />
+        <result column="duplicate_qty" property="duplicateQty" jdbcType="INTEGER" />
+        <result column="publish_year" property="publishYear" jdbcType="VARCHAR" />
+        <result column="category_no" property="categoryNo" jdbcType="VARCHAR" />
+        <result column="book_price" property="bookPrice" jdbcType="VARCHAR" />
+        <result column="book_size" property="bookSize" jdbcType="VARCHAR" />
+        <result column="pages" property="pages" jdbcType="VARCHAR" />
+        <result column="publisher" property="publisher" jdbcType="VARCHAR" />
+        <result column="library_id" property="libraryId" jdbcType="BIGINT" />
+        <result column="publish_year_allow" property="publishYearAllow" jdbcType="TINYINT" />
+        <result column="category_no_allow" property="categoryNoAllow" jdbcType="TINYINT" />
+        <result column="book_size_allow" property="bookSizeAllow" jdbcType="TINYINT" />
+        <result column="book_pages_allow" property="bookPagesAllow" jdbcType="TINYINT" />
+        <result column="publisher_allow" property="publisherAllow" jdbcType="TINYINT" />
+        <result column="prefix" property="prefix" jdbcType="VARCHAR" />
+        <result column="totalnum" property="totalnum" jdbcType="VARCHAR" />
+        <result column="startnum" property="startnum" jdbcType="VARCHAR" />
+        <result column="summary" property="summary" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List" >
+    id, rule_name, checker, start_time, end_time, creator, create_time, budget_id, budget_price,
+    status, duplicate_qty, publish_year, category_no, book_price, book_size, book_pages,
+    publisher, library_id, publish_year_allow, category_no_allow, book_size_allow, book_pages_allow,
+    publisher_allow, prefix, totalnum, startnum, summary
+  </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.szcti.lcloud.purchase.entity.PurchaseRuleCriteria" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from t_purchase_rule
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from t_purchase_rule
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_purchase_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.szcti.lcloud.purchase.entity.PurchaseRuleCriteria" >
+        delete from t_purchase_rule
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.szcti.lcloud.purchase.entity.PurchaseRule" >
+    insert into t_purchase_rule (id, rule_name, checker,
+      start_time, end_time, creator,
+      create_time, budget_id, budget_price,
+      status, duplicate_qty, publish_year,
+      category_no, book_price, book_size,
+      book_pages, publisher, library_id,
+      publish_year_allow, category_no_allow, book_size_allow,
+      book_pages_allow, publisher_allow, prefix,
+      totalnum, startnum, summary
+      )
+    values (#{id,jdbcType=BIGINT}, #{ruleName,jdbcType=VARCHAR}, #{checker,jdbcType=BIGINT},
+      #{startTime,jdbcType=DATE}, #{endTime,jdbcType=DATE}, #{creator,jdbcType=BIGINT},
+      now(), #{budgetId,jdbcType=BIGINT}, #{budgetPrice,jdbcType=VARCHAR},
+      #{status,jdbcType=TINYINT}, #{duplicateQty,jdbcType=INTEGER}, #{publishYear,jdbcType=VARCHAR},
+      #{categoryNo,jdbcType=VARCHAR}, #{bookPrice,jdbcType=VARCHAR}, #{bookSize,jdbcType=VARCHAR},
+      #{bookPages,jdbcType=VARCHAR}, #{publisher,jdbcType=VARCHAR}, #{libraryId,jdbcType=BIGINT},
+      #{publishYearAllow,jdbcType=TINYINT}, #{categoryNoAllow,jdbcType=TINYINT}, #{bookSizeAllow,jdbcType=TINYINT},
+      #{bookPagesAllow,jdbcType=TINYINT}, #{publisherAllow,jdbcType=TINYINT}, #{prefix,jdbcType=VARCHAR},
+      #{totalnum,jdbcType=VARCHAR}, #{startnum,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.szcti.lcloud.purchase.entity.PurchaseRule" >
+        insert into t_purchase_rule
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="ruleName != null" >
+                rule_name,
+            </if>
+            <if test="checker != null" >
+                checker,
+            </if>
+            <if test="startTime != null" >
+                start_time,
+            </if>
+            <if test="endTime != null" >
+                end_time,
+            </if>
+            <if test="creator != null" >
+                creator,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="budgetId != null" >
+                budget_id,
+            </if>
+            <if test="budgetPrice != null" >
+                budget_price,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+            <if test="duplicateQty != null" >
+                duplicate_qty,
+            </if>
+            <if test="publishYear != null" >
+                publish_year,
+            </if>
+            <if test="categoryNo != null" >
+                category_no,
+            </if>
+            <if test="bookPrice != null" >
+                book_price,
+            </if>
+            <if test="bookSize != null" >
+                book_size,
+            </if>
+            <if test="pages != null" >
+                pages,
+            </if>
+            <if test="publisher != null" >
+                publisher,
+            </if>
+            <if test="libraryId != null" >
+                library_id,
+            </if>
+            <if test="publishYearAllow != null" >
+                publish_year_allow,
+            </if>
+            <if test="categoryNoAllow != null" >
+                category_no_allow,
+            </if>
+            <if test="bookSizeAllow != null" >
+                book_size_allow,
+            </if>
+            <if test="bookPagesAllow != null" >
+                book_pages_allow,
+            </if>
+            <if test="publisherAllow != null" >
+                publisher_allow,
+            </if>
+            <if test="prefix != null" >
+                prefix,
+            </if>
+            <if test="totalnum != null" >
+                totalnum,
+            </if>
+            <if test="startnum != null" >
+                startnum,
+            </if>
+            <if test="summary != null" >
+                summary,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="ruleName != null" >
+                #{ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="checker != null" >
+                #{checker,jdbcType=BIGINT},
+            </if>
+            <if test="startTime != null" >
+                #{startTime,jdbcType=DATE},
+            </if>
+            <if test="endTime != null" >
+                #{endTime,jdbcType=DATE},
+            </if>
+            <if test="creator != null" >
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="budgetId != null" >
+                #{budgetId,jdbcType=BIGINT},
+            </if>
+            <if test="budgetPrice != null" >
+                #{budgetPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="duplicateQty != null" >
+                #{duplicateQty,jdbcType=INTEGER},
+            </if>
+            <if test="publishYear != null" >
+                #{publishYear,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryNo != null" >
+                #{categoryNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bookPrice != null" >
+                #{bookPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="bookSize != null" >
+                #{bookSize,jdbcType=VARCHAR},
+            </if>
+            <if test="pages != null" >
+                #{pages,jdbcType=VARCHAR},
+            </if>
+            <if test="publisher != null" >
+                #{publisher,jdbcType=VARCHAR},
+            </if>
+            <if test="libraryId != null" >
+                #{libraryId,jdbcType=BIGINT},
+            </if>
+            <if test="publishYearAllow != null" >
+                #{publishYearAllow,jdbcType=TINYINT},
+            </if>
+            <if test="categoryNoAllow != null" >
+                #{categoryNoAllow,jdbcType=TINYINT},
+            </if>
+            <if test="bookSizeAllow != null" >
+                #{bookSizeAllow,jdbcType=TINYINT},
+            </if>
+            <if test="bookPagesAllow != null" >
+                #{bookPagesAllow,jdbcType=TINYINT},
+            </if>
+            <if test="publisherAllow != null" >
+                #{publisherAllow,jdbcType=TINYINT},
+            </if>
+            <if test="prefix != null" >
+                #{prefix,jdbcType=VARCHAR},
+            </if>
+            <if test="totalnum != null" >
+                #{totalnum,jdbcType=VARCHAR},
+            </if>
+            <if test="startnum != null" >
+                #{startnum,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null" >
+                #{summary,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.szcti.lcloud.purchase.entity.PurchaseRuleCriteria" resultType="java.lang.Integer" >
+        select count(*) from t_purchase_rule
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map" >
+        update t_purchase_rule
+        <set >
+            <if test="record.id != null" >
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.ruleName != null" >
+                rule_name = #{record.ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.checker != null" >
+                checker = #{record.checker,jdbcType=BIGINT},
+            </if>
+            <if test="record.startTime != null" >
+                start_time = #{record.startTime,jdbcType=DATE},
+            </if>
+            <if test="record.endTime != null" >
+                end_time = #{record.endTime,jdbcType=DATE},
+            </if>
+            <if test="record.creator != null" >
+                creator = #{record.creator,jdbcType=BIGINT},
+            </if>
+            <if test="record.createTime != null" >
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.budgetId != null" >
+                budget_id = #{record.budgetId,jdbcType=BIGINT},
+            </if>
+            <if test="record.budgetPrice != null" >
+                budget_price = #{record.budgetPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="record.status != null" >
+                status = #{record.status,jdbcType=TINYINT},
+            </if>
+            <if test="record.duplicateQty != null" >
+                duplicate_qty = #{record.duplicateQty,jdbcType=INTEGER},
+            </if>
+            <if test="record.publishYear != null" >
+                publish_year = #{record.publishYear,jdbcType=VARCHAR},
+            </if>
+            <if test="record.categoryNo != null" >
+                category_no = #{record.categoryNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.bookPrice != null" >
+                book_price = #{record.bookPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="record.bookSize != null" >
+                book_size = #{record.bookSize,jdbcType=VARCHAR},
+            </if>
+            <if test="record.pages != null" >
+                pages = #{record.pages,jdbcType=VARCHAR},
+            </if>
+            <if test="record.publisher != null" >
+                publisher = #{record.publisher,jdbcType=VARCHAR},
+            </if>
+            <if test="record.libraryId != null" >
+                library_id = #{record.libraryId,jdbcType=BIGINT},
+            </if>
+            <if test="record.publishYearAllow != null" >
+                publish_year_allow = #{record.publishYearAllow,jdbcType=TINYINT},
+            </if>
+            <if test="record.categoryNoAllow != null" >
+                category_no_allow = #{record.categoryNoAllow,jdbcType=TINYINT},
+            </if>
+            <if test="record.bookSizeAllow != null" >
+                book_size_allow = #{record.bookSizeAllow,jdbcType=TINYINT},
+            </if>
+            <if test="record.bookPagesAllow != null" >
+                book_pages_allow = #{record.bookPagesAllow,jdbcType=TINYINT},
+            </if>
+            <if test="record.publisherAllow != null" >
+                publisher_allow = #{record.publisherAllow,jdbcType=TINYINT},
+            </if>
+            <if test="record.prefix != null" >
+                prefix = #{record.prefix,jdbcType=VARCHAR},
+            </if>
+            <if test="record.totalnum != null" >
+                totalnum = #{record.totalnum,jdbcType=VARCHAR},
+            </if>
+            <if test="record.startnum != null" >
+                startnum = #{record.startnum,jdbcType=VARCHAR},
+            </if>
+            <if test="record.summary != null" >
+                summary = #{record.summary,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map" >
+        update t_purchase_rule
+        set id = #{record.id,jdbcType=BIGINT},
+        rule_name = #{record.ruleName,jdbcType=VARCHAR},
+        checker = #{record.checker,jdbcType=BIGINT},
+        start_time = #{record.startTime,jdbcType=DATE},
+        end_time = #{record.endTime,jdbcType=DATE},
+        creator = #{record.creator,jdbcType=BIGINT},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        budget_id = #{record.budgetId,jdbcType=BIGINT},
+        budget_price = #{record.budgetPrice,jdbcType=VARCHAR},
+        status = #{record.status,jdbcType=TINYINT},
+        duplicate_qty = #{record.duplicateQty,jdbcType=INTEGER},
+        publish_year = #{record.publishYear,jdbcType=VARCHAR},
+        category_no = #{record.categoryNo,jdbcType=VARCHAR},
+        book_price = #{record.bookPrice,jdbcType=VARCHAR},
+        book_size = #{record.bookSize,jdbcType=VARCHAR},
+        pages = #{record.pages,jdbcType=VARCHAR},
+        publisher = #{record.publisher,jdbcType=VARCHAR},
+        library_id = #{record.libraryId,jdbcType=BIGINT},
+        publish_year_allow = #{record.publishYearAllow,jdbcType=TINYINT},
+        category_no_allow = #{record.categoryNoAllow,jdbcType=TINYINT},
+        book_size_allow = #{record.bookSizeAllow,jdbcType=TINYINT},
+        book_pages_allow = #{record.bookPagesAllow,jdbcType=TINYINT},
+        publisher_allow = #{record.publisherAllow,jdbcType=TINYINT},
+        prefix = #{record.prefix,jdbcType=VARCHAR},
+        totalnum = #{record.totalnum,jdbcType=VARCHAR},
+        startnum = #{record.startnum,jdbcType=VARCHAR},
+        summary = #{record.summary,jdbcType=VARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.szcti.lcloud.purchase.entity.PurchaseRule" >
+        update t_purchase_rule
+        <set >
+            <if test="ruleName != null" >
+                rule_name = #{ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="checker != null" >
+                checker = #{checker,jdbcType=BIGINT},
+            </if>
+            <if test="startTime != null" >
+                start_time = #{startTime,jdbcType=DATE},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime,jdbcType=DATE},
+            </if>
+            <if test="creator != null" >
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="budgetId != null" >
+                budget_id = #{budgetId,jdbcType=BIGINT},
+            </if>
+            <if test="budgetPrice != null" >
+                budget_price = #{budgetPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="duplicateQty != null" >
+                duplicate_qty = #{duplicateQty,jdbcType=INTEGER},
+            </if>
+            <if test="publishYear != null" >
+                publish_year = #{publishYear,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryNo != null" >
+                category_no = #{categoryNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bookPrice != null" >
+                book_price = #{bookPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="bookSize != null" >
+                book_size = #{bookSize,jdbcType=VARCHAR},
+            </if>
+            <if test="pages != null" >
+                pages = #{pages,jdbcType=VARCHAR},
+            </if>
+            <if test="publisher != null" >
+                publisher = #{publisher,jdbcType=VARCHAR},
+            </if>
+            <if test="libraryId != null" >
+                library_id = #{libraryId,jdbcType=BIGINT},
+            </if>
+            <if test="publishYearAllow != null" >
+                publish_year_allow = #{publishYearAllow,jdbcType=TINYINT},
+            </if>
+            <if test="categoryNoAllow != null" >
+                category_no_allow = #{categoryNoAllow,jdbcType=TINYINT},
+            </if>
+            <if test="bookSizeAllow != null" >
+                book_size_allow = #{bookSizeAllow,jdbcType=TINYINT},
+            </if>
+            <if test="bookPagesAllow != null" >
+                book_pages_allow = #{bookPagesAllow,jdbcType=TINYINT},
+            </if>
+            <if test="publisherAllow != null" >
+                publisher_allow = #{publisherAllow,jdbcType=TINYINT},
+            </if>
+            <if test="prefix != null" >
+                prefix = #{prefix,jdbcType=VARCHAR},
+            </if>
+            <if test="totalnum != null" >
+                totalnum = #{totalnum,jdbcType=VARCHAR},
+            </if>
+            <if test="startnum != null" >
+                startnum = #{startnum,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null" >
+                summary = #{summary,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.purchase.entity.PurchaseRule" >
+    update t_purchase_rule
+    set rule_name = #{ruleName,jdbcType=VARCHAR},
+      checker = #{checker,jdbcType=BIGINT},
+      start_time = #{startTime,jdbcType=DATE},
+      end_time = #{endTime,jdbcType=DATE},
+      creator = #{creator,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      budget_id = #{budgetId,jdbcType=BIGINT},
+      budget_price = #{budgetPrice,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      duplicate_qty = #{duplicateQty,jdbcType=INTEGER},
+      publish_year = #{publishYear,jdbcType=VARCHAR},
+      category_no = #{categoryNo,jdbcType=VARCHAR},
+      book_price = #{bookPrice,jdbcType=VARCHAR},
+      book_size = #{bookSize,jdbcType=VARCHAR},
+      pages = #{pages,jdbcType=VARCHAR},
+      publisher = #{publisher,jdbcType=VARCHAR},
+      library_id = #{libraryId,jdbcType=BIGINT},
+      publish_year_allow = #{publishYearAllow,jdbcType=TINYINT},
+      category_no_allow = #{categoryNoAllow,jdbcType=TINYINT},
+      book_size_allow = #{bookSizeAllow,jdbcType=TINYINT},
+      book_pages_allow = #{bookPagesAllow,jdbcType=TINYINT},
+      publisher_allow = #{publisherAllow,jdbcType=TINYINT},
+      prefix = #{prefix,jdbcType=VARCHAR},
+      totalnum = #{totalnum,jdbcType=VARCHAR},
+      startnum = #{startnum,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <!--关联自定义SQL-->
+    <select id="queryPage" resultType="com.szcti.lcloud.purchase.entity.vo.PurchaseRuleVO">
+      select distinct * from t_purchase_rule where 1=1
+        <if test="id != null and id !='' and id>0 ">
+            and id = #{id}
+        </if>
+        <if test="libraryId != null">
+            and library_id = #{libraryId}
+        </if>
+        <if test="ruleName != null and ruleName !=''">
+           and rule_name = #{ruleName}
+        </if>
+        <if test="checker != null">
+            and checker = #{checker}
+        </if>
+        <if test="creator != null">
+            and creator = #{creator}
+        </if>
+        <if test="budgetId != null">
+            and budget_id = #{budgetId}
+        </if>
+        <if test="status != null and status !=''">
+            and status = #{status}
+        </if>
+        <if test="publishYear != null and publishYear !=''">
+            and publish_year LIKE CONCAT('%',#{publishYear},'%')
+        </if>
+        <if test="categoryNo != null and categoryNo !=''">
+            and category_no LIKE CONCAT('%',#{categoryNo},'%')
+        </if>
+        <if test="bookSize != null and bookSize !=''">
+            and book_size = #{bookSize}
+        </if>
+        <if test="pages != null and pages !=''">
+            and pages = #{pages}
+        </if>
+        <if test="publisher != null and publisher!=''">
+            and publish_company LIKE CONCAT('%',#{publisher},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND create_time <![CDATA[<]]> #{endTime}
+        </if>
+        order by create_time desc
+    </select>
+    <select id="queryMapList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        select obr.id as id,obr.rule_name as ruleName
+        from t_purchase_rule obr where 1=1
+        <if test="ruleStatus != null and ruleStatus != ''">
+          and obr.status=#{ruleStatus}
+        </if>
+        <if test="id != null and id != ''">
+            and obr.id=#{id}
+        </if>
+        <if test="libraryId != null and libraryId != ''">
+            and obr.library_id=#{libraryId}
+        </if>
+        </select>
+</mapper>

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.1.249:3306/lcloud?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    oracle:
+      driverClassName: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@192.168.1.249:1521:XE
+      username: interlib
+      password: interlib

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.holding.repository.OpLogDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="findList" resultType="com.szcti.lcloud.holding.entity.vo.OpLogVO">
+        SELECT
+            log.operation_type,
+            log.op_content,
+            p.username,
+            u.login_name,
+            log.create_time
+        FROM t_operation_log log
+        LEFT JOIN t_people p ON p.user_id = log.user_id
+        LEFT JOIN t_user u ON u.id = p.user_id
+        WHERE log.module_id = #{moduleId}
+        AND log.library_id = #{libraryId}
+        <if test="operationType != null and operationType != ''" >
+            AND log.operation_type = #{operationType}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND log.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND log.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="loginName != null and loginName != ''" >
+            AND u.login_name LIKE CONCAT('%',#{loginName},'%')
+        </if>
+        ORDER BY log.create_time DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO t_operation_log (
+            id,
+            module_id,
+            module_name,
+            operation_type,
+            library_id,
+            library_name,
+            user_id,
+            login_name,
+            user_name,
+            ip,
+            op_content,
+            remark,
+            create_time
+        ) VALUES (
+            #{id},
+            #{moduleId},
+            #{moduleName},
+            #{operationType},
+            #{libraryId},
+            #{libraryName},
+            #{userId},
+            #{loginName},
+            #{userName},
+            #{ip},
+            #{opContent},
+            #{remark},
+            now()
+        )
+    </insert>
+
+</mapper>

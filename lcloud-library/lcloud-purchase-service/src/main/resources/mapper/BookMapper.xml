@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.purchase.repository.BookRepository" >
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.purchase.entity.Book" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="publisher" property="publisher" jdbcType="VARCHAR" />
+    <result column="pubdate" property="pubdate" jdbcType="TIMESTAMP" />
+    <result column="book_type" property="bookType" jdbcType="VARCHAR" />
+    <result column="ISBN" property="isbn" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="REAL" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="pages" property="pages" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.szcti.lcloud.purchase.entity.Book" extends="BaseResultMap" >
+    <result column="summary" property="summary" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, pic, title, author, publisher, pubdate, book_type, ISBN, price, create_by, create_time,
+    pages
+  </sql>
+  <sql id="Blob_Column_List" >
+    summary
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.szcti.lcloud.purchase.entity.BookCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_book
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.szcti.lcloud.purchase.entity.BookCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_book
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_book
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_book
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.szcti.lcloud.purchase.entity.BookCriteria" >
+    delete from t_book
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.purchase.entity.Book" >
+    insert into t_book (id, pic, title,
+      author, publisher, pubdate,
+      book_type, ISBN, price,
+      create_by, create_time, pages,
+      summary)
+    values (#{id,jdbcType=BIGINT}, #{pic,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+      #{author,jdbcType=VARCHAR}, #{publisher,jdbcType=VARCHAR}, #{pubdate,jdbcType=TIMESTAMP},
+      #{bookType,jdbcType=VARCHAR}, #{isbn,jdbcType=VARCHAR}, #{price,jdbcType=REAL},
+      #{createBy,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{pages,jdbcType=INTEGER},
+      #{summary,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szcti.lcloud.purchase.entity.Book" >
+    insert into t_book
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="pic != null" >
+        pic,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="publisher != null" >
+        publisher,
+      </if>
+      <if test="pubdate != null" >
+        pubdate,
+      </if>
+      <if test="bookType != null" >
+        book_type,
+      </if>
+      <if test="isbn != null" >
+        ISBN,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="createBy != null" >
+        create_by,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="pages != null" >
+        pages,
+      </if>
+      <if test="summary != null" >
+        summary,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="pic != null" >
+        #{pic,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="publisher != null" >
+        #{publisher,jdbcType=VARCHAR},
+      </if>
+      <if test="pubdate != null" >
+        #{pubdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bookType != null" >
+        #{bookType,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null" >
+        #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=REAL},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pages != null" >
+        #{pages,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        #{summary,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.szcti.lcloud.purchase.entity.BookCriteria" resultType="java.lang.Integer" >
+    select count(*) from t_book
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_book
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.pic != null" >
+        pic = #{record.pic,jdbcType=VARCHAR},
+      </if>
+      <if test="record.title != null" >
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.author != null" >
+        author = #{record.author,jdbcType=VARCHAR},
+      </if>
+      <if test="record.publisher != null" >
+        publisher = #{record.publisher,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pubdate != null" >
+        pubdate = #{record.pubdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.bookType != null" >
+        book_type = #{record.bookType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isbn != null" >
+        ISBN = #{record.isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null" >
+        price = #{record.price,jdbcType=REAL},
+      </if>
+      <if test="record.createBy != null" >
+        create_by = #{record.createBy,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.pages != null" >
+        pages = #{record.pages,jdbcType=INTEGER},
+      </if>
+      <if test="record.summary != null" >
+        summary = #{record.summary,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update t_book
+    set id = #{record.id,jdbcType=BIGINT},
+    pic = #{record.pic,jdbcType=VARCHAR},
+    title = #{record.title,jdbcType=VARCHAR},
+    author = #{record.author,jdbcType=VARCHAR},
+    publisher = #{record.publisher,jdbcType=VARCHAR},
+    pubdate = #{record.pubdate,jdbcType=TIMESTAMP},
+    book_type = #{record.bookType,jdbcType=VARCHAR},
+    ISBN = #{record.isbn,jdbcType=VARCHAR},
+    price = #{record.price,jdbcType=REAL},
+    create_by = #{record.createBy,jdbcType=BIGINT},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    pages = #{record.pages,jdbcType=INTEGER},
+    summary = #{record.summary,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_book
+    set id = #{record.id,jdbcType=BIGINT},
+    pic = #{record.pic,jdbcType=VARCHAR},
+    title = #{record.title,jdbcType=VARCHAR},
+    author = #{record.author,jdbcType=VARCHAR},
+    publisher = #{record.publisher,jdbcType=VARCHAR},
+    pubdate = #{record.pubdate,jdbcType=TIMESTAMP},
+    book_type = #{record.bookType,jdbcType=VARCHAR},
+    ISBN = #{record.isbn,jdbcType=VARCHAR},
+    price = #{record.price,jdbcType=REAL},
+    create_by = #{record.createBy,jdbcType=BIGINT},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    pages = #{record.pages,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szcti.lcloud.purchase.entity.Book" >
+    update t_book
+    <set >
+      <if test="pic != null" >
+        pic = #{pic,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="publisher != null" >
+        publisher = #{publisher,jdbcType=VARCHAR},
+      </if>
+      <if test="pubdate != null" >
+        pubdate = #{pubdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bookType != null" >
+        book_type = #{bookType,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null" >
+        ISBN = #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=REAL},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pages != null" >
+        pages = #{pages,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        summary = #{summary,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.szcti.lcloud.purchase.entity.Book" >
+    update t_book
+    set pic = #{pic,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      publisher = #{publisher,jdbcType=VARCHAR},
+      pubdate = #{pubdate,jdbcType=TIMESTAMP},
+      book_type = #{bookType,jdbcType=VARCHAR},
+      ISBN = #{isbn,jdbcType=VARCHAR},
+      price = #{price,jdbcType=REAL},
+      create_by = #{createBy,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      pages = #{pages,jdbcType=INTEGER},
+      summary = #{summary,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.purchase.entity.Book" >
+    update t_book
+    set pic = #{pic,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      publisher = #{publisher,jdbcType=VARCHAR},
+      pubdate = #{pubdate,jdbcType=TIMESTAMP},
+      book_type = #{bookType,jdbcType=VARCHAR},
+      ISBN = #{isbn,jdbcType=VARCHAR},
+      price = #{price,jdbcType=REAL},
+      create_by = #{createBy,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      pages = #{pages,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="queryPage" parameterType="com.szcti.lcloud.purchase.entity.vo.BookVO"
+          resultType="com.szcti.lcloud.purchase.entity.vo.BookVO">
+    select DISTINCT "2" as source, h.curlib as libraryId,li.name as libraryName,b.* from t_book b LEFT JOIN t_holding h on b.id=h.book_id
+    left join t_organization li on li.id=h.curlib
+    where 1=1
+    <if test="libraryId != null and libraryId!=''" >
+      and h.curlib = #{libraryId}
+    </if>
+    <if test="libraryName != null and libraryName != ''">
+      AND li.name=#{libraryName}
+    </if>
+    <if test="id != null and id!=''" >
+      and b.id = #{id}
+    </if>
+    <if test="title != null and title != ''">
+      AND b.title=#{title}
+    </if>
+    <if test="isbn != null and isbn != ''">
+      AND b.isbn=#{isbn}
+    </if>
+    <if test="author != null and author != ''">
+      AND b.author=#{author}
+    </if>
+    <if test="publisher != null and publisher != ''">
+      AND b.publisher =#{publisher}
+    </if>
+    <if test="pages != null and pages != ''">
+      AND b.pages = #{pages}
+    </if>
+    <if test="pubdate != null and pubdate != ''">
+      AND b.pubdate = #{pubdate}
+    </if>
+    /*搜索框条件*/
+    <if test="searchValue != null and searchValue != '' and searchKey=='libraryName'">
+      AND li.name LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+      AND b.title LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+      AND b.isbn LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+      AND b.author LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+      AND b.publisher LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchKey != null and searchKey == 'pubdate'">
+      <if test="startTime != null and startTime != ''">
+        AND b.pubdate >= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        AND b.pubdate <![CDATA[<]]> #{endTime}
+      </if>
+    </if>
+    <if test="orderId != null and orderId != ''">
+      <![CDATA[and b.isbn not in(SELECT distinct ob.isbn FROM t_purchase_book ob  where 1=1]]>
+      AND ob.order_id = #{orderId}<![CDATA[)]]>
+    </if>
+    <if test="ids != null">
+      AND b.id in
+      <foreach item="id" collection="ids" open="(" separator=", " close=")">
+        #{id}
+      </foreach>
+    </if>
+    <if test="libraryIdList != null">
+      AND h.curlib in
+      <foreach item="libraryId" collection="libraryIdList" open="(" separator=", " close=")">
+        #{libraryId}
+      </foreach>
+    </if>
+  </select>
+  
+  <!-- <select id="getPageBook" parameterType="com.szcti.lcloud.purchase.entity.vo.PrebookVO"
+          resultType="com.szcti.lcloud.purchase.entity.vo.PrebookVO">
+    select DISTINCT "2" as source, h.curlib as libraryId,li.name as libraryName,b.* from t_book b LEFT JOIN t_holding h on b.id=h.book_id
+    left join t_organization li on li.id=h.curlib
+    where 1=1
+    <if test="libraryId != null and libraryId!=''" >
+      and h.curlib = #{libraryId}
+    </if>
+    <if test="libraryName != null and libraryName != ''">
+      AND li.name=#{libraryName}
+    </if>
+    <if test="id != null and id!=''" >
+      and b.id = #{id}
+    </if>
+    <if test="title != null and title != ''">
+      AND b.title=#{title}
+    </if>
+    <if test="isbn != null and isbn != ''">
+      AND b.isbn=#{isbn}
+    </if>
+    <if test="author != null and author != ''">
+      AND b.author=#{author}
+    </if>
+    <if test="publisher != null and publisher != ''">
+      AND b.publisher =#{publisher}
+    </if>
+    <if test="pages != null and pages != ''">
+      AND b.pages = #{pages}
+    </if>
+    <if test="pubdate != null and pubdate != ''">
+      AND b.pubdate = #{pubdate}
+    </if>
+    /*搜索框条件*/
+    <if test="searchValue != null and searchValue != '' and searchKey=='libraryName'">
+      AND li.name LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+      AND b.title LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+      AND b.isbn LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+      AND b.author LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+      AND b.publisher LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchKey != null and searchKey == 'pubdate'">
+      <if test="startTime != null and startTime != ''">
+        AND b.pubdate >= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+        AND b.pubdate <![CDATA[<]]> #{endTime}
+      </if>
+    </if>
+    <if test="orderId != null and orderId != ''">
+      <![CDATA[and b.isbn not in(SELECT distinct ob.isbn FROM t_purchase_book ob  where 1=1]]>
+      AND ob.order_id = #{orderId}<![CDATA[)]]>
+    </if>
+    <if test="ids != null">
+      AND b.id in
+      <foreach item="id" collection="ids" open="(" separator=", " close=")">
+        #{id}
+      </foreach>
+    </if>
+    <if test="libraryIdList != null">
+      AND h.curlib in
+      <foreach item="libraryId" collection="libraryIdList" open="(" separator=", " close=")">
+        #{libraryId}
+      </foreach>
+    </if>
+  </select> -->
+  
+    <select id="getPageBook" resultType="com.szcti.lcloud.purchase.entity.vo.PrebookVO"
+          parameterType="com.szcti.lcloud.purchase.entity.vo.PrebookVO" >
+    select 0 source,id,title,isbn,author,book_type,publisher,pubdate,singleprice as price from t_book where 1=1
+    
+    <if test="isbn != null and isbn != ''">
+      and isbn like concat('%', #{isbn}, '%')
+    </if>
+    <if test="title != null and title != ''">
+      and title like concat('%', #{title}, '%') 
+    </if>
+    <if test="author != null and author != ''">
+      and author like concat('%', #{author}, '%')  
+    </if>
+    <if test="publisher != null and publisher != ''">
+      and publisher like concat('%', #{publisher}, '%')
+    </if>
+  </select>
+  
+  
+  <select id="queryPage" resultType="com.szcti.lcloud.purchase.entity.vo.PrebookVO"
+          parameterType="com.szcti.lcloud.purchase.entity.vo.PrebookVO" >
+    select 0 source,id,title,isbn,author,book_type,publisher,pubdate,singleprice as price from t_book where 1=1
+    
+    <if test="isbn != null and isbn != ''">
+      and isbn like concat('%', #{isbn}, '%')
+    </if>
+    <if test="title != null and title != ''">
+      and title like concat('%', #{title}, '%') 
+    </if>
+    <if test="author != null and author != ''">
+      and author like concat('%', #{author}, '%')  
+    </if>
+    <if test="publisher != null and publisher != ''">
+      and publisher like concat('%', #{publisher}, '%')
+    </if>
+  </select>
+  
+  <select id="queryPagePreBook" resultType="com.szcti.lcloud.purchase.entity.vo.PrebookVO"
+          parameterType="com.szcti.lcloud.purchase.entity.vo.PrebookVO" >
+     select 1 source,id,title,isbn,author,book_type,publisher,pubdate,price from t_prebook where 1=1
+    
+    <if test="isbn != null and isbn != ''">
+      and isbn like concat('%', #{isbn}, '%')
+    </if>
+    <if test="title != null and title != ''">
+      and title like concat('%', #{title}, '%') 
+    </if>
+    <if test="author != null and author != ''">
+      and author like concat('%', #{author}, '%')  
+    </if>
+    <if test="publisher != null and publisher != ''">
+      and publisher like concat('%', #{publisher}, '%')
+    </if>
+  </select>
+  
+  <select id="queryPageBookXH" resultType="com.szcti.lcloud.purchase.entity.vo.PrebookVO"
+          parameterType="com.szcti.lcloud.purchase.entity.vo.PrebookVO" >
+     select 2 source,id,title,isbn,author,book_type,publisher,pubdate,price,createtime from t_book_xh where 1=1
+    
+    <if test="isbn != null and isbn != ''">
+      and isbn like concat('%', #{isbn}, '%')
+    </if>
+    <if test="title != null and title != ''">
+      and title like concat('%', #{title}, '%') 
+    </if>
+    <if test="author != null and author != ''">
+      and author like concat('%', #{author}, '%')  
+    </if>
+    <if test="publisher != null and publisher != ''">
+      and publisher like concat('%', #{publisher}, '%')
+    </if>
+    <if test="startTime != null and startTime != ''">
+      and createtime >= DATE_FORMAT(#{startTime},'%Y-%m-%d')  
+    </if>
+    <if test="endTime != null and endTime != ''">
+      and createtime >= DATE_FORMAT(#{endTime},'%Y-%m-%d') 
+    </if>
+  </select>
+  
+</mapper>

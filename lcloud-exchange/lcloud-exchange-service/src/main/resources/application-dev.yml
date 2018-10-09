@@ -1,0 +1,10 @@
+spring:
+    datasource:
+        driverClassName: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.1.249:3306/lcloud?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+        username: root
+        password: root
+          
+
+redis: 
+  url: redis://192.168.1.251:6379/0

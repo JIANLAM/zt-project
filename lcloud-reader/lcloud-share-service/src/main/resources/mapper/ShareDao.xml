@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.share.repository.ShareDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+    
+    <select id="getAgreeCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM t_share_agree
+        WHERE reader_id = #{readerId}
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.share.entity.vo.ShareVO">
+        SELECT s.*,
+            p.nick_name,
+            p.username,
+            p.icon,
+            (SELECT COUNT(1) FROM t_share_agree sa WHERE sa.share_id = s.id) agreeCount,
+            (SELECT COUNT(1) FROM t_share_comment sc WHERE sc.share_id = s.id) commentCount,
+            (SELECT COUNT(1) FROM t_share_report sr WHERE sr.share_id = s.id) reportCount,
+            CASE WHEN (SELECT COUNT(1) FROM t_share_agree sa WHERE sa.share_id = s.id AND sa.reader_id = #{readerId}) > 0 THEN 1 ELSE 0 END isAgree
+        FROM t_share s
+        LEFT JOIN t_reader r ON r.id = s.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE s.id = #{id}
+    </select>
+
+    <select id="findList" resultType="com.szcti.lcloud.share.entity.vo.ShareVO">
+        SELECT s.*,
+            p.nick_name,
+            p.username,
+            p.icon,
+            (SELECT COUNT(1) FROM t_share_agree sa WHERE sa.share_id = s.id) agreeCount,
+            (SELECT COUNT(1) FROM t_share_comment sc WHERE sc.share_id = s.id) commentCount,
+            (SELECT COUNT(1) FROM t_share_report sr WHERE sr.share_id = s.id) reportCount,
+            CASE WHEN (SELECT COUNT(1) FROM t_share_agree sa WHERE sa.share_id = s.id AND sa.reader_id = #{readerId}) > 0 THEN 1 ELSE 0 END isAgree
+        FROM t_share s
+        LEFT JOIN t_reader r ON r.id = s.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1 = 1
+        <if test="startTime != null and startTime != ''">
+            AND s.create_time >= #{startTime}
+        </if>
+        <if test="keyParam != null and keyParam != ''">
+            AND (s.content LIKE CONCAT('%',#{keyParam},'%') or p.username LIKE CONCAT('%',#{keyParam},'%') or p.nick_name LIKE CONCAT('%',#{keyParam},'%'))
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND s.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="readerId != null">
+            AND s.reader_id = #{readerId}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND p.username LIKE CONCAT('%',#{userName},'%')
+        </if>
+        <if test="content != null and content != ''">
+            AND s.content LIKE CONCAT('%',#{content},'%')
+        </if>
+        order by s.create_time desc
+    </select>
+
+    <select id="findCommentList" resultType="com.szcti.lcloud.share.entity.vo.CommentVO">
+        SELECT
+            sc.*,
+            p.username,
+            p.nick_name,
+            p.icon
+        FROM
+            t_share_comment sc
+            LEFT JOIN t_reader r ON r.id = sc.reader_id
+            LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1 = 1
+        <if test="shareId != null and shareId != ''">
+            AND sc.share_id = #{shareId}
+        </if>
+        order by sc.create_time desc
+    </select>
+
+    <select id="findReportList" resultType="com.szcti.lcloud.share.entity.vo.ReportVO">
+        SELECT
+        sc.*,
+        p.username,
+        p.nick_name,
+        p.icon
+        FROM
+        t_share_report sc
+        LEFT JOIN t_reader r ON r.id = sc.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        WHERE 1 = 1
+        <if test="shareId != null and shareId != ''">
+            AND sc.share_id = #{shareId}
+        </if>
+        order by sc.create_time desc
+    </select>
+
+    <delete id="deleteShare">
+        DELETE FROM t_share WHERE id = #{shareId}
+    </delete>
+
+
+    <delete id="deleteAgree">
+        DELETE FROM t_share_agree
+        WHERE share_id = #{shareId}
+        <if test="readerId != null">
+            AND reader_id = #{readerId}
+        </if>
+    </delete>
+
+    <delete id="deleteComment">
+        DELETE FROM t_share_comment
+        WHERE share_id = #{shareId}
+        <if test="readerId != null">
+            AND reader_id = #{readerId}
+        </if>
+    </delete>
+
+    <insert id="insertShare">
+        INSERT INTO t_share(
+			id,
+			content,
+			pic,
+			create_time,
+			reader_id
+		) VALUES (
+			#{id},
+			#{content},
+			#{pic},
+			#{createTime},
+			#{readerId}
+		)
+    </insert>
+
+    <select id="findAgree" resultType="com.szcti.lcloud.share.entity.vo.ShareVO">
+        SELECT * FROM t_share_agree WHERE share_id = #{shareId}
+        <if test="readerId != null">
+            AND reader_id = #{readerId}
+        </if>
+    </select>
+
+    <select id="findReport" resultType="com.szcti.lcloud.share.entity.vo.ReportVO">
+        SELECT * FROM t_share_report WHERE share_id = #{shareId} and reader_id = #{readerId}
+    </select>
+
+    <insert id="insertAgree">
+        INSERT INTO t_share_agree(
+            share_id,
+            create_time,
+            reader_id
+        ) VALUES (
+            #{shareId},
+            #{createTime},
+            #{readerId}
+        )
+    </insert>
+
+    <insert id="insertReport">
+        INSERT INTO t_share_report(
+            id,
+            share_id,
+            create_time,
+            reader_id,
+            reason
+        ) VALUES (
+            #{id},
+            #{shareId},
+            #{createTime},
+            #{readerId},
+            #{reason}
+        )
+    </insert>
+
+    <insert id="insertComment">
+        INSERT INTO t_share_comment(
+			id,
+			share_id,
+			content,
+			create_time,
+			reader_id
+		) VALUES (
+			#{id},
+			#{shareId},
+			#{content},
+			#{createTime},
+			#{readerId}
+		)
+    </insert>
+
+</mapper>

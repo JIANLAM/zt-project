@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.operationlog.repository.OperationLogRepository">
+
+  <insert id="insert" parameterType="com.szcti.lcloud.operationlog.entity.OperationLog">
+    insert into t_operation_log (id, module_id, module_name, 
+      operation_type, library_id, library_name, 
+      user_id, login_name, user_name, 
+      ip, op_content, remark, 
+      create_time)
+    values (#{id}, #{moduleId}, #{moduleName}, 
+      #{operationType}, #{libraryId}, #{libraryName}, 
+      #{userId}, #{loginName}, #{userName}, 
+      #{ip}, #{opContent}, #{remark}, 
+      now())
+  </insert>
+ <select id="getUserInfo" resultType="com.szcti.lcloud.operationlog.entity.OperationLog">
+        SELECT
+            u.login_name loginName,
+            p.username userName,
+            org.name libraryName
+        FROM t_user u
+        LEFT JOIN t_people p ON u.id = p.user_id
+        left join t_organization  org on org.id=u.org_id
+        WHERE u.id = #{userId}
+    </select>
+    <select id="queryPage" parameterType="com.szcti.lcloud.operationlog.entity.vo.OperationLogVO" resultType="com.szcti.lcloud.operationlog.entity.vo.OperationLogVO">
+    select * from t_operation_log o where 1=1
+    <if test="id!=null">
+        and o.id=#{id}
+    </if>
+    <if test="moduleId!=null">
+        and o.module_id=#{moduleId}
+    </if>
+    <if test="libraryId!=null">
+        and o.library_id=#{libraryId}
+    </if>
+    <if test="userId!=null">
+        and o.user_id=#{userId}
+    </if>
+    <if test="moduleName!=null and moduleName!=''">
+        and o.module_name LIKE CONCAT('%',#{moduleName},'%')
+    </if>
+    <if test="operationType!=null and operationType!=''">
+        and o.operation_type LIKE CONCAT('%',#{operationType},'%')
+    </if>
+    <if test="libraryName!=null and libraryName!=''">
+        and o.library_name LIKE CONCAT('%',#{libraryName},'%')
+    </if>
+    <if test="loginName!=null and loginName!=''">
+        and o.login_name LIKE CONCAT('%',#{loginName},'%')
+    </if>
+    <if test="userName!=null and userName!=''">
+        and o.user_name LIKE CONCAT('%',#{userName},'%')
+    </if>
+    <if test="ip!=null and ip!=''">
+        and o.ip LIKE CONCAT('%',#{ip},'%')
+    </if>
+    <if test="opContent!=null and opContent!=''">
+        and o.op_content LIKE CONCAT('%',#{opContent},'%')
+    </if>
+    <if test="remark!=null and remark!=''">
+        and o.remark LIKE CONCAT('%',#{remark},'%')
+    </if>
+    <if test="startTime != null and startTime != ''">
+        AND o.create_time >= #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+        AND o.create_time <![CDATA[<]]> #{endTime}
+    </if>
+        order by o.create_time desc
+    </select>
+</mapper>

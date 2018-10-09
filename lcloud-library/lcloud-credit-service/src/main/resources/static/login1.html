@@ -1,0 +1,49 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript">
+        function showInfo() {
+            var searchKey = encodeURI($('#searchKey').val(),"UTF-8");
+            var searchValue = encodeURI($('#searchValue').val(),"UTF-8");
+            //var urlstr='http://localhost:8182/apiOrderBuy/v1/orderbuy/list';
+            //var urlstr="http://192.168.1.97:8182/apiOrderBuy/v1/orderbuy/save";
+            //var jsonStr=JSON.stringify({"purchaseCode":'D20180523113722578569',"creatorName":'管理员',"createTime":'2018-05-23 11:37:22',"summary":'请填写备注:',"creator":'1',"id":'1'});
+            //var jsonStr=JSON.stringify({"id":'3',"purchaseCode":'D30180',"creatorName":'管理员11',"createTime":'2018-05-23 11:37:22',"summary":'请填写备注:11',"creator":'1',"id":'1'});
+            //var jsonStr=JSON.stringify({"ids":'1,2,3,4,',"orderStatus":'1'});
+            //var jsonStr=JSON.stringify({ "id":'1',"searchKey":searchKey,"searchValue":searchValue,"timeKey":'creatTime',"pageNum":'1'});
+            //var jsonStr=JSON.stringify({"ids":'23,22,30'});
+            var jsonStr=JSON.stringify({
+                "searchKey":searchKey,"searchValue":searchValue,"timeKey":'pubdate',"resource":'1',"orderBuyId":'1',"pageNum":'1'});
+            $.ajax({
+                type : 'get',
+                //type:'post',
+                url : 'http://192.168.1.97:8182/apiOrderBuy/v1/prebooktemp/list',
+                data: {"jsonStr":jsonStr},
+                //data: jsonStr,
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                success : function(result) {
+                    $("#res").text("结果:"+JSON.stringify(result));
+                },
+                error : function erryFunction() {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+    <title>postDate</title>
+</head>
+<body>
+<h2>post_data测试</h2>
+searchKey：<input type="text" id="searchKey" /><br>
+searchValue：<input type="text" id="searchValue" /><br>
+<button type="submit" onclick="showInfo()">提交</button>
+searchKey;//检索字段值为:purchaseCode|orderCode|creatorAccount|creatorName|title|isbn|author|publisher
+<div id="res">
+    结果：
+</div>
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.credit.repository.CreditRepository" >
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.credit.entity.Credit" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="default_value" property="defaultValue" jdbcType="INTEGER" />
+    <result column="own_value" property="ownValue" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="cardStatus" property="card_status" jdbcType="INTEGER" />
+    <result column="islendBuy" property="islend_Buy" jdbcType="INTEGER" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select * from t_credit
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_credit
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.szcti.lcloud.credit.entity.Credit" >
+    insert into t_credit (id, user_id, default_value,
+      own_value, status,summary,islend_buy,card_status)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{defaultValue,jdbcType=INTEGER},
+      #{ownValue,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},#{summary},#{islendBuy},#{cardStatus})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szcti.lcloud.credit.entity.Credit" >
+    insert into t_credit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="defaultValue != null" >
+        default_value,
+      </if>
+      <if test="ownValue != null" >
+        own_value,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="summary != null" >
+        summary,
+      </if>
+      <if test="islendBuy != null" >
+        islend_buy,
+      </if>
+      <if test="cardStatus != null" >
+        card_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="defaultValue != null" >
+        #{defaultValue,jdbcType=INTEGER},
+      </if>
+      <if test="ownValue != null" >
+        #{ownValue,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        #{summary},
+      </if>
+      <if test="islendBuy != null" >
+       #{islendBuy},
+      </if>
+      <if test="cardStatus != null" >
+        #{cardStatus},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.szcti.lcloud.credit.entity.Credit" >
+    update t_credit
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="defaultValue != null" >
+        default_value = #{defaultValue,jdbcType=INTEGER},
+      </if>
+      <if test="ownValue != null" >
+        own_value = #{ownValue,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        summary = #{summary},
+      </if>
+      <if test="islendBuy != null" >
+        islend_buy = #{islendBuy},
+      </if>
+      <if test="cardStatus != null" >
+        card_status = #{cardStatus},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.credit.entity.Credit" >
+    update t_credit
+    set user_id = #{userId,jdbcType=BIGINT},
+      default_value = #{defaultValue,jdbcType=INTEGER},
+      own_value = #{ownValue,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      summary = #{summary},
+      islend_buy = #{islendBuy},
+      card_status = #{cardStatus}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="queryPage" parameterType="com.szcti.lcloud.credit.entity.vo.CreditVO"
+          resultType="com.szcti.lcloud.credit.entity.vo.CreditVO">
+    select cre.id,r.id as readerId,r.reader_card_number,p.username,p.sex,p.card_number,
+    cre.status,cre.default_value,cre.own_value,cre.user_id,cre.summary,cre.islend_buy,cre.card_status
+    from t_credit cre
+    left join t_user u on u.id=cre.user_id
+    left join t_people p on p.user_id=u.id
+    left join  t_reader r on p.id=r.people_id
+    where 1=1
+    <if test="id != null">
+      AND cre.id =#{id}
+    </if>
+    <if test="userId != null">
+      AND cre.user_id =#{userId}
+    </if>
+    <if test="readerId != null">
+      AND r.id =#{readerId}
+    </if>
+    <if test="libraryId != null">
+      AND u.org_id =#{libraryId}
+    </if>
+    <if test="status != null">
+      AND cre.status =#{status}
+    </if>
+      <if test="cardStatus != null">
+          AND cre.card_status = #{cardStatus}
+      </if>
+      <if test="islendBuy != null">
+          AND cre.islend_buy = #{islendBuy}
+      </if>
+    <if test="sex != null and sex!=''">
+      AND p.sex LIKE CONCAT('%',#{sex},'%')
+    </if>
+    <if test="cardNumber != null and cardNumber != ''">
+      AND p.card_number LIKE CONCAT('%',#{cardNumber},'%')
+    </if>
+    <if test="readerCardNumber != null and readerCardNumber != ''">
+      AND r.reader_card_number LIKE CONCAT('%',#{readerCardNumber},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='userName'">
+      AND p.username LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='readerCardNumber'">
+      AND r.reader_card_number LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='sex'">
+    AND p.sex LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='cardStatus'">
+      AND r.status LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="ownValueBegin != null">
+      AND cre.own_value >= #{ownValueBegin}
+    </if>
+    <if test="ownValueEnd != null">
+      AND cre.own_value <![CDATA[<]]> #{ownValueEnd}
+    </if>
+</select>
+</mapper>

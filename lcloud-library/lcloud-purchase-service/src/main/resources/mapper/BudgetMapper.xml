@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.purchase.repository.BudgetRepository" >
+  <select id="queryMapList" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select bu.id,bu.name,bu.coding,bu.type
+    from t_budget bu where 1=1
+    <if test="status != null and status != ''">
+      and bu.status=#{status}
+    </if>
+    <if test="id != null and id != ''">
+      and bu.id=#{id}
+    </if>
+    <if test="libraryId != null and libraryId != ''">
+      and bu.library_id=#{libraryId}
+    </if>
+  </select>
+</mapper>

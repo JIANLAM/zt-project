@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.parameter.repository.LibDataParaDao">
+
+    <insert id="insertLibDataBaseInfo">
+         INSERT INTO t_libdata_para (
+                id,
+                lib_name,
+                ip_address,
+                port_numbers,
+                database_name,
+                user_name,
+                password,
+                characterset,
+                create_time,
+                user_id,
+                library_id,
+                remark
+                )
+                VALUES(
+                #{id},
+                #{libName},
+                #{ipAddress},
+                #{portNumbers},
+                #{databaseName},
+                #{userName},
+                #{password},
+                #{characterset},
+                #{createTime},
+                #{userId},
+                #{libraryId},
+                #{remark}
+         )
+    </insert>
+
+    <delete id="delLibDataBaseInfo">
+        DELETE FROM t_libdata_para WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateLibDataBaseInfo">
+        UPDATE t_libdata_para
+            SET
+					lib_name = #{libName},
+					ip_address = #{ipAddress},
+					port_numbers = #{portNumbers},
+					database_name = #{databaseName},
+					user_name = #{userName},
+					password = #{password},
+					characterset = #{characterset},
+					remark = #{remark}
+            WHERE	id = #{id}
+    </update>
+
+    <sql id="LibdataParaEntityColumns">
+        id,
+        lib_name,
+        ip_address,
+        port_numbers,
+        database_name,
+        user_name,
+        PASSWORD,
+        characterset,
+        create_time,
+        remark
+    </sql>
+
+    <select id="findLibDataBaseList" resultType="com.szcti.lcloud.parameter.entity.LibdataParaEntity">
+        SELECT
+            <include refid="LibdataParaEntityColumns"/>
+        FROM
+            t_libdata_para
+        WHERE library_id = #{libraryId}
+        ORDER BY
+            create_time DESC
+    </select>
+
+    <select id="getLibDataBase" resultType="com.szcti.lcloud.parameter.entity.LibdataParaEntity">
+        SELECT
+            <include refid="LibdataParaEntityColumns"/>
+        FROM
+            t_libdata_para
+        WHERE	id = #{id}
+    </select>
+</mapper>

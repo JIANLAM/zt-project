@@ -1,0 +1,16 @@
+server:
+    port: 9002
+spring:
+    profiles:
+        active: dev
+    datasource:
+      url: jdbc:mysql://183.63.127.243:3306/jcojboss?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true&useSSL=false
+      username: zhongtu
+      password: zhongtu2018
+
+config:
+  xh_img_baseurl: http://www.gdxhydw.com/pic/oinfo
+  xh_mysql_table: v_gdxh_tsgwspt
+  xh_mysql_url: jdbc:mysql://183.63.127.243:3306/jcojboss?characterEncoding=utf8
+  xh_passwd: zhongtu2018
+  xh_user: zhongtu

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.lendback.repository.LendBackDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="get" resultType="com.szcti.lcloud.lendback.entity.vo.LendBackVO">
+        SELECT * FROM t_lend WHERE id = #{lendId}
+    </select>
+
+    <select id="findList" resultType="com.szcti.lcloud.lendback.entity.vo.LendBackVO">
+        SELECT
+            l.id,
+            l.lend_time,
+            l.back_time,
+            l.due_back_time,
+            l.lend_status,
+            l.reader_id,
+            h.id holdingId,
+            h.barcode,
+            o.name libraryName,
+            b.id bookId,
+            b.title,
+            b.author,
+            b.publisher,
+            b.ISBN,
+            b.book_type,
+            p.username
+        FROM t_lend l
+        LEFT JOIN t_holding h ON l.holding_id = h.id
+        LEFT JOIN t_book b ON h.book_id = b.id
+        LEFT JOIN t_reader r ON r.id = l.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_organization o ON o.id = h.curlib
+        WHERE 1=1
+        <if test="readerId != null">
+            AND l.reader_id = #{readerId}
+        </if>
+        <if test="lendStatus != null">
+            AND l.lend_status = #{lendStatus}
+        </if>
+        <if test="libraryName != null and libraryName != ''">
+            AND o.name LIKE CONCAT('%',#{libraryName},'%')
+        </if>
+        <if test="title != null and title != ''">
+            AND b.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="ISBN != null and ISBN != ''">
+            AND b.isbn = #{ISBN}
+        </if>
+        <if test="barcode != null and barcode != ''">
+            AND h.barcode = #{barcode}
+        </if>
+        <if test="author != null and author != ''">
+            AND b.author LIKE CONCAT('%',#{author},'%')
+        </if>
+        <if test="lendStatus != null">
+            AND l.lend_status=#{lendStatus}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND l.lend_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND l.lend_time <![CDATA[<]]> #{endTime}
+        </if>
+    </select>
+
+    <update id="updateStatus">
+        UPDATE t_lend SET
+        <if test="backTime != null and backTime != ''">
+            back_time = #{backTime},
+        </if>
+        <if test="dueBackTime != null and dueBackTime != ''">
+            due_back_time = #{dueBackTime},
+        </if>
+            lend_status = #{lendStatus}
+        WHERE id = #{lendId}
+    </update>
+
+    <insert id="insertReLendInfo">
+        INSERT INTO t_relend(
+            id,
+            lend_id,
+            relend_time,
+            relend_back_time,
+            primary_back_time
+        ) VALUES (
+            #{id},
+            #{lendId},
+            #{reLendTime},
+            #{reLendBackTime},
+            #{primaryBackTime}
+        )
+    </insert>
+
+
+    <!--    微信端查询    -->
+    <sql id="weChatLendBackVO">
+        l.id,
+        l.lend_time,
+        l.back_time,
+        l.due_back_time,
+        l.lend_status,
+        l.reader_id,
+        h.id holdingId,
+        h.ownlib,
+        b.id bookId,
+        b.title,
+        b.author,
+        b.publisher,
+        b.ISBN,
+        b.book_type,
+        p.username,
+        y.`name` as libraryName,
+        h.barcode,
+        b.pic
+    </sql>
+    <!--我得借阅-->
+    <select id="weChatList" resultType="com.szcti.lcloud.lendback.entity.vo.LendBackVO">
+        SELECT
+            <include refid="weChatLendBackVO"/>
+        FROM t_lend l
+        LEFT JOIN t_holding h ON l.holding_id = h.id
+        LEFT JOIN t_book b ON h.book_id = b.id
+        LEFT JOIN t_reader r ON r.id = l.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT join t_organization y on h.ownlib = y.id
+        WHERE 1=1
+        <if test="readerId != null and readerId != ''">
+            AND l.reader_id = #{readerId}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND (b.title LIKE CONCAT('%',#{qualification},'%') OR b.author LIKE CONCAT('%',#{qualification},'%'))
+        </if>
+        <if test="lendStatus != null">
+            AND l.lend_status=#{lendStatus}
+        </if>
+    </select>
+
+
+    <!--每本书的详情-->
+    <select id="weChatInfo" resultType="com.szcti.lcloud.lendback.entity.vo.LendBackVO">
+        SELECT
+        <include refid="weChatLendBackVO"/>
+        FROM t_lend l
+        LEFT JOIN t_holding h ON l.holding_id = h.id
+        LEFT JOIN t_book b ON h.book_id = b.id
+        LEFT JOIN t_reader r ON r.id = l.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT join t_organization y on h.ownlib = y.id
+        WHERE 1=1  AND l.id = #{id}
+    </select>
+</mapper>

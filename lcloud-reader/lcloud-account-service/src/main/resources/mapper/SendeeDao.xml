@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.account.repository.SendeeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="get" resultType="com.szcti.lcloud.account.entity.SendeeEntity">
+        SELECT
+            id,
+            people_id,
+            `name`,
+            address,
+            phone as sendeePhone,
+            is_default
+        FROM
+          t_sendee
+        WHERE id = #{sendeeId}
+    </select>
+
+    <select id="findList" resultType="com.szcti.lcloud.account.entity.SendeeEntity">
+        SELECT
+            id,
+            people_id,
+            `name`,
+            address,
+            phone as sendeePhone,
+            is_default
+        FROM
+            t_sendee
+        WHERE people_id = #{peopleId}
+    </select>
+
+    <update id="update">
+        UPDATE t_sendee SET
+          name = #{name},
+          address = #{address},
+          phone = #{sendeePhone}
+        WHERE
+          id = #{id}
+    </update>
+
+    <insert id="insert">
+        INSERT INTO t_sendee(
+          id,
+          people_id,
+          name,
+          address,
+          phone,
+          is_default
+        ) VALUES (
+          #{id},
+          #{peopleId},
+          #{name},
+          #{address},
+          #{sendeePhone},
+          #{isDefault}
+        )
+    </insert>
+
+    <select id="getIsDefault" resultType="com.szcti.lcloud.account.entity.SendeeEntity">
+        select id,people_id,`name`,address,phone as sendeePhone,is_default from t_sendee where people_id = #{peopleId} and is_default = 1
+    </select>
+
+    <update id="cancelDefault">
+        update t_sendee set is_default = 0 where people_id = #{id}
+    </update>
+
+    <update id="setDefault">
+        update t_sendee set is_default = 1 where id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_sendee WHERE id=#{sendeeId}
+    </delete>
+
+</mapper>

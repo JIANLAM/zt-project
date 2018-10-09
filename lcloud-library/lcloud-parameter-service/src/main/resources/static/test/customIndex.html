@@ -1,0 +1,245 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>apiParameterTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-apiParameter-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>查询自定义字段设置List集合</td>
+                <td>
+                    <button type="submit" id="customList">点击我测试</button>
+                </td>
+                <td>#customList</td>
+                <td><span>GET</span></td>
+                <td>{pageNum:0 , pageSize:20 , type:1,libraryId:1 }</td>
+            </tr>
+            <tr>
+                <td>根据ID 查询一条自定义字段设置 记录</td>
+                <td>
+                    <button type="submit" id="customObj">点击我测试</button>
+                </td>
+                <td>#customObj</td>
+                <td><span>GET</span></td>
+                <td>{customId:1}</td>
+            </tr>
+            <tr>
+                <td>新增   或修改 一条自定义字段设置 数据记录</td>
+                <td>
+                    <button type="submit" id="saveCustom">点击我测试</button>
+                </td>
+                <td>#saveCustom</td>
+                <td><span>POST</span></td>
+                <td>……</td>
+            </tr>
+            <tr>
+                <td>根据主键删除一条 或多条 自定义字段设置记录</td>
+                <td>
+                    <button type="submit" id="deleteCustom">点击我测试</button>
+                </td>
+                <td>#deleteCustom</td>
+                <td><span>POST</span></td>
+                <td>{customId} = 6,7</td>
+            </tr>
+            <tr>
+                <td>根据自定义字段类型</td>
+                <td>
+                    <button type="submit" id="descrObj">点击我测试</button>
+                </td>
+                <td>#descrObj</td>
+                <td><span>GET</span></td>
+                <td> null </td>
+            </tr>
+            <tr>
+                <td>修改描述</td>
+                <td>
+                    <button type="submit" id="updateDesc">点击我测试</button>
+                </td>
+                <td>#updateDesc</td>
+                <td><span>POST</span></td>
+                <td> null </td>
+            </tr>
+            <tr>
+                <td>结果</td>
+                <td colspan="4" id="data">
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    //修改描述
+    $("#updateDesc").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/field/descriptionTwo/的点点滴滴',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询指定自定义字段类型
+    $("#descrObj").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/field/descriptionOneType',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据ID 查询一条自定义字段设置 记录
+    $("#customObj").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/field/info/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //查询自定义字段设置List集合
+    $("#customList").click(function () {
+        var jsonStr = JSON.stringify({pageNum:0 , pageSize:1 , type:1 , libraryId:1});
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8197/apiParameter/v1/field/list',
+            data:{"jsonStr" : jsonStr},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                $("#data").text(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据主键删除一条 或多条 自定义字段设置记录
+    $("#deleteCustom").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/field/delete/1,2',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //新增   或修改 一条自定义字段设置 数据记录
+    $("#saveCustom").click(function () {
+        var json = {
+            id: 539109217221,
+            value: 7777,
+            label: "erftvsdgvsdfvdfvvdxf",
+            type: 1,
+            description:"999777799",
+            remarks: "99999977777779999"
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8197/apiParameter/v1/field/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

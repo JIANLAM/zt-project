@@ -1,0 +1,37 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+	<script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+	<script type="text/javascript">
+        (function(){
+            var obj = {"shareId":1,"reason":"太多的接口，太多的理由",readerId:"1"}
+            $.ajax({
+                type : 'post',
+                url : 'http://localhost:8191/interact/v1/share/report',
+                data: JSON.stringify(obj),
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                success : function(result) {
+                    alert("ok");
+                    console.log(result)
+                },
+                error : function erryFunction() {
+                    alert("error");
+                }
+            });
+        })()
+
+	</script>
+
+	<title>postDate</title>
+</head>
+<body>
+<h2>post_data测试</h2>
+name：<input type="text" id="name" /><br>
+password：<input type="text" id="password" /><br>
+<button type="submit" onclick="showInfo()">提交</button>
+
+</body>
+
+</html>

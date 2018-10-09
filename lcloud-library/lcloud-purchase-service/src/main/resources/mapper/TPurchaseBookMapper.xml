@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.purchase.mapper.TPurchaseBookMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.purchase.entity.TPurchaseBook">
+        <id column="id" property="id" />
+        <result column="order_id" property="orderId" />
+        <result column="book_id" property="bookId" />
+        <result column="book_qty" property="bookQty" />
+        <result column="total_price" property="totalPrice" />
+        <result column="prebook_id" property="prebookId" />
+        <result column="status" property="status" />
+        <result column="goods_code" property="goodsCode" />
+        <result column="checkedmsg" property="checkedmsg" />
+        <result column="price" property="price" />
+        <result column="isbn" property="isbn" />
+        <result column="title" property="title" />
+        <result column="author" property="author" />
+        <result column="publisher" property="publisher" />
+        <result column="pubdate" property="pubdate" />
+        <result column="book_type" property="bookType" />
+        <result column="pages" property="pages" />
+        <result column="book_size" property="bookSize" />
+        <result column="source" property="source" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+</mapper>

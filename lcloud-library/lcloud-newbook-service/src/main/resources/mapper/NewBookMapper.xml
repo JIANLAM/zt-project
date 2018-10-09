@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.newbook.repository.NewBookRepository">
+
+  <select id="queryPage" resultType="com.szcti.lcloud.newbook.entity.vo.NewBookVO"
+          parameterType="com.szcti.lcloud.newbook.entity.vo.NewBookVO" >
+    select DISTINCT pre.*,(select count(re.id)  from t_recomm_book re where re.book_id=pre.id)as hcount  from t_prebook pre
+    where 1=1
+    <if test="id != null and id != ''">
+      AND pre.id = #{id}
+    </if>
+    <if test="bookType != null and bookType !=''">
+      AND pre.book_type LIKE CONCAT('%',#{bookType},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='title'">
+      AND pre.title LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='isbn'">
+      AND pre.isbn LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='author'">
+      AND pre.author LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="searchValue != null and searchValue != '' and searchKey=='publisher'">
+      AND pre.publisher LIKE CONCAT('%',#{searchValue},'%')
+    </if>
+    <if test="source != null and source != ''">
+      AND pre.source = #{source}
+    </if>
+    <if test="startTime != null and startTime != ''">
+      AND pre.storage_time >= #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+      AND pre.storage_time <![CDATA[<]]> #{endTime}
+    </if>
+    <if test="search != null and search == 'new'">
+      order by pre.storage_time desc
+    </if>
+    <if test="search != null and search == 'hot'">
+      order by hcount desc
+    </if>
+  </select>
+
+</mapper>

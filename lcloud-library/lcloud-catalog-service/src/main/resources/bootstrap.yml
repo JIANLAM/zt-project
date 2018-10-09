@@ -1,0 +1,11 @@
+server:
+    undertow:
+    port: 8290
+    connection-timeout: 5000
+    context-path: /apiCatalog
+spring:
+  application:
+    name: service-catalog
+  sleuth:
+    sampler:
+      percentage: 1

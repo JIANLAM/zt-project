@@ -1,0 +1,13 @@
+server:
+   # tomcat:
+    undertow:
+    port: 8186
+    connection-timeout: 5000
+    context-path: /apiRecommBuy
+spring:
+  application:
+    name: service-recommbuy
+  sleuth:
+    sampler:
+      percentage: 1
+

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.credit.repository.ReaderCreditRepository" >
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.credit.entity.ReaderCredit" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="reader_id" property="readerId" jdbcType="BIGINT" />
+    <result column="before_deduct_credit_value" property="beforeDeductCreditValue" jdbcType="INTEGER" />
+    <result column="deduct_score_time" property="deductScoreTime" jdbcType="TIMESTAMP" />
+    <result column="deduct_score" property="deductScore" jdbcType="INTEGER" />
+    <result column="after_deduct_credit_value" property="afterDeductCreditValue" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+    <result column="deduct_score_reason" property="deductScoreReason" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select * from t_reader_credit
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_reader_credit
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.credit.entity.ReaderCredit" >
+    insert into t_reader_credit (id, reader_id, before_deduct_credit_value, 
+      deduct_score_time, deduct_score, after_deduct_credit_value, 
+      remark, deduct_score_reason)
+    values (#{id,jdbcType=BIGINT}, #{readerId,jdbcType=BIGINT}, #{beforeDeductCreditValue,jdbcType=INTEGER}, 
+      #{deductScoreTime,jdbcType=TIMESTAMP}, #{deductScore,jdbcType=INTEGER}, #{afterDeductCreditValue,jdbcType=INTEGER}, 
+      #{remark,jdbcType=LONGVARCHAR}, #{deductScoreReason,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szcti.lcloud.credit.entity.ReaderCredit" >
+    insert into t_reader_credit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="readerId != null" >
+        reader_id,
+      </if>
+      <if test="beforeDeductCreditValue != null" >
+        before_deduct_credit_value,
+      </if>
+      <if test="deductScoreTime != null" >
+        deduct_score_time,
+      </if>
+      <if test="deductScore != null" >
+        deduct_score,
+      </if>
+      <if test="afterDeductCreditValue != null" >
+        after_deduct_credit_value,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="deductScoreReason != null" >
+        deduct_score_reason,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="readerId != null" >
+        #{readerId,jdbcType=BIGINT},
+      </if>
+      <if test="beforeDeductCreditValue != null" >
+        #{beforeDeductCreditValue,jdbcType=INTEGER},
+      </if>
+      <if test="deductScoreTime != null" >
+        #{deductScoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deductScore != null" >
+        #{deductScore,jdbcType=INTEGER},
+      </if>
+      <if test="afterDeductCreditValue != null" >
+        #{afterDeductCreditValue,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="deductScoreReason != null" >
+        #{deductScoreReason,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.szcti.lcloud.credit.entity.ReaderCredit" >
+    update t_reader_credit
+    <set >
+      <if test="readerId != null" >
+        reader_id = #{readerId,jdbcType=BIGINT},
+      </if>
+      <if test="beforeDeductCreditValue != null" >
+        before_deduct_credit_value = #{beforeDeductCreditValue,jdbcType=INTEGER},
+      </if>
+      <if test="deductScoreTime != null" >
+        deduct_score_time = #{deductScoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deductScore != null" >
+        deduct_score = #{deductScore,jdbcType=INTEGER},
+      </if>
+      <if test="afterDeductCreditValue != null" >
+        after_deduct_credit_value = #{afterDeductCreditValue,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="deductScoreReason != null" >
+        deduct_score_reason = #{deductScoreReason,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.credit.entity.ReaderCredit" >
+    update t_reader_credit
+    set reader_id = #{readerId,jdbcType=BIGINT},
+      before_deduct_credit_value = #{beforeDeductCreditValue,jdbcType=INTEGER},
+      deduct_score_time = #{deductScoreTime,jdbcType=TIMESTAMP},
+      deduct_score = #{deductScore,jdbcType=INTEGER},
+      after_deduct_credit_value = #{afterDeductCreditValue,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=LONGVARCHAR},
+      deduct_score_reason = #{deductScoreReason,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+<select id="queryPage" parameterType="com.szcti.lcloud.credit.entity.vo.ReaderCreditVO"
+resultType="com.szcti.lcloud.credit.entity.vo.ReaderCreditVO">
+  select cre.*,r.reader_card_number,p.username,p.sex,p.card_number,r.status as cardStatus
+  from t_reader_credit cre
+  left join  t_reader r on r.id=cre.reader_id
+  left join t_people p on p.id=r.people_id
+  left join t_user u on u.id=p.user_id
+  where 1=1
+<if test="readerId!=null">
+  and r.id=#{readerId}
+</if>
+  <if test="startTime != null and startTime != ''">
+    AND cre.deduct_score_time >= #{startTime}
+  </if>
+  <if test="endTime != null and endTime != ''">
+    AND cre.deduct_score_time <![CDATA[<]]> #{endTime}
+  </if>
+  order by cre.id desc
+</select>
+</mapper>

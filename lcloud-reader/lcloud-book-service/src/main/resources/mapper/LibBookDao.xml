@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.book.repository.LibBookDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+    <sql id="bookVOColumns">
+        b.id,
+        b.create_time,
+        b.title,
+        b.author,
+        b.publisher,
+        b.pubdate,
+        b.summary,
+        b.price,
+        b.ISBN,
+        b.book_type,
+		b.pic,
+		b.summary,
+		(select COUNT(1) from t_collection where prebook_id = b.id and (collect_from = 0 OR collect_from = 1)) as collectionCount
+    </sql>
+
+    <select id="findList" resultType="com.szcti.lcloud.book.entity.vo.BookVO">
+        SELECT
+          <include refid="bookVOColumns"/>
+        FROM t_book b
+        WHERE 1=1
+        <if test="title != null and title != ''">
+            AND b.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="author != null and author != ''">
+            AND b.author LIKE CONCAT('%',#{author},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND b.create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND b.create_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="ISBN != null and ISBN != ''">
+          AND b.ISBN LIKE #{ISBN}
+        </if>
+        <if test="publisher != null and publisher != ''">
+            AND b.publisher LIKE #{publisher}
+        </if>
+        ORDER BY b.create_time DESC
+    </select>
+
+    <select id="get" resultType="com.szcti.lcloud.book.entity.vo.BookVO">
+        SELECT
+          <include refid="bookVOColumns"/>
+        FROM t_book b
+        WHERE b.id = #{bookId}
+    </select>
+
+    <select id="findCopys" resultType="com.szcti.lcloud.book.entity.vo.BookCopyVO">
+        SELECT
+          *
+        FROM t_holding h
+        WHERE h.book_id = #{bookId}
+    </select>
+
+    <select id="getBookInfoTable" resultType="com.szcti.lcloud.book.entity.vo.BookCopyVO">
+       SELECT
+            t.id AS recId,
+            t.call_no AS callNo,
+            t.shelf,
+            o.`name` curLibName,
+            t.barcode,
+            l.due_back_time dueBackTime
+        FROM
+            t_holding t
+        LEFT JOIN t_organization o ON t.curlib = o.id
+        LEFT JOIN t_lend l ON t.id = l.holding_id
+        where t.book_id = #{bookId} AND t.`status` = #{status}
+    </select>
+    
+</mapper>

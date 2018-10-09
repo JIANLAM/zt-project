@@ -1,0 +1,441 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>datacountTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -200px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-datacount-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>根据条件 查询图书借阅统计    图书流通类型</td>
+                <td>
+                    <button type="submit" id="cirList">点击我测试</button>
+                </td>
+                <td>#cirList</td>
+                <td><span>GET</span></td>
+                <td>
+                    传参 JSON.stringify({
+                        startTime: null,
+                        endTime: null,
+                        pageNum:0,
+                        pageSize:20
+                    });
+                </td>
+            </tr>
+            <tr>
+                <td>根据条件 查询图书借阅统计    图书分类号</td>
+                <td>
+                    <button type="submit" id="descList">点击我测试</button>
+                </td>
+                <td>#descList</td>
+                <td><span>GET</span></td>
+                <td>
+                    传参 JSON.stringify({
+                        startTime: null,
+                        endTime: null,
+                        pageNum:0,
+                        pageSize:20
+                    });
+                </td>
+            </tr>
+            <tr>
+                <td>图书借阅统计</td>
+                <td>
+                    <button type="submit" id="bookCount">点击我测试</button>
+                </td>
+                <td>#bookCount</td>
+                <td><span>GET</span></td>
+                <td>
+                    {readerTypeids} = 15,16
+                </td>
+            </tr>
+            <tr>
+                <td>读者借阅统计</td>
+                <td>
+                    <button type="submit" id="readerCount">点击我测试</button>
+                </td>
+                <td>#readerCount</td>
+                <td><span>GET</span></td>
+                <td>
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">————————————————————————————————————</td>
+            </tr>
+            <tr>
+                <td>图书馆藏分类统计</td>
+                <td>
+                    <button type="submit" id="collectionTypeCount">点击我测试</button>
+                </td>
+                <td>#collectionTypeCount</td>
+                <td><span>GET</span></td>
+                <td>
+
+                </td>
+            </tr>
+            <tr>
+                <td>导出</td>
+                <td>
+                    <button type="submit" id="exports">点击我测试</button>
+                </td>
+                <td>#exports</td>
+                <td><span>GET</span></td>
+                <td>
+                    传参 JSON.stringify({
+                    readerTypeIds: "16,15",
+                    startTime: null,
+                    endTime:null,
+                    libraryId:null,
+                    pageNum:0,
+                    pageSize:20
+                    });
+                </td>
+            </tr>
+            <tr>
+                <td>测试</td>
+                <td>
+                    <button type="submit" id="opContentList">点击我测试</button>
+                </td>
+                <td>#opContentList</td>
+                <td><span>GET</span></td>
+                <td>
+
+                </td>
+            </tr>
+            <tr>
+                <td>获取操作人员</td>
+                <td>
+                    <button type="submit" id="operationStaff">点击我测试</button>
+                </td>
+                <td>#operationStaff</td>
+                <td><span>GET</span></td>
+                <td>
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" id="data">
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    //获取操作人员
+    $("#operationStaff").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/collection/operationStaff',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //chaxun
+    $("#opContentList").click(function () {
+        var json = JSON.stringify({
+            collAdsTypeIds:"30",
+            circulationTypeIds:"14",
+            operationType:"删除",
+            userId:1,
+            startTime:null,
+            endTime:null,
+            columnType:0,
+            pageNum:0,
+            pageSize:20
+
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/collection/collManageCount',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+
+
+    //馆藏统计  导出
+    $("#exports").click(function () {
+        var json = JSON.stringify({
+           /* collAdsTypeIds:"22,23,24",
+            circulationTypeIds:"12,13,14",
+            collStatusIds:null,
+            startTime: null,
+            endTime:null,
+            callNoStart:null,
+            callNoEnd:null,
+            bookType:"K",
+            columnType:1,
+            pageNum:0,
+            pageSize:20*/
+            purchaseCode:null,
+            createLoginName: null,
+            createUserName: null,
+            checkerLoginName: null,
+            checkerUserName: null,
+            placeOrderStartTime: null,
+            placeOrderEndTime: null,
+            pageNum:0,
+            pageSize:20
+
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/interviewCount/purOrderExport',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+   /* //读者借阅统计  导出
+    $("#exports").click(function () {
+        var json = JSON.stringify({
+            /!*readerTypeIds: "16,15",*!/
+            startTime: null,
+            endTime:null,
+            libraryId:null,
+            pageNum:0,
+            pageSize:20
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/circulation/exports',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });*/
+
+    //图书馆藏分类统计
+    $("#collectionTypeCount").click(function () {
+        var json = JSON.stringify({
+            collAdsTypeIds:"22,23,24",
+            circulationTypeIds:"12,13,14",
+            collStatusIds:null,
+            startTime: null,
+            endTime:null,
+            callNoStart:null,
+            callNoEnd:null,
+            bookType:"K",
+            columnType:1,
+            libraryId:1,
+            pageNum:0,
+            pageSize:20
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/collection/collDistriCount',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+
+    //读者借阅统计
+    $("#readerCount").click(function () {
+        var json = JSON.stringify({
+            startTime: null,
+            endTime:null,
+            libraryId:null,
+            totalCount:"册数",
+            pageNum:0,
+            pageSize:20
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/circulation/defileCirculLend',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //图书借阅统计
+    $("#bookCount").click(function () {
+        var json = JSON.stringify({
+            readerTypeIds: "16,15",
+            startTime: null,
+            endTime:null,
+            libraryId:null,
+            pageNum:0,
+            pageSize:20
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/circulation/bookTypeLend',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据条件 查询图书借阅统计    图书分类号
+    $("#descList").click(function () {
+        var json = JSON.stringify({
+            startTime: null,
+            endTime: null,
+            libraryId:null,
+            pageNum:0,
+            pageSize:20
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/circulation/bookLendDesc',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //根据条件 查询图书借阅统计    图书流通类型
+    $("#cirList").click(function () {
+        var json = JSON.stringify({
+            startTime: '2018-07-01',
+            endTime: '2018-07-30',
+            libraryId:null,
+            pageNum:0,
+            pageSize:20
+        });
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8288/datacount/v1/circulation/bookLendCir',
+            data: {"jsonStr": json},
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#data").text(JSON.stringify(result));
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+server:
+    undertow:
+    port: 8197
+    connection-timeout: 5000
+    context-path: /apiParameter
+spring:
+  application:
+    name: service-parameter
+  sleuth:
+    sampler:
+      percentage: 1

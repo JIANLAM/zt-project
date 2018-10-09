@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.circulate.mapper.TRelendMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.circulate.entity.TRelend">
+        <id column="id" property="id" />
+        <result column="lend_id" property="lendId" />
+        <result column="relend_time" property="relendTime" />
+        <result column="relend_back_time" property="relendBackTime" />
+        <result column="primary_back_time" property="primaryBackTime" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.catalog.repository.AcceptanceDetailRepository">
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.catalog.entity.AcceptanceDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="acceptance_id" jdbcType="BIGINT" property="acceptanceId" />
+    <result column="orderbatch_book_id" jdbcType="BIGINT" property="orderbatchBookId" />
+    <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode" />
+    <result column="purchase_book_id" jdbcType="BIGINT" property="purchaseBookId" />
+    <result column="isbn" jdbcType="VARCHAR" property="isbn" />
+    <result column="library_id" jdbcType="BIGINT" property="libraryId" />
+    <result column="ship_quantity" jdbcType="INTEGER" property="shipQuantity" />
+    <result column="accept_quantity" jdbcType="INTEGER" property="acceptQuantity" />
+    <result column="catalog_qty" jdbcType="INTEGER" property="catalogQty" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, acceptance_id, orderbatch_book_id, purchase_code, purchase_book_id, isbn, library_id, 
+    ship_quantity, accept_quantity, catalog_qty
+  </sql>
+  <select id="selectByExample" parameterType="com.szcti.lcloud.catalog.entity.AcceptanceDetailCriteria" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_acceptance_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acceptance_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_acceptance_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.catalog.entity.AcceptanceDetail">
+      insert into t_acceptance_detail (id, acceptance_id, orderbatch_book_id,
+        purchase_code, purchase_book_id, isbn,
+        library_id, ship_quantity, accept_quantity,
+        catalog_qty)
+      values (#{id,jdbcType=BIGINT}, #{acceptanceId,jdbcType=BIGINT}, #{orderbatchBookId,jdbcType=BIGINT},
+        #{purchaseCode,jdbcType=VARCHAR}, #{purchaseBookId,jdbcType=BIGINT}, #{isbn,jdbcType=VARCHAR},
+        #{libraryId,jdbcType=BIGINT}, #{shipQuantity,jdbcType=INTEGER}, #{acceptQuantity,jdbcType=INTEGER},
+        #{catalogQty,jdbcType=INTEGER})
+    </insert>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.catalog.entity.AcceptanceDetail">
+      update t_acceptance_detail
+      set acceptance_id = #{acceptanceId,jdbcType=BIGINT},
+        orderbatch_book_id = #{orderbatchBookId,jdbcType=BIGINT},
+        purchase_code = #{purchaseCode,jdbcType=VARCHAR},
+        purchase_book_id = #{purchaseBookId,jdbcType=BIGINT},
+        isbn = #{isbn,jdbcType=VARCHAR},
+        library_id = #{libraryId,jdbcType=BIGINT},
+        ship_quantity = #{shipQuantity,jdbcType=INTEGER},
+        accept_quantity = #{acceptQuantity,jdbcType=INTEGER},
+        catalog_qty = #{catalogQty,jdbcType=INTEGER}
+      where id = #{id,jdbcType=BIGINT}
+    </update>
+  <select id="queryPage" parameterType="com.szcti.lcloud.catalog.entity.vo.AcceptanceDetailVO" resultType="com.szcti.lcloud.catalog.entity.vo.AcceptanceDetailVO">
+    select DISTINCT pb.id,sum(pb.book_qty)as bookQty,pb.price,pb.isbn,pb.title,pb.author,pb.publisher,pb.book_type,pb.pubdate,pb.library_id,pb.order_time,
+    (select sum(ade.accept_quantity) from t_acceptance_detail ade where ade.purchase_book_id=pb.id)as accept_quantity,
+    (select count(ho.id)from t_holding ho left join t_book b on b.id=ho.book_id where ho.ownlib=pb.library_id and b.ISBN=pb.isbn) as recount
+    from (select pbo.id,pbo.book_qty,pbo.price,pbo.isbn,pbo.title,pbo.author,pbo.publisher,pbo.book_type,pbo.pubdate,p.library_id,p.purchase_code,p.order_time
+    from t_purchase_book pbo left join t_purchase_order p on pbo.order_id=p.id) pb
+    left join t_acceptance_detail ad on ad.purchase_book_id=pb.id
+    left join t_acceptance ac on ac.id=ad.acceptance_id
+    where 1=1
+    <if test="libraryId !=null">
+      and ac.library_id=#{libraryId}
+    </if>
+   <if test="acceptanceId !=null">
+     and ad.acceptance_id=#{acceptanceId}
+   </if>
+   <if test="purchaseBookId !=null">
+     and ad.purchase_book_id=#{purchaseBookId}
+   </if>
+   <if test="orderId !=null">
+     and pb.order_id=#{orderId}
+   </if>
+   <if test="acceptCode !=null and acceptCode!=''">
+     and ac.accept_code=#{acceptCode}
+   </if>
+   <if test="isbn !=null and isbn!=''">
+     and pb.isbn=#{isbn}
+   </if>
+   <if test="title !=null and title!=''">
+      and pb.title=#{title}
+   </if>
+   <if test="author !=null and author!=''">
+     and pb.author=#{author}
+   </if>
+   <if test="publisher !=null and publisher!=''">
+     and pb.publisher=#{publisher}
+   </if>
+   <if test="searchValue !=null and searchValue!=''">
+     <if test="searchKey !=null and searchKey=='acceptCode'">
+       and ac.accept_code LIKE CONCAT('%',#{searchValue},'%')
+     </if>
+     <if test="searchKey !=null and searchKey=='isbn'">
+       and pb.isbn LIKE CONCAT('%',#{searchValue},'%')
+     </if>
+     <if test="searchKey !=null and searchKey=='title'">
+       and pb.title LIKE CONCAT('%',#{searchValue},'%')
+     </if>
+     <if test="searchKey !=null and searchKey=='author'">
+       and pb.author LIKE CONCAT('%',#{searchValue},'%')
+     </if>
+     <if test="searchKey !=null and searchKey=='publisher'">
+       and pb.publisher LIKE CONCAT('%',#{searchValue},'%')
+     </if>
+   </if>
+  <if test="timeKey!=null and timeKey=='orderTime'">
+      <if test="startTime != null and startTime != ''">
+          AND pb.order_time >= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+          AND pb.order_time <![CDATA[<]]> #{endTime}
+      </if>
+  </if>
+  <if test="timeKey!=null and timeKey=='acceptTime'">
+      <if test="startTime != null and startTime != ''">
+          AND ac.create_time >= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != ''">
+          AND ac.create_time <![CDATA[<]]> #{endTime}
+      </if>
+  </if>
+    group by pb.library_id,pb.isbn
+ </select>
+</mapper>

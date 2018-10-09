@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.user.repository.UserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="getUserInfo" resultType="com.szcti.lcloud.user.entity.vo.UserInfoVO">
+        SELECT
+            u.id userId,
+            p.id peopleId,
+            r.id readerId,
+            u.login_name loginName,
+            p.username userName,
+            u.password password,
+            p.sex sex,
+            p.card_type cardType,
+            p.card_number cardNumber,
+            p.phone phone,
+            p.email email,
+            p.icon icon,
+            u.type type,
+            u.status status,
+            u.create_by createBy,
+            u.org_id orgId,
+            u.create_time createTime,
+            u.last_login_date lastLoginDate
+        FROM t_user u
+        LEFT JOIN t_people p ON u.id = p.user_id
+        LEFT JOIN t_reader r ON r.people_id = p.id
+        WHERE u.id = #{userId}
+    </select>
+    
+     <select id="getUserList" resultType="com.szcti.lcloud.user.entity.vo.UserInfoVO">
+        SELECT
+            u.id userId,
+            p.id peopleId,
+            u.login_name loginName,
+            p.username userName,
+            u.password password,
+            p.sex sex,
+            p.card_type cardType,
+            p.card_number cardNumber,
+            p.phone phone,
+            p.email email,
+            p.icon icon,
+            u.type type,
+            u.status status,
+            u.create_by createBy,
+            u.create_time createTime,
+            u.create_name createName,
+            u.org_id orgId,
+            u.create_account createAccount
+        FROM t_user u
+        LEFT JOIN t_people p ON u.id = p.user_id
+        where 1=1
+        <if test="username != null and username != '' ">
+        and p.username like concat('%',#{username},'%')
+        </if>
+        <if test="login_name != null and login_name != '' ">
+        and u.login_name like concat('%',#{login_name},'%')
+        </if>
+        <if test="create_account != null and create_account != '' ">
+        and u.create_account like concat('%',#{create_account},'%')
+        </if>
+        <if test="type != null and type != '' ">
+        and u.type=#{type}
+        </if>
+        <if test="orgid != null and orgid != '' ">
+        and u.org_id = #{orgid}
+        </if>
+         order by u.id desc
+    </select>
+
+    <select id="getReader" resultType="com.szcti.lcloud.user.entity.vo.ReaderVO">
+        SELECT * FROM t_reader r
+        WHERE r.people_id = #{peopleId}
+    </select>
+
+ 
+
+    <update id="modifyPwd">
+        UPDATE t_user SET password = #{newPassword},last_password_reset_date=NOW()  WHERE id = #{userId}
+    </update>
+
+    <insert id="insertUser">
+        INSERT INTO t_user (
+            id,
+            login_name,
+            password,
+            type,
+            status,
+            org_id,
+            create_by,
+            create_account,
+            create_name,
+            create_time
+        ) VALUES (
+            #{userId},
+            #{loginName},
+            #{password},
+            #{type},
+            #{status},
+            #{orgId},
+            #{createBy},
+            #{createAccount},
+            #{createName},
+            #{createTime}
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE t_user SET
+            <if test="type != null and type != '' ">
+              type = #{type},
+            </if>
+             <if test="status != null and status != '' ">
+              status = #{status},
+            </if>
+            <if test="orgId != null and orgId != '' ">
+              org_id = #{orgId},
+            </if>
+            <if test="loginName != null and loginName != '' ">
+              login_name = #{loginName},
+            </if>
+            <if test="password != null and password != '' ">
+              password = #{password},
+            </if>
+            id=#{userId}
+        WHERE
+          id = #{userId}
+    </update>
+
+    <insert id="insertPeople">
+        INSERT INTO t_people (
+            id,
+            user_id,
+            username,
+            sex,
+            card_type,
+            card_number,
+            phone,
+            email,
+            birthday,
+            icon
+        ) VALUES (
+            #{peopleId},
+            #{userId},
+            #{userName},
+            #{sex},
+            #{cardType},
+            #{cardNumber},
+            #{phone},
+            #{email},
+            #{birthday},
+            #{icon}
+        )
+    </insert>
+
+    <update id="updatePeople">
+        UPDATE t_people SET
+            username = #{userName},
+            sex = #{sex},
+            card_type = #{cardType},
+            card_number = #{cardNumber},
+            phone = #{phone},
+            email = #{email},
+            birthday = #{birthday},
+            icon = #{icon}
+        WHERE
+          user_id = #{userId}
+    </update>
+
+    <insert id="insertReader">
+        INSERT INTO t_reader (
+            id,
+            people_id,
+            reader_card_type,
+            reader_card_number,
+            status,
+            grade,
+            remark,
+            library_id
+        ) VALUES (
+            #{id},
+            #{peopleId},
+            #{readerCardType},
+            #{readerCardNumber},
+            #{status},
+            #{grade},
+            #{remark},
+            #{libraryId}
+        )
+    </insert>
+
+    <update id="updateReader">
+        UPDATE t_reader SET
+            reader_card_type = #{readerCardType},
+            reader_card_number = #{readerCardNumber},
+            status = #{status},
+            grade = #{grade},
+            remark = #{remark},
+            library_id = #{libraryId}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteUser">
+       delete from t_user where id=#{userId};
+    </delete>
+        
+</mapper>

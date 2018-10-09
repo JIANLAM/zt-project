@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szcti.lcloud.circulate.mapper.TReaderTypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.szcti.lcloud.circulate.entity.TReaderType">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="code" property="code" />
+        <result column="notes" property="notes" />
+        <result column="in_lib_lendrule" property="inLibLendrule" />
+        <result column="out_lib_lendrule" property="outLibLendrule" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+</mapper>

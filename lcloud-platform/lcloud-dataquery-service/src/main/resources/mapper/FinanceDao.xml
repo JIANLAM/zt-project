@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.dataquery.repository.FinanceDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="findList" resultType="com.szcti.lcloud.dataquery.entity.vo.FinanceVO">
+        SELECT
+            rf.id,
+            r.reader_card_number,
+            p.username,
+            o.name libName,
+            pp.username operatorName,
+            rf.type_name,
+            rf.finance_datetime,
+            rf.forfeit,
+            rf.pay_method
+        FROM t_reader_finance rf
+        LEFT JOIN t_reader r ON r.id = rf.reader_id
+        LEFT JOIN t_people p ON p.id = r.people_id
+        LEFT JOIN t_people pp ON pp.user_id = rf.operator_id
+        LEFT JOIN t_organization o ON o.id = r.library_id
+        WHERE 1=1
+        <if test="libId != null">
+            AND r.library_id = #{libId}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND p.username LIKE CONCAT('%',#{userName},'%')
+        </if>
+        <if test="readerCardNumber != null and readerCardNumber != ''">
+            AND r.reader_card_number = #{readerCardNumber}
+        </if>
+        <if test="cardNumber != null and cardNumber != ''">
+            AND p.card_number = #{cardNumber}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND rf.finance_datetime >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND rf.finance_datetime <![CDATA[<]]> #{endTime}
+        </if>
+    </select>
+
+    <select id="findForfeitList" resultType="com.szcti.lcloud.dataquery.entity.vo.ForfeitBookVO">
+        SELECT
+            rf.id,
+            rf.barcode,
+            b.title,
+            b.author,
+            b.publisher,
+            h.act_type,
+            sb.label actName,
+            h.call_no,
+            o.name libName,
+            rf.create_date,
+            p.username operatorName,
+            b.price,
+            rf.forfeit
+        FROM t_reader_finance rf
+        LEFT JOIN t_holding h ON h.barcode = rf.barcode
+        LEFT JOIN t_book b ON h.book_id = b.id
+        LEFT JOIN t_organization o ON o.id = h.ownlib
+        LEFT JOIN t_people p ON p.user_id = rf.operator_id
+        LEFT JOIN sys_basicparam sb ON sb.id = h.act_type
+        WHERE rf.type = #{type}
+        <if test="libId != null">
+            AND h.ownlib = #{libId}
+        </if>
+        <if test="actType != null and actType != ''">
+            AND h.act_type = #{actType}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND rf.create_date >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND rf.create_date <![CDATA[<]]> #{endTime}
+        </if>
+    </select>
+
+
+</mapper>

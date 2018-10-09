@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.parameter.repository.BarCodeDao">
+
+    <sql id="BarCodeVOColumns">
+            bc.id,
+            bc.barcode_number barcodeNumber,
+            bc.barcode_name barcodeName,
+            bc.prefix,
+            bc.total_bit totalBit,
+            bc.start_barcode startBarcode,
+            bc.stop_barcode stopBarcode,
+            bc.curr_barcode currBarcode,
+            bc.remark,
+            bc.curr_user currUser,
+            u.login_name loginName,
+            p.username
+    </sql>
+
+    <select id="findBarCodeList" resultType="com.szcti.lcloud.parameter.entity.vo.BarCodeVO">
+        SELECT
+        <include refid="BarCodeVOColumns"/>
+        FROM
+            t_barcode bc
+        LEFT JOIN t_user u ON bc.curr_user = u.id
+        LEFT JOIN t_people p ON u.id = p.user_id
+        WHERE 1 = 1
+            <if test=" libraryId != null ">
+                AND  bc.library_id = #{libraryId}
+            </if>
+            <if test=" currUser != null ">
+                AND bc.curr_user = #{currUser}
+            </if>
+        ORDER BY
+            bc.create_time DESC
+    </select>
+
+    <select id="getBarCode" resultType="com.szcti.lcloud.parameter.entity.vo.BarCodeVO">
+        SELECT
+        <include refid="BarCodeVOColumns"/>
+        FROM
+        t_barcode bc
+        WHERE	bc.id = #{id}
+    </select>
+
+    <delete id="delBarCodeInfo">
+        DELETE FROM t_barcode WHERE id in
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insertBarCodeInfo">
+        INSERT INTO t_barcode (
+            id,
+            barcode_number,
+            barcode_name,
+            prefix,
+            total_bit,
+            start_barcode,
+            stop_barcode,
+            curr_barcode,
+            curr_user,
+            create_time,
+            user_id,
+            library_id,
+            remark
+        )
+        VALUES(
+            #{id},
+            #{barcodeNumber},
+            #{barcodeName},
+            #{prefix},
+            #{totalBit},
+            #{startBarcode},
+            #{stopBarcode},
+            #{currBarcode},
+            #{currUser},
+            #{createTime},
+            #{userId},
+            #{libraryId},
+            #{remark}
+        )
+    </insert>
+
+    <update id="updateBarCodeInfo">
+        UPDATE t_barcode
+            SET
+                barcode_number = #{barcodeNumber},
+                barcode_name = #{barcodeName},
+                prefix = #{prefix},
+                total_bit = #{totalBit},
+                start_barcode = #{startBarcode},
+                stop_barcode = #{stopBarcode},
+                curr_barcode = #{currBarcode},
+                curr_user = #{currUser},
+                remark = #{remark}
+        WHERE	id = #{id}
+    </update>
+
+    <select id="maxBarcodeNumber" resultType="java.lang.String">
+        SELECT
+            MAX(barcode_number)
+        FROM
+            t_barcode
+        WHERE library_id = #{libraryId}
+    </select>
+
+    <select id="existsBarcodeClassifyNub" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            t_barcode
+        WHERE barcode_number = #{barcodeNumber}
+        <if test="libraryId != null">
+            AND library_id = #{libraryId}
+        </if>
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    <select id="existsBarcodeNumber" resultType="java.lang.Integer">
+        SELECT
+            count(1)
+        FROM
+            t_barcode
+        WHERE
+            prefix = #{prefix}
+            AND (
+                    (
+                        #{startBarcode} <![CDATA[<=]]> stop_barcode
+                    )
+                OR (
+                        #{stopBarcode} <![CDATA[<=]]> stop_barcode
+                    )
+            )
+        <if test="libraryId != null">
+            AND library_id = #{libraryId}
+        </if>
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    <select id="cuurLibraryUser" resultType="java.util.Map">
+        SELECT
+            u.id,
+            u.login_name,
+            p.username
+        FROM
+            t_user u
+        LEFT JOIN t_people p ON u.id = p.user_id
+        WHERE 1 = 1
+        <if test="libraryId != null">
+            AND u.org_id = #{libraryId}
+        </if>
+    </select>
+</mapper>

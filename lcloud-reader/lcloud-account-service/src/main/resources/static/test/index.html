@@ -1,0 +1,478 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <title>accountTest</title>
+    <style type="text/css">
+        body {
+            padding: 35px;
+        }
+
+        .big {
+            border: 1px #66B3FF solid;
+            box-shadow: -2px -1.5px 3px #0080FF;
+            width: 100%;
+            padding: 30px 0px;
+            margin: 0px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            height: 800px;
+            overflow: scroll;
+        }
+
+        table {
+            border: 1px #66B3FF solid;
+            box-shadow: 2px -1.5px 4px #66B3FF;
+            width: 70%;
+            text-align: center;
+            font-family: "黑体";
+            margin-top: -50px;
+        }
+
+        tr {
+            line-height: 35px;
+        }
+
+        td {
+            border: 1px white solid;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="big">
+    <div style="width: 100%;text-align: center"><h1>lcloud-account-service 接口对接</h1></div>
+    <table bgcolor="D2E9FF" cellpadding="0" cellspacing="0" border="1px">
+        <thead>
+        <tr>
+            <td><strong>接口名称</strong></td>
+            <td><strong>点击按钮</strong></td>
+            <td><strong>绑定id名</strong></td>
+            <td><strong>请求方式</strong></td>
+            <td><strong>备注信息</strong></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>用户账户信息接口</td>
+            <td>
+                <button type="submit" id="userInfo">点击我测试</button>
+            </td>
+            <td>#userInfo</td>
+            <td><span>GET</span></td>
+            <td>{userId} 为变量 测试数据为常量1</td>
+        </tr>
+        <tr>
+            <td>新增或修改用户信息接口</td>
+            <td>
+                <button type="submit" id="saveUserInfo">点击我测试</button>
+            </td>
+            <td>#saveUserInfo</td>
+            <td><span>POST</span></td>
+            <td>userId为空则新增 userId有值则修改 / 测试默认新增 <br/> 新增缺少字段 <span>org_id create_account create_name</span> / xml未新增
+            </td>
+        </tr>
+        <tr>
+            <td>新增或修改读者信息接口</td>
+            <td>
+                <button type="submit" id="saveReader">点击我测试</button>
+            </td>
+            <td>#saveReader</td>
+            <td><span>POST</span></td>
+            <td>id为空则新增 id有值则修改 / 测试默认修改</td>
+        </tr>
+        <tr>
+            <td>新增或修改职员信息接口</td>
+            <td>
+                <button type="submit" id="saveStaff">点击我测试</button>
+            </td>
+            <td>#saveStaff</td>
+            <td><span>POST</span></td>
+            <td>id为空则新增 id有值则修改 / 测试默认新增</td>
+        </tr>
+        <tr>
+            <td>读者账户信息接口</td>
+            <td>
+                <button type="submit" id="reader">点击我测试</button>
+            </td>
+            <td>#reader</td>
+            <td><span>GET</span></td>
+            <td>{userId} 为变量 测试数据为常量1</td>
+        </tr>
+        <tr>
+            <td>职员账户信息接口</td>
+            <td>
+                <button type="submit" id="staff">点击我测试</button>
+            </td>
+            <td>#staff</td>
+            <td><span>GET</span></td>
+            <td>{userId} 为变量 对应数据库字段peopleId(people_id) 测试数据为常量2</td>
+        </tr>
+        <tr>
+            <td>修改用户密码接口</td>
+            <td>
+                <button type="submit" id="modifyPwd">点击我测试</button>
+            </td>
+            <td>#modifyPwd</td>
+            <td><span>POST</span></td>
+            <td>测试 userId为1的用户 <span>旧密码123456 修改后 000000</span></td>
+        </tr>
+        <tr>
+            <td>获取用户所含所有收件人信息接口</td>
+            <td>
+                <button type="submit" id="list">点击我测试</button>
+            </td>
+            <td>#list</td>
+            <td><span>GET</span></td>
+            <td>{userId} 为变量 测试数据为常量1</td>
+        </tr>
+        <tr>
+            <td>获取指定收件人信息接口</td>
+            <td>
+                <button type="submit" id="sendeeInfo">点击我测试</button>
+            </td>
+            <td>#sendeeInfo</td>
+            <td><span>GET</span></td>
+            <td>{sendeeId} 为变量 测试数据为常量 <span>sendeeId = "6872165342132352001"</span></td>
+        </tr>
+        <tr>
+            <td>删除收件人信息接口</td>
+            <td>
+                <button type="submit" id="sendeeDelete">点击我测试</button>
+            </td>
+            <td>#sendeeDelete</td>
+            <td><span>POST</span></td>
+            <td>自己到t_sendee表新增一条数据 删除条件 id = 刚自己新增的id <br/> <span>测试默认id = 1 数据库并无此数据</span></td>
+        </tr>
+        <tr>
+            <td>新增或修改收件人信息接口</td>
+            <td>
+                <button type="submit" id="sendeeSave">点击我测试</button>
+            </td>
+            <td>#sendeeSave</td>
+            <td><span>POST</span></td>
+            <td>id为空则新增 id有值则修改 / 测试默认修改 <span>id = "6872165342132352001"</span></td>
+        </tr>
+        <tr>
+            <td>获取用户 角色集合 一对多 </td>
+            <td>
+                <button type="submit" id="getRoleInfo">点击我测试</button>
+            </td>
+            <td>#getRoleInfo</td>
+            <td><span>GET</span></td>
+            <td>{userId} = 1</td>
+        </tr>
+        <tr>
+            <td>——————</td>
+            <td>——————</td>
+            <td>微信端</td>
+            <td>——————</td>
+            <td>——————</td>
+        </tr>
+        <tr>
+            <td>修改读者资料</td>
+            <td>
+                <button type="submit" id="updateReadInfo">点击我测试</button>
+            </td>
+            <td>#updateReadInfo</td>
+            <td><span>POST</span></td>
+            <td>{userId} = 1</td>
+        </tr>
+        <tr>
+            <td>修改默认地址       为默认  is_default = 1</td>
+            <td>
+                <button type="submit" id="setDefault">点击我测试</button>
+            </td>
+            <td>#setDefault</td>
+            <td><span>POST</span></td>
+            <td>{sendeeId} = 1</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    /************************      修改读者资料         读者微信端     ******************************/
+    //修改默认地址       为默认  is_default = 1 sendeeId
+    $("#setDefault").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/sendee/setDefault/6872165342132352001',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("0k");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+    //修改读者资料
+    $("#updateReadInfo").click(function () {
+        var json = {userId:1 ,email: "2914487443@qq.com", phone: "15263985632", signature: "可乐鸡翅排骨大白兔奶糖"};
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/user/updateReadInfo',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+
+
+    //获取用户 角色集合 一对多
+    $("#getRoleInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8180/account/v1/user/1/getRoleInfo',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //新增或修改收件人信息接口
+    $("#sendeeSave").click(function () {
+        var json = {id: null,name: "冯达2", address: "湖北武汉2", sendeePhone: "13720201004"};
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/sendee/save',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //删除收件人信息接口
+    $("#sendeeDelete").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/sendee/delete/3',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取指定收件人信息接口
+    $("#sendeeInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8180/account/v1/sendee/info/6872165342',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //获取用户所含所有收件人信息接口
+    $("#list").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8180/account/v1/sendee/5/list',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //修改用户密码接口
+    $("#modifyPwd").click(function () {
+        var json = {userId: 1, oldPassword: "123456", newPassword: "000000"};
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/user/modifyPwd',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //职员账户信息接口
+    $("#staff").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8180/account/v1/user/2/staff',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //读者账户信息接口
+    $("#reader").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8180/account/v1/user/1/reader',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //新增或修改职员信息接口
+    $("#saveStaff").click(function () {
+        var json = {
+            id: null,
+            peopleId: 3,
+            staffCode: "0002",
+            possie: "馆员",
+            isLeader: 0,
+            status: 1,
+            remark: null,
+            orgId: 2
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/user/saveStaff',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //新增或修改读者信息接口
+    $("#saveReader").click(function () {
+        var json = {
+            userId: 1,
+            phone: '66666666666',
+            email: 'admin@ww.com',
+            signature: '加油加油2'
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/user/saveReader',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //新增或修改用户信息接口
+    $("#dj02").click(function () {
+        var json = {
+            userId: null, peopleId: 2, loginName: "wsy", userName: "王思怡", password: "123456",
+            type: 0, status: 1, sex: 0, email: "bbb@email.com", phone: "15112616978",
+            icon: null, cardType: 0, cardNumber: "666666", createBy: 1,
+            createTime: "2018-06-25 14:51:08", loginIp: null, loginTime: null, remark: null
+        };
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/user/saveUserInfo',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+    //用户账户信息接口
+    $("#userInfo").click(function () {
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8180/account/v1/user/info/1',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert(JSON.stringify(result));
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });
+   /* //设置默认地址       为默认  is_default = 1
+    $("#dj02").click(function () {
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8180/account/v1/sendee/setDefault/1',
+            data: JSON.stringify(json),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                alert("ok");
+                console.log(result)
+            },
+            error: function erryFunction() {
+                alert("error");
+            }
+        });
+    });*/
+</script>
+</body>
+
+</html>

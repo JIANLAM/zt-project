@@ -1,0 +1,41 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript">
+        function showInfo() {
+            var searchKey = encodeURI($('#searchKey').val(), "UTF-8");
+            var searchValue = encodeURI($('#searchValue').val(), "UTF-8");
+            var jsonStr=JSON.stringify({
+                "orderId":"42"
+            });
+            $.ajax({
+                type : 'get',
+                url : 'http://192.168.1.97:8182/apiPurchaseOrder/v1/purchasebook/exportlack',
+                data: {jsonStr:jsonStr},
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                success : function(result) {
+                    $("#res").text("结果:"+JSON.stringify(result));
+                },
+                error : function erryFunction() {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+    <title>postDate</title>
+</head>
+<body>
+<h2>post_data测试</h2>
+searchKey：<input type="text" id="searchKey" /><br>
+searchValue：<input type="text" id="searchValue" /><br>
+<button type="submit" onclick="showInfo()">提交</button>
+searchKey;//检索字段值为:purchaseCode|orderCode|creatorAccount|creatorName|title|isbn|author|publisher
+<div id="res">
+    结果：
+</div>
+</body>
+
+</html>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szcti.lcloud.purchase.repository.HoldingRepository" >
+  <resultMap id="BaseResultMap" type="com.szcti.lcloud.purchase.entity.Holding" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="call_no" property="callNo" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="BIGINT" />
+    <result column="barcode" property="barcode" jdbcType="VARCHAR" />
+    <result column="ownlib" property="ownlib" jdbcType="BIGINT" />
+    <result column="curlib" property="curlib" jdbcType="BIGINT" />
+    <result column="shelf" property="shelf" jdbcType="BIGINT" />
+    <result column="indate" property="indate" jdbcType="TIMESTAMP" />
+    <result column="singleprice" property="singleprice" jdbcType="REAL" />
+    <result column="totalprice" property="totalprice" jdbcType="REAL" />
+    <result column="source" property="source" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, call_no, book_id, barcode, ownlib, curlib, shelf, indate, singleprice, totalprice, 
+    source, status
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.szcti.lcloud.purchase.entity.HoldingCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_holding
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_holding
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_holding
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.szcti.lcloud.purchase.entity.HoldingCriteria" >
+    delete from t_holding
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.szcti.lcloud.purchase.entity.Holding" >
+    insert into t_holding (id, call_no, book_id, 
+      barcode, ownlib, curlib, 
+      shelf, indate, singleprice, 
+      totalprice, source, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{callNo,jdbcType=VARCHAR}, #{bookId,jdbcType=BIGINT}, 
+      #{barcode,jdbcType=VARCHAR}, #{ownlib,jdbcType=BIGINT}, #{curlib,jdbcType=BIGINT}, 
+      #{shelf,jdbcType=BIGINT}, #{indate,jdbcType=TIMESTAMP}, #{singleprice,jdbcType=REAL}, 
+      #{totalprice,jdbcType=REAL}, #{source,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.szcti.lcloud.purchase.entity.Holding" >
+    insert into t_holding
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="callNo != null" >
+        call_no,
+      </if>
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="barcode != null" >
+        barcode,
+      </if>
+      <if test="ownlib != null" >
+        ownlib,
+      </if>
+      <if test="curlib != null" >
+        curlib,
+      </if>
+      <if test="shelf != null" >
+        shelf,
+      </if>
+      <if test="indate != null" >
+        indate,
+      </if>
+      <if test="singleprice != null" >
+        singleprice,
+      </if>
+      <if test="totalprice != null" >
+        totalprice,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="callNo != null" >
+        #{callNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bookId != null" >
+        #{bookId,jdbcType=BIGINT},
+      </if>
+      <if test="barcode != null" >
+        #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ownlib != null" >
+        #{ownlib,jdbcType=BIGINT},
+      </if>
+      <if test="curlib != null" >
+        #{curlib,jdbcType=BIGINT},
+      </if>
+      <if test="shelf != null" >
+        #{shelf,jdbcType=BIGINT},
+      </if>
+      <if test="indate != null" >
+        #{indate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="singleprice != null" >
+        #{singleprice,jdbcType=REAL},
+      </if>
+      <if test="totalprice != null" >
+        #{totalprice,jdbcType=REAL},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.szcti.lcloud.purchase.entity.HoldingCriteria" resultType="java.lang.Integer" >
+    select count(*) from t_holding
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_holding
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.callNo != null" >
+        call_no = #{record.callNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookId != null" >
+        book_id = #{record.bookId,jdbcType=BIGINT},
+      </if>
+      <if test="record.barcode != null" >
+        barcode = #{record.barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ownlib != null" >
+        ownlib = #{record.ownlib,jdbcType=BIGINT},
+      </if>
+      <if test="record.curlib != null" >
+        curlib = #{record.curlib,jdbcType=BIGINT},
+      </if>
+      <if test="record.shelf != null" >
+        shelf = #{record.shelf,jdbcType=BIGINT},
+      </if>
+      <if test="record.indate != null" >
+        indate = #{record.indate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.singleprice != null" >
+        singleprice = #{record.singleprice,jdbcType=REAL},
+      </if>
+      <if test="record.totalprice != null" >
+        totalprice = #{record.totalprice,jdbcType=REAL},
+      </if>
+      <if test="record.source != null" >
+        source = #{record.source,jdbcType=TINYINT},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_holding
+    set id = #{record.id,jdbcType=BIGINT},
+      call_no = #{record.callNo,jdbcType=VARCHAR},
+      book_id = #{record.bookId,jdbcType=BIGINT},
+      barcode = #{record.barcode,jdbcType=VARCHAR},
+      ownlib = #{record.ownlib,jdbcType=BIGINT},
+      curlib = #{record.curlib,jdbcType=BIGINT},
+      shelf = #{record.shelf,jdbcType=BIGINT},
+      indate = #{record.indate,jdbcType=TIMESTAMP},
+      singleprice = #{record.singleprice,jdbcType=REAL},
+      totalprice = #{record.totalprice,jdbcType=REAL},
+      source = #{record.source,jdbcType=TINYINT},
+      status = #{record.status,jdbcType=TINYINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szcti.lcloud.purchase.entity.Holding" >
+    update t_holding
+    <set >
+      <if test="callNo != null" >
+        call_no = #{callNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bookId != null" >
+        book_id = #{bookId,jdbcType=BIGINT},
+      </if>
+      <if test="barcode != null" >
+        barcode = #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ownlib != null" >
+        ownlib = #{ownlib,jdbcType=BIGINT},
+      </if>
+      <if test="curlib != null" >
+        curlib = #{curlib,jdbcType=BIGINT},
+      </if>
+      <if test="shelf != null" >
+        shelf = #{shelf,jdbcType=BIGINT},
+      </if>
+      <if test="indate != null" >
+        indate = #{indate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="singleprice != null" >
+        singleprice = #{singleprice,jdbcType=REAL},
+      </if>
+      <if test="totalprice != null" >
+        totalprice = #{totalprice,jdbcType=REAL},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szcti.lcloud.purchase.entity.Holding" >
+    update t_holding
+    set call_no = #{callNo,jdbcType=VARCHAR},
+      book_id = #{bookId,jdbcType=BIGINT},
+      barcode = #{barcode,jdbcType=VARCHAR},
+      ownlib = #{ownlib,jdbcType=BIGINT},
+      curlib = #{curlib,jdbcType=BIGINT},
+      shelf = #{shelf,jdbcType=BIGINT},
+      indate = #{indate,jdbcType=TIMESTAMP},
+      singleprice = #{singleprice,jdbcType=REAL},
+      totalprice = #{totalprice,jdbcType=REAL},
+      source = #{source,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

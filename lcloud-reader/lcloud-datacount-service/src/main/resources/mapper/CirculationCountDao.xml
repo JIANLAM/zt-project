@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.datacount.repository.CirculationCountDao">
+    <!-- *****************************************************      图书借阅统计     ********************************************************* -->
+
+    <!--    查询图书分类号    -->
+    <select id="bookType" resultType="java.util.Map">
+        SELECT classno,description FROM t_class
+    </select>
+
+    <!--    查询证类型参数 证件类型    -->
+    <select id="basicParm" resultType="java.util.Map">
+        SELECT
+          value,
+          label
+        FROM
+          t_readercard
+        WHERE id = #{id}
+    </select>
+
+    <!--    根据图书分类号 读者证类型统计数据    -->
+    <select id="readerType" resultType="java.lang.Integer">
+        SELECT
+			COUNT(1) count
+		FROM
+			t_lend l
+		LEFT JOIN t_reader r ON r.id = l.reader_id
+		LEFT JOIN t_holding h ON l.holding_id = h.id
+		LEFT JOIN t_book b ON h.book_id = b.id
+		LEFT JOIN t_readercard m ON r.reader_card_type = m.id
+        LEFT JOIN t_people p ON r.people_id = p.id
+		WHERE
+			UPPER(LEFT(b.book_type, 1)) = #{commTypeId}
+        <if test="commReaderId != null">
+            AND r.reader_card_type = #{commReaderId}
+        </if>
+        <if test="sexStatus != null">
+            AND p.sex = #{sexStatus}
+        </if>
+        <if test="grade != null">
+            AND r.grade = #{grade}
+        </if>
+        <if test="classes != null">
+            AND r.classes = #{classes}
+        </if>
+        <if test="libraryId != null">
+            AND r.library_id = #{libraryId}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND l.lend_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND l.lend_time <![CDATA[<]]> #{endTime}
+        </if>
+    </select>
+
+    <!--    查询图书    文献流通类型    -->
+    <select id="cirType" resultType="java.util.Map">
+        SELECT id,label FROM sys_basicparam WHERE type = "circulation"
+        <if test="libraryId != null">
+            AND library_id = #{libraryId}
+        </if>
+    </select>
+
+    <!--    根据图书流通类型 读者证类型统计数据    -->
+    <select id="cirReaderType" resultType="java.lang.Integer">
+        SELECT
+			COUNT(1) count
+		FROM
+			t_lend l
+		LEFT JOIN t_reader r ON r.id = l.reader_id
+		LEFT JOIN t_holding h ON l.holding_id = h.id
+        LEFT JOIN t_people p ON r.people_id = p.id
+		WHERE
+			h.act_type = #{commTypeId}
+        <if test="commReaderId != null">
+            AND r.reader_card_type = #{commReaderId}
+        </if>
+        <if test="sexStatus != null">
+            AND p.sex = #{sexStatus}
+        </if>
+        <if test="grade != null">
+            AND r.grade = #{grade}
+        </if>
+        <if test="classes != null">
+            AND r.classes = #{classes}
+        </if>
+        <if test="libraryId != null">
+            AND r.library_id = #{libraryId}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND l.lend_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND l.lend_time <![CDATA[<]]> #{endTime}
+        </if>
+    </select>
+
+    <!--    查询图书    馆藏地点    -->
+    <select id="collAddressType" resultType="java.util.Map">
+        SELECT id,label FROM sys_basicparam WHERE type = "collAddress"
+        <if test="libraryId != null">
+            AND library_id = #{libraryId}
+        </if>
+    </select>
+
+    <!--    根据图书馆藏地点 读者证类型统计数据    -->
+    <select id="collReaderType" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1) count
+        FROM
+        t_lend l
+        LEFT JOIN t_reader r ON r.id = l.reader_id
+        LEFT JOIN t_holding h ON l.holding_id = h.id
+        LEFT JOIN t_people p ON r.people_id = p.id
+        WHERE
+        h.collAddress_id = #{commTypeId}
+        <if test="commReaderId != null">
+            AND r.reader_card_type = #{commReaderId}
+        </if>
+        <if test="sexStatus != null">
+            AND p.sex = #{sexStatus}
+        </if>
+        <if test="grade != null">
+            AND r.grade = #{grade}
+        </if>
+        <if test="classes != null">
+            AND r.classes = #{classes}
+        </if>
+        <if test="libraryId != null">
+            AND r.library_id = #{libraryId}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND l.lend_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND l.lend_time <![CDATA[<]]> #{endTime}
+        </if>
+    </select>
+
+   <!-- *****************************************************      读者借阅统计     ********************************************************* -->
+
+    <!--    查询所有 证件类型 集合    -->
+    <select id="readerTypeList" resultType="java.util.Map">
+        SELECT
+            id , value,label
+        FROM
+            t_readercard
+        WHERE 1 = 1
+            <if test="libraryId != null">
+                AND library_id = #{libraryId}
+            </if>
+    </select>
+
+    <!--    查询所有 年级 集合    -->
+    <select id="gradeList" resultType="java.util.Map">
+         SELECT id , `code`,name FROM t_grade WHERE lib_id = #{libraryId}
+    </select>
+
+    <!--    查询所有 班级 集合    -->
+    <select id="classesList" resultType="java.util.Map">
+        SELECT
+            s.id,
+            s.`code`,
+            s.name
+        FROM
+            t_classes s
+        LEFT JOIN t_grade g ON s.grade_id = g.id
+        WHERE
+            g.lib_id = #{libraryId}
+    </select>
+
+    <!-- *****************************************************      图书污损    丢失 统计     ********************************************************* -->
+
+    <!--    所有条件    -->
+    <sql id="conditionColumn">
+        <if test="type != null">
+            AND f.type = #{type}
+        </if>
+        <if test="actType != null">
+            AND h.act_type = #{actType}
+        </if>
+        <if test="bookType != null">
+            AND UPPER(LEFT(b.book_type, 1)) = #{bookType}
+        </if>
+        <if test="collAddressId != null">
+            AND h.collAddress_id = #{collAddressId}
+        </if>
+        <if test="commReaderId != null">
+            AND r.reader_card_type = #{commReaderId}
+        </if>
+        <if test="grade != null">
+            AND r.grade = #{grade}
+        </if>
+        <if test="classes != null">
+            AND r.classes = #{classes}
+        </if>
+        <if test="libraryId != null">
+            AND r.library_id = #{libraryId}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND f.create_date >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND f.create_date <![CDATA[<]]> #{endTime}
+        </if>
+    </sql>
+
+    <!--    查询所有 污损 丢失 统计    -->
+    <select id="defileCount" resultType="java.util.Map">
+        SELECT
+        <trim suffixOverrides="," >
+              <if test="bookTypeCount != null and bookTypeCount != ''">
+                  DISTINCT
+                      IFNULL(
+                          (
+                              SELECT
+                                  count(1)
+                              FROM
+                                  (
+                                      SELECT
+                                        f.book_id
+                                      FROM
+                                        t_reader_finance f
+                                      LEFT JOIN t_reader r ON r.id = f.reader_id
+                                      LEFT JOIN t_book b ON f.book_id = b.id
+                                      LEFT JOIN t_holding h ON f.book_id = h.book_id
+                                      AND f.barcode = h.barcode
+                                      WHERE 1 = 1
+                                      <include refid="conditionColumn"/>
+                                      GROUP BY  f.book_id
+                                  ) typeCount
+                          ),
+                          0
+                      ) bookTypeCount,
+              </if>
+              <if test="totalCount != null and totalCount != ''">
+                  IFNULL(COUNT(1), 0) totalCount,
+              </if>
+              <if test="totalPrice != null and totalPrice != ''">
+                  IFNULL(SUM(f.forfeit), 0) totalPrice,
+              </if>
+        </trim>
+        FROM
+            t_reader_finance f
+        LEFT JOIN t_reader r ON r.id = f.reader_id
+        LEFT JOIN t_book b ON f.book_id = b.id
+        LEFT JOIN t_holding h ON f.book_id = h.book_id
+        AND f.barcode = h.barcode
+        WHERE 1 = 1
+        <include refid="conditionColumn"/>
+    </select>
+
+
+</mapper>

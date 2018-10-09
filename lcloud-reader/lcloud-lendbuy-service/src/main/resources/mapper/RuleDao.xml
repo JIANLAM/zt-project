@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szcti.lcloud.lendbuy.repository.RuleDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <!--<resultMap type="Areas" id="areasMap">
+        <result property="id" column="id"/>
+        <result property="areaid" column="areaid"/>
+        <result property="area" column="area"/>
+        <result property="cityid" column="cityid"/>
+    </resultMap>-->
+
+    <select id="findList" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyRuleVO">
+        SELECT
+            lr.*,
+            p1.username creatorName,
+            p2.username updaterName
+        FROM t_lendbuy_rule lr
+        LEFT JOIN t_people p1 ON p1.user_id = lr.create_by
+        LEFT JOIN t_people p2 ON p2.user_id = lr.update_by
+        WHERE 1=1
+        <if test="status != null">
+            AND lr.status = #{status}
+        </if>
+        <if test="libraryId != null">
+            AND lr.library_id = #{libraryId}
+        </if>
+        <if test="readerType != null">
+            AND lr.reader_type = #{readerType}
+        </if>
+        order by lr.create_time desc
+    </select>
+
+    <update id="update">
+        update t_lendbuy_rule
+        <set>
+            <if test="ruleName != null and ruleName !='' ">
+                rule_name = #{ruleName},
+            </if>
+            <if test="bookNameAllow != null">
+                book_name_allow = #{bookNameAllow},
+            </if>
+            <if test="bookName != null and bookName !='' ">
+                book_name = #{bookName},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="duplicateQty != null">
+                duplicate_qty = #{duplicateQty},
+            </if>
+            <if test="publishYear != null and publishYear !='' ">
+                publish_year = #{publishYear},
+            </if>
+            <if test="categoryNo != null and categoryNo != '' ">
+                category_no = #{categoryNo},
+            </if>
+            <if test="bookPrice != null">
+                book_price = #{bookPrice},
+            </if>
+            <if test="bookSize != null and bookSize != '' ">
+                book_size = #{bookSize},
+            </if>
+            <if test="bookPages != null">
+                book_pages = #{bookPages},
+            </if>
+            <if test="publisher != null and publisher != '' ">
+                publisher = #{publisher},
+            </if>
+            <if test="publishYearAllow != null">
+                publish_year_allow = #{publishYearAllow},
+            </if>
+            <if test="categoryNoAllow != null">
+                category_no_allow = #{categoryNoAllow},
+            </if>
+            <if test="bookSizeAllow != null">
+                book_size_allow = #{bookSizeAllow},
+            </if>
+            <if test="bookPagesAllow != null">
+                book_pages_allow = #{bookPagesAllow},
+            </if>
+            <if test="publisherAllow != null">
+                publisher_allow = #{publisherAllow},
+            </if>
+            <if test="readerType != null">
+                reader_type = #{readerType},
+            </if>
+            <if test="readerTypeAllow != null">
+                reader_type_allow = #{readerTypeAllow},
+            </if>
+            <if test="credit != null">
+                credit = #{credit},
+            </if>
+            <if test="lendBuyDays != null">
+                lendbuy_days = #{lendBuyDays},
+            </if>
+            <if test="autoReceivedDays != null">
+                auto_received_days = #{autoReceivedDays},
+            </if>
+            <if test="overduePayRate != null">
+                overdue_payrate = #{overduePayRate},
+            </if>
+            <if test="lostPayRate != null">
+                lost_payrate = #{lostPayRate},
+            </if>
+            <if test="brokenPayRate != null">
+                broken_payrate = #{brokenPayRate},
+            </if>
+            <if test="summary != null and summary != '' ">
+                summary = #{summary},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null and updateTime != '' ">
+                update_time = #{updateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getById" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyRuleVO">
+        SELECT *
+        FROM t_lendbuy_rule
+        WHERE id = #{id}
+    </select>
+
+    <select id="getByType" resultType="com.szcti.lcloud.lendbuy.entity.vo.LendBuyRuleVO">
+        SELECT *
+        FROM t_lendbuy_rule
+        WHERE  library_id = #{libraryId}
+         AND reader_type = #{readerType}
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <select id="getCredit" resultType="java.lang.Integer">
+        SELECT own_value
+        FROM t_credit
+        WHERE  user_id = #{userId}
+    </select>
+
+    <delete id="delete" parameterType="java.util.ArrayList">
+        DELETE FROM t_lendbuy_rule WHERE id IN
+        <foreach item="item" index="index" collection="idArray" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insert">
+        INSERT INTO t_lendbuy_rule(
+            id,
+            rule_name,
+            create_by,
+            create_time,
+            update_by,
+            update_time,
+            book_name_allow,
+            book_name,
+            status,
+            duplicate_qty,
+            publish_year,
+            category_no,
+            book_price,
+            book_size,
+            book_pages,
+            publisher,
+            publish_year_allow,
+            category_no_allow,
+            book_size_allow,
+            book_pages_allow,
+            publisher_allow,
+            reader_type,
+            reader_type_allow,
+            credit,
+            lendbuy_days,
+            auto_received_days,
+            overdue_payrate,
+            lost_payrate,
+            broken_payrate,
+            library_id,
+            summary
+        ) VALUES (
+            #{id},
+            #{ruleName},
+            #{createBy},
+            #{createTime},
+            #{updateBy},
+            #{updateTime},
+            #{bookNameAllow},
+            #{bookName},
+            #{status},
+            #{duplicateQty},
+            #{publishYear},
+            #{categoryNo},
+            #{bookPrice},
+            #{bookSize},
+            #{bookPages},
+            #{publisher},
+            #{publishYearAllow},
+            #{categoryNoAllow},
+            #{bookSizeAllow},
+            #{bookPagesAllow},
+            #{publisherAllow},
+            #{readerType},
+            #{readerTypeAllow},
+            #{credit},
+            #{lendBuyDays},
+            #{autoReceivedDays},
+            #{overduePayRate},
+            #{lostPayRate},
+            #{brokenPayRate},
+            #{libraryId},
+            #{summary}
+        )
+    </insert>
+
+</mapper>
